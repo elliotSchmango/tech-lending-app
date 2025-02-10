@@ -34,7 +34,7 @@ DEBUG = os.environ.get("ENVIRONMENT") == "development"
 IS_HEROKU_APP = "DYNO" in os.environ and "CI" not in os.environ
 
 #edited for heroku
-ALLOWED_HOSTS = ['localhost','http://127.0.0.1:8000/','https://project-b-06-6edbfef73258.herokuapp.com/']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'project-b-06-6edbfef73258.herokuapp.com', '*.herokuapp.com']
 
 
 # Application definition
