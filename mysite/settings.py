@@ -127,11 +127,10 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-STATIC_Root = BASE_DIR / 'staticfiles'
-
 #for heroku
-STORAGES = {
-    'staticfiles': {
-        "BACKEND": 'whitenoise.storage.CompressedManifestStaticFilesStorage',
-    },
-}
+try:
+    if 'HEROKU' in os.environ:
+        import django_heroku
+        django_heroku.settings(locals())
+except ImportError:
+    found = False
