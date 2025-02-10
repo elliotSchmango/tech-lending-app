@@ -14,6 +14,8 @@ from pathlib import Path
 #for heroku:
 import os
 
+import dj_database_url
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -28,7 +30,7 @@ SECRET_KEY = 'django-insecure-m9pp-b7^k)^&qs+@8g6*j71f=5#wq9q25m86lnd3qtezk9q+l7
 DEBUG = True
 
 #edited for heroku
-ALLOWED_HOSTS = ['localhost','http://127.0.0.1:8000/','https://b06-uva-2025-7e9c1fcdbebe.herokuapp.com/']
+ALLOWED_HOSTS = ['localhost','http://127.0.0.1:8000/','https://project-b-06-6edbfef73258.herokuapp.com/']
 
 
 # Application definition
@@ -78,10 +80,10 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(
+        conn_max_age=600,
+        conn_health_checks=True,
+    ),
 }
 
 
