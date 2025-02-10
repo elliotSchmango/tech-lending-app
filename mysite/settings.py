@@ -127,6 +127,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+STATIC_Root = BASE_DIR / 'staticfiles'
+
 #for heroku
 try:
     if 'HEROKU' in os.environ:
