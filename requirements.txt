@@ -5,3 +5,10 @@ packaging==24.2
 sqlparse==0.5.3
 django-heroku
 dj-database-url
+django-allauth
+requests
+pyjwt
+oauthlib
+requests-oauthlib
+cryptography
+django-bootstrap5
