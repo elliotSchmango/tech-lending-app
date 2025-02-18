@@ -1,0 +1,23 @@
+{% extends "techCLA/base.html" %}
+
+{% block content %}
+  <div class="mt-4">
+    <!-- Welcome message -->
+    <h1>{{ welcome }}</h1>
+    
+    <!-- Show user details -->
+    {% if username %}
+      <p class="lead">Logged in as: <strong>{{ username }}</strong> ({{ role }})</p>
+    {% endif %}
+    
+    <!-- Main Content -->
+    <hr>
+    <div class="row">
+      <div class="col-md-12">
+        <h3>Our Collections</h3>
+        <p>This is where you can browse our collections and items.</p>
+        <!-- TODO -->
+      </div>
+    </div>
+  </div>
+{% endblock %}
