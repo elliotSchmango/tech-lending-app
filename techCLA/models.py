@@ -6,7 +6,4 @@ class User(AbstractUser):
         ('patron', 'Patron'),
         ('librarian', 'Librarian'),
     ]
-    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default=PATRON)
-
-    def is_librarian(self) -> bool:
-        return self.role == self.LIBRARIAN
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='patron')
