@@ -1,0 +1,58 @@
+{% load bootstrap5 %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Technology CLA</title>
+  {% bootstrap_css %}
+</head>
+
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+      <!-- Navbar : Brand -->
+      <a class="navbar-brand" href="{% url 'index' %}">Technology CLA</a>
+
+      <!-- Navbar : Sign in / Sign out -->
+      <div class="collapse navbar-collapse justify-content-end">
+        <ul class="navbar-nav">
+          <li class="nav-item d-flex align-items-center">
+            {% if user.is_authenticated %}
+              {% if user.role == 'librarian' %}
+                <span class="navbar-text me-3">
+                  Hello, Librarian {{ user.get_full_name|default:user.username }}
+                </span>
+              {% else %}
+                <span class="navbar-text me-3">
+                  Hello, Patron {{ user.get_full_name|default:user.username }}
+                </span>
+              {% endif %}
+              <a href="{% url 'account_logout' %}" class="nav-link">Sign Out</a>
+            {% else %}
+              <a href="{% url 'account_login' %}" class="nav-link">
+                Hello, Sign in
+              </a>
+            {% endif %}
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page content -->
+  <div class="container mt-4">
+    {% block content %}
+    {% endblock %}
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-dark text-light text-center py-4 mt-4">
+    <p>Copyright &copy; 2025 Team B-06</p>
+  </footer>
+
+  {% bootstrap_javascript %}
+</body>
+</html>
