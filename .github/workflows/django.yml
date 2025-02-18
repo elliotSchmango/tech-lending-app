@@ -16,7 +16,10 @@ jobs:
         python-version: [3.11]
 
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
     
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v3
@@ -34,12 +37,13 @@ jobs:
         echo "CLIENT_ID=${{ secrets.CLIENT_ID }}" >> .env
         echo "CLIENT_SECRET=${{ secrets.CLIENT_SECRET }}" >> .env
 
-    - name: Run Tests
+    - name: Run Migrations & Tests
       env:
         DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
         CLIENT_ID: ${{ secrets.CLIENT_ID }}
         CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
       run: |
+        python manage.py migrate
         python manage.py test
         
   deploy:
@@ -50,6 +54,8 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Deploy to Heroku
         env:
