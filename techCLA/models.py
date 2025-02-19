@@ -14,6 +14,6 @@ class Collection(models.Model):
         ("private", "Private")
     ]
 
-    visibility = models.CharField(choices=VISIBILITY_CHOICES, default="public")
-    collection_name = models.CharField()
+    visibility = models.CharField(max_length=10, choices=VISIBILITY_CHOICES, default="public")
+    collection_name = models.CharField(max_length=100)
 
