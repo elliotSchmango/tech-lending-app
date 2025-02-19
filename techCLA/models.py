@@ -7,3 +7,13 @@ class User(AbstractUser):
         ('librarian', 'Librarian'),
     ]
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='patron')
+
+class Collection(models.Model):
+    VISIBILITY_CHOICES = [
+        ("public", "Public"),
+        ("private", "Private")
+    ]
+
+    visibility = models.CharField(choices=VISIBILITY_CHOICES, default="public")
+    collection_name = models.CharField()
+
