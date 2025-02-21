@@ -16,6 +16,12 @@
       <!-- Navbar : Brand -->
       <a class="navbar-brand" href="{% url 'index' %}">Technology CLA</a>
 
+      <!-- Search Bar -->
+      <form class="d-flex flex-grow-1 mx-3" action="{% url 'index' %}">
+        <input class="form-control w-100 me-2" type="search" placeholder="Search..." name="q" aria-label="Search">
+        <button class="btn btn-outline-dark" type="submit">Search</button>
+      </form>
+
       <!-- Navbar : Sign in / Sign out -->
       <div class="collapse navbar-collapse justify-content-end">
         <ul class="navbar-nav">
