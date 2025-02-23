@@ -37,7 +37,7 @@ DEBUG = os.environ.get("ENVIRONMENT") == "development"
 IS_HEROKU_APP = "DYNO" in os.environ and "CI" not in os.environ
 
 #edited for heroku
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'project-b-06-6edbfef73258.herokuapp.com/', '.herokuapp.com']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'project-b-06-6edbfef73258.herokuapp.com', '.herokuapp.com']
 
 
 # Application definition
@@ -176,18 +176,18 @@ AUTHENTICATION_BACKENDS = [
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
-        'SCOPE' : [
+        'SCOPE': [
             'profile',
-            'email'
+            'email',
         ],
-        'APP': {
-            'client_id': os.environ['CLIENT_ID'],
-            'secret': os.environ['CLIENT_SECRET'],
-        },
         'AUTH_PARAMS': {
-            'access_type':'online',
-            "prompt": "select_account",
-        }
+            'access_type': 'online',
+            'prompt': 'select_account',
+        },
+        'APP': {
+            'client_id': os.getenv('CLIENT_ID'),
+            'secret': os.getenv('CLIENT_SECRET'),
+        },
     }
 }
 
@@ -195,6 +195,7 @@ SOCIALACCOUNT_PROVIDERS = {
 SITE_ID = 2
 
 LOGIN_REDIRECT_URL = '/'
+ACCOUNT_AUTHENTICATED_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
 AUTH_USER_MODEL = 'techCLA.User'
