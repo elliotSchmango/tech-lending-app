@@ -8,6 +8,9 @@ class User(AbstractUser):
     ]
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='patron')
 
+    def is_librarian(self):
+        return self.role == 'librarian'
+
 class Collection(models.Model):
     VISIBILITY_CHOICES = [
         ("public", "Public"),
