@@ -186,11 +186,11 @@ SOCIALACCOUNT_PROVIDERS = {
         },
         'AUTH_PARAMS': {
             'access_type':'online',
+            "prompt": "select_account",
         }
     }
 }
 
-ACCOUNT_EMAIL_VERIFICATION = "none"
 
 SITE_ID = 2
 

@@ -34,6 +34,16 @@ def social_user_signup(sender, request, sociallogin, **kwargs):
     user = sociallogin.user
     if sociallogin.account.provider == 'google':
         google_email = sociallogin.account.extra_data.get('email')
-        if google_email and user.google_email != google_email:
+        if google_email and user.email != google_email:
             user.email = google_email
             user.save()
+
+@receiver(post_save, sender=User)
+def add_superuser_to_admin_group(sender, instance, created, **kwargs):
+    if created and instance.is_superuser:
+        # Ensure the Admin group exists
+        admin_group, created = Group.objects.get_or_create(name="Admin")
+        
+        # Add the superuser to the Admin group
+        instance.groups.add(admin_group)
+        instance.save()
