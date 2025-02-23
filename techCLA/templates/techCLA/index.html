@@ -23,8 +23,8 @@
     <h2>{{ welcome }}</h2>
     
     <!-- Show user details -->
-    {% if username %}
-      <p class="lead">Logged in as: <strong>{{ username }}</strong> ({{ role }})</p>
+    {% if user.username %}
+      <p class="lead">Logged in as: <strong>{{ user.username }}</strong> ({{ user.role }})</p>
     {% endif %}
     
     <!-- Main Content -->

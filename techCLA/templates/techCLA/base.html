@@ -31,7 +31,7 @@
             <div class="d-flex align-items-center">
               <div class="nav-item dropdown me-3">
                 <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Hello, {% if user.role == 'librarian' %}Librarian{% else %}Patron{% endif %} {{ user.get_full_name|default:user.username }}
+                  Hello, {{ user.role }} {{ user.get_full_name|default:user.username }}
                 </a>
                 
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
