@@ -1,8 +1,8 @@
 from django.shortcuts import render
+from django.views import generic
 
-# Create your views here.
+from .models import Collection
 
-from django.http import HttpResponse
 
 def index(request):
     if request.user.is_authenticated:
@@ -25,3 +25,10 @@ def index(request):
     }
     
     return render(request, 'techCLA/index.html', context)
+
+
+class CatalogView(generic.ListView):
+    template_name = "techCLA/catalog.html"
+
+    def get_queryset(self):
+        return Collection.objects
