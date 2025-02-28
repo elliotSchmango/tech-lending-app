@@ -29,6 +29,7 @@ def index(request):
 
 class CatalogView(generic.ListView):
     template_name = "techCLA/catalog.html"
+    context_object_name = "all_collections"
 
     def get_queryset(self):
         return Collection.objects

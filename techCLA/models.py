@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+
 class User(AbstractUser):
 
     @property
@@ -21,6 +22,7 @@ class User(AbstractUser):
     
     def is_patron(self):
         return self.groups.filter(name='Patron').exists()
+
 
 class Collection(models.Model):
     VISIBILITY_CHOICES = [
