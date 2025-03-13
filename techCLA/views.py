@@ -27,5 +27,10 @@ def index(request):
     return render(request, 'techCLA/index.html', context)
 
 def borrow_item(request, item_name):
-    template_name = 'techCLA/borrow.html'
-    return render(request, template_name, {'item': item_name})
+    if request.user.is_authenticated:
+        template_name = 'techCLA/borrow.html'
+        ret = item_name
+    else:
+        template_name = 'techCLA/borrow.html'
+        ret = "please login to see item info"
+    return render(request, template_name, {'item': ret})
