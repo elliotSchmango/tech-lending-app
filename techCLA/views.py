@@ -25,3 +25,7 @@ def index(request):
     }
     
     return render(request, 'techCLA/index.html', context)
+
+def borrow_item(request, item_name):
+    template_name = 'techCLA/borrow.html'
+    return render(request, template_name, {'item': item_name})
