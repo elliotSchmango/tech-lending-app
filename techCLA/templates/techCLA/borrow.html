@@ -1,10 +1,16 @@
 {% extends "techCLA/index.html" %}
 
-{% block secondNav %}
-{% endblock %}
-
 {% block content %}
-<div class="row row-cols-4">
-    {{item}}
-</div>
+<h2>Borrow: {{ item.title }}</h2>
+<p><strong>Description:</strong> {{ item.description }}</p>
+<p><strong>Status:</strong> {{ item.get_status_display }}</p>
+
+{% if item.image %}
+    <img src="{{ item.image.url }}" alt="{{ item.title }}" width="300">
+{% endif %}
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Request to Borrow</button>
+</form>
 {% endblock %}

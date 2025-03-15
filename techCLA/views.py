@@ -1,7 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 
 # Create your views here.
-
+from .models import Item
 from django.http import HttpResponse
 
 def index(request):
@@ -27,10 +27,7 @@ def index(request):
     return render(request, 'techCLA/index.html', context)
 
 def borrow_item(request, item_name):
-    if request.user.is_authenticated:
-        template_name = 'techCLA/borrow.html'
-        ret = item_name
-    else:
-        template_name = 'techCLA/borrow.html'
-        ret = "please login to see item info"
-    return render(request, template_name, {'item': ret})
+    for i in Item.objects.all():
+        print(i.title)
+    item = get_object_or_404(Item, title=item_name)
+    return render(request, "techCLA/borrow.html", {"item": item})
