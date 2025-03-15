@@ -29,7 +29,7 @@ class Collection(models.Model):
         ("private", "Private")
     ]
 
-    name = models.CharField(max_length=100, unique=True)
+    name = models.CharField(max_length=100, unique=True, default="Untitled Collection")
     description = models.TextField(blank=True, null=True)
     visibility = models.CharField(max_length=10, choices=VISIBILITY_CHOICES, default="public")
     allowed_users = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)    # To specify allowed patrons for private collections
