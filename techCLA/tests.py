@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from .models import User, Collection, Item
+from .models import User, Collection, Item, BorrowRequest
 
 
 class UserModelTests(TestCase):
@@ -24,3 +24,21 @@ class ItemModelTests(TestCase):
 
         self.assertIs(item.status, "available")
 
+
+class BorrowModelTests(TestCase):
+    def test_default_request_status(self):
+        borrow_request = BorrowRequest.objects.create(item=Item.objects.create(), user=User.objects.create_user("test"))
+
+        self.assertIs(borrow_request.status, "pending")
+
+    def test_approve(self):
+        borrow_request = BorrowRequest.objects.create(item=Item.objects.create(), user=User.objects.create_user("test"))
+        borrow_request.approve()
+
+        self.assertIs(borrow_request.status, "approved")
+
+    def test_deny(self):
+        borrow_request = BorrowRequest.objects.create(item=Item.objects.create(), user=User.objects.create_user("test"))
+        borrow_request.deny()
+
+        self.assertIs(borrow_request.status, "denied")
