@@ -17,12 +17,22 @@ def create_default_groups(sender, **kwargs):
     Group.objects.get_or_create(name='Librarian')
     Group.objects.get_or_create(name='Admin')
 
-@receiver(user_signed_up)
-def assign_patron_on_signup(sender, request, user, **kwargs):
-    # Add user to Patrons group on signup
-    group, _ = Group.objects.get_or_create(name="Patron")
-    user.groups.add(group)
-    user.save()
+@receiver(post_save, sender=User)
+def assign_patron_on_user_creation(sender, instance, created, **kwargs):
+    if created:
+        # Assign user to 'Patron' group on creation
+        group, _ = Group.objects.get_or_create(name='Patron')
+        instance.groups.add(group)
+        instance.save()
+        # Create user profile
+        Profile.objects.create(user=instance)
+
+# @receiver(user_signed_up)
+# def assign_patron_on_signup(sender, request, user, **kwargs):
+#     # Add user to Patrons group on signup
+#     group, _ = Group.objects.get_or_create(name="Patron")
+#     user.groups.add(group)
+#     user.save()
 
 # @receiver(pre_social_login)
 # def social_user_signup(sender, request, sociallogin, **kwargs):
