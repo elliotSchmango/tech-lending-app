@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import Group
-from .models import User 
+from .models import User, Item
 
 class CustomUserAdmin(UserAdmin):
     fieldsets = UserAdmin.fieldsets
@@ -17,3 +17,4 @@ class CustomUserAdmin(UserAdmin):
     get_groups.short_description = "Groups"  # Set column title in the admin panel
 
 admin.site.register(User, CustomUserAdmin)
+admin.site.register(Item)
