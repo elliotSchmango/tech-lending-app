@@ -59,6 +59,10 @@ jobs:
         run: |
           curl https://cli-assets.heroku.com/install.sh | sh
           heroku --version  # Verify Heroku CLI installation
+      - name: Login to Heroku
+        run: heroku auth:token
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
 
       - name: Set Heroku Remote URL
         run: |
