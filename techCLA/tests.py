@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from .models import User, Collection
+from .models import User, Collection, Item
 
 
 class UserModelTests(TestCase):
@@ -16,4 +16,11 @@ class CollectionModelTests(TestCase):
         collection = Collection.objects.create()
 
         self.assertIs(collection.visibility, "public")
+
+
+class ItemModelTests(TestCase):
+    def test_default_status(self):
+        item = Item.objects.create()
+
+        self.assertIs(item.status, "available")
 
