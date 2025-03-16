@@ -1,5 +1,5 @@
 from django.contrib.auth.models import Group
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, post_migrate
 from django.dispatch import receiver
 from django.contrib.auth import get_user_model
 from allauth.account.signals import user_logged_in, user_signed_up
@@ -9,6 +9,13 @@ from django.db.models.signals import post_delete
 from django.dispatch import receiver
 
 User = get_user_model()
+
+@receiver(post_migrate)
+def create_default_groups(sender, **kwargs):
+    # Makes sure group exist
+    Group.objects.get_or_create(name='Patron')
+    Group.objects.get_or_create(name='Librarian')
+    Group.objects.get_or_create(name='Admin')
 
 @receiver(user_signed_up)
 def assign_patron_on_signup(sender, request, user, **kwargs):
