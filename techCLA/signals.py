@@ -22,6 +22,7 @@ def assign_patron_on_signup(sender, request, user, **kwargs):
     # Add user to Patrons group on signup
     group, _ = Group.objects.get_or_create(name="Patron")
     user.groups.add(group)
+    user.save()
 
 # @receiver(pre_social_login)
 # def social_user_signup(sender, request, sociallogin, **kwargs):
