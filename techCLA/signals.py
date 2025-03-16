@@ -4,6 +4,9 @@ from django.dispatch import receiver
 from django.contrib.auth import get_user_model
 from allauth.account.signals import user_logged_in, user_signed_up
 from allauth.socialaccount.signals import pre_social_login
+from .models import Profile
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 
 User = get_user_model()
 
@@ -47,3 +50,16 @@ def add_superuser_to_admin_group(sender, instance, created, **kwargs):
         # Add the superuser to the Admin group
         instance.groups.add(admin_group)
         instance.save()
+
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+
+@receiver(post_delete, sender=ItemImage)
+def delete_itemimage_file(sender, instance, **kwargs):
+    instance.image.delete(False)
+
+@receiver(post_delete, sender=Profile)
+def delete_profile_picture(sender, instance, **kwargs):
+    instance.profile_picture.delete(False)

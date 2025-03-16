@@ -23,6 +23,11 @@ class User(AbstractUser):
     def is_patron(self):
         return self.groups.filter(name='Patron').exists()
 
+class Profile(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    profile_picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True, default="default_profile.jpg")
+    bio = models.TextField(blank=True, null=True)
+
 class Collection(models.Model):
     VISIBILITY_CHOICES = [
         ("public", "Public"),
