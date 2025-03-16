@@ -44,11 +44,6 @@ def assign_patron_on_user_creation(sender, instance, created, **kwargs):
 #             user.email = google_email
 #             user.save()
 
-@receiver(post_save, sender=User)
-def create_profile(sender, instance, created, **kwargs):
-    if created:
-        Profile.objects.create(user=instance)
-
 @receiver(post_delete, sender=ItemImage)
 def delete_itemimage_file(sender, instance, **kwargs):
     if instance.profile_picture and instance.profile_picture.name != "default.jpg":
