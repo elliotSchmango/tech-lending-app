@@ -58,8 +58,10 @@ def create_user_profile(sender, instance, created, **kwargs):
 
 @receiver(post_delete, sender=ItemImage)
 def delete_itemimage_file(sender, instance, **kwargs):
-    instance.image.delete(False)
+    if instance.profile_picture and instance.profile_picture.name != "default.jpg":
+        instance.image.delete(False)
 
 @receiver(post_delete, sender=Profile)
 def delete_profile_picture(sender, instance, **kwargs):
-    instance.profile_picture.delete(False)
+    if instance.profile_picture and instance.profile_picture.name != "default_profile.jpg":
+        instance.profile_picture.delete(False)
