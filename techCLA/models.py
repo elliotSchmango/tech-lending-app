@@ -1,8 +1,9 @@
 from django.contrib.auth.models import AbstractUser
+from django.conf import settings
 from django.db import models
+from django.utils import timezone
 
 class User(AbstractUser):
-
     @property
     def role(self):
         """Returns the user's primary group as a role name."""
@@ -28,6 +29,60 @@ class Collection(models.Model):
         ("private", "Private")
     ]
 
+    name = models.CharField(max_length=100, unique=True, default="Untitled Collection")
+    description = models.TextField(blank=True, null=True)
     visibility = models.CharField(max_length=10, choices=VISIBILITY_CHOICES, default="public")
-    collection_name = models.CharField(max_length=100)
+    allowed_users = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)    # To specify allowed patrons for private collections
+
+class Item(models.Model):
+    STATUS_CHOICES = [
+        ("available", "Available"),
+        ("checked_out", "Checked Out"),
+        ("repair", "Under Repair"),
+        ("other", "Other"),
+    ]
+
+    title = models.CharField(max_length=255)
+    identifier = models.CharField(max_length=100, unique=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="available")
+    location = models.CharField(max_length=100, blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
+    collections = models.ManyToManyField(Collection, blank=True)
+    image = models.ImageField(upload_to='item_images/', blank=True, null=True, default="default.jpg")
+
+class ItemImage(models.Model):
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='item_images/')
+    uploaded_on = models.DateTimeField(auto_now_add=True)
+
+class Review(models.Model):
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    rating = models.PositiveSmallIntegerField(default=5)
+    comment = models.TextField(blank=True, null=True)
+    date_created = models.DateTimeField(auto_now_add=True)
+
+class BorrowRequest(models.Model):
+    REQUEST_STATUS_CHOICES = [
+        ("pending", "Pending"),
+        ("approved", "Approved"),
+        ("denied", "Denied"),
+    ]
+
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    status = models.CharField(max_length=10, choices=REQUEST_STATUS_CHOICES, default="pending")
+    requested_on = models.DateTimeField(auto_now_add=True)
+    approved_on = models.DateTimeField(blank=True, null=True)
+    denied_on = models.DateTimeField(blank=True, null=True)
+
+    def approve(self):
+        self.status = "approved"
+        self.approved_on = timezone.now()
+        self.save()
+
+    def deny(self):
+        self.status = "denied"
+        self.denied_on = timezone.now()
+        self.save()
 
