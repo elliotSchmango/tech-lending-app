@@ -6,11 +6,10 @@
 <p><strong>Status:</strong> {{ item.get_status_display }}</p>
 
 {% if item.image %}
+    <p>Image URL: {{ item.image.url }}</p>
     <img src="{{ item.image.url }}" alt="{{ item.title }}" width="300">
+{% else %}
+    <p>No image available.</p>
 {% endif %}
 
-<form method="post">
-    {% csrf_token %}
-    <button type="submit">Request to Borrow</button>
-</form>
 {% endblock %}
