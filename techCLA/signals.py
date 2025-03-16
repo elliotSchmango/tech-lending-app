@@ -4,7 +4,7 @@ from django.dispatch import receiver
 from django.contrib.auth import get_user_model
 from allauth.account.signals import user_logged_in, user_signed_up
 from allauth.socialaccount.signals import pre_social_login
-from .models import Profile
+from .models import Profile, ItemImage
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
 
