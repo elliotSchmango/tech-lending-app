@@ -4,6 +4,7 @@ from django.db import models
 from django.utils import timezone
 
 class User(AbstractUser):
+
     @property
     def role(self):
         """Returns the user's primary group as a role name."""

@@ -8,5 +8,6 @@ from .views import borrow_item
 urlpatterns = [
     path("", views.index, name="index"),
     path('catalog/<str:item_name>/borrow/', borrow_item, name='borrow_item'),
+    path("catalog/", views.CatalogView.as_view(), name="catalog")
 ]
 

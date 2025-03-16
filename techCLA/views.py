@@ -1,8 +1,10 @@
 from django.shortcuts import render, get_object_or_404
+from django.views import generic
 
 # Create your views here.
-from .models import Item
+from .models import Collection, Item
 from django.http import HttpResponse
+
 
 def index(request):
     if request.user.is_authenticated:
@@ -31,3 +33,11 @@ def borrow_item(request, item_name):
         print(i.title)
     item = get_object_or_404(Item, title=item_name)
     return render(request, "techCLA/borrow.html", {"item": item})
+
+
+class CatalogView(generic.ListView):
+    template_name = "techCLA/catalog.html"
+    context_object_name = "all_collections"
+
+    def get_queryset(self):
+        return Collection.objects
