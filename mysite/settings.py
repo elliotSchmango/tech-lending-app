@@ -218,4 +218,14 @@ STORAGES = {
     "staticfiles": {
         "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
     },
+    "media": {
+        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+        "OPTIONS": {
+            "location": "media",
+        },
+    },
 }
+
+# Media files (for local storage)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'

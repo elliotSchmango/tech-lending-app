@@ -1,0 +1,32 @@
+{% extends 'techCLA/base.html' %}
+{% block content %}
+<h2>Manage Items</h2>
+
+<!-- Add New Item Form -->
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <label for="additional_images">Upload Additional Images:</label>
+    <input type="file" name="additional_images" multiple>
+    <button type="submit">Add Item</button>
+</form>
+
+<hr>
+
+<!-- Existing Items -->
+<h3>Existing Items</h3>
+<ul>
+    {% for item in items %}
+        <li>
+            <strong>{{ item.title }}</strong> ({{ item.status }}) - {{ item.description }}
+            {% if item.image %}
+                <img src="{{ item.image.url }}" alt="{{ item.title }}" width="100">
+            {% endif %}
+            <br>
+            <a href="{% url 'edit_item' item.id %}">Edit</a> |
+            <a href="{% url 'delete_item' item.id %}" onclick="return confirm('Are you sure?');">Delete</a>
+        </li>
+    {% endfor %}
+</ul>
+
+{% endblock %}
