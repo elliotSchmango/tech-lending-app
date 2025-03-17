@@ -26,6 +26,11 @@
               </a>
 
               <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                {% if user.profile.profile_picture and "default_profile" not in user.profile.profile_picture.url %}
+                    <img src="{{ user.profile.profile_picture.url }}" alt="Profile Picture" width="150">
+                {% else %}
+                    <p>No profile picture available.</p>
+                {% endif %}
                 <li><span class="dropdown-item-text"><strong>Email:</strong> {{ user.email }}</span></li>
                 <li><span class="dropdown-item-text"><strong>Role:</strong> {{ user.role }}</span></li>
               </ul>
