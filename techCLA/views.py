@@ -1,9 +1,8 @@
 from django.shortcuts import render, get_object_or_404
 from django.views import generic
-
-# Create your views here.
 from .models import Collection, Item
 from django.http import HttpResponse
+from .forms import ProfilePictureForm
 
 
 def index(request):
@@ -33,6 +32,20 @@ def borrow_item(request, item_name):
         print(i.title)
     item = get_object_or_404(Item, title=item_name)
     return render(request, "techCLA/borrow.html", {"item": item})
+
+def update_profile(request):
+    if request.user.is_authenticated:
+        #print("HERE",request)
+        if request.method == "POST":
+            #print("HERE2")
+            form = ProfilePictureForm(request.POST, request.FILES, instance=request.user.profile)
+            
+            if form.is_valid():
+                form.save()
+        else:
+            form = ProfilePictureForm(instance=request.user.profile)
+
+        return render(request, "techCLA/update.html", {"form": form})
 
 
 class CatalogView(generic.ListView):

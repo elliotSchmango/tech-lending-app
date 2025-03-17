@@ -26,8 +26,14 @@
               </a>
 
               <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                {% if user.profile.profile_picture and "default_profile" not in user.profile.profile_picture.url %}
+                    <img src="{{ user.profile.profile_picture.url }}" alt="Profile Picture" width="150" class="d-block mx-auto mb-2">
+                {% else %}
+                    <p class="card-text">No profile picture available.</p>
+                {% endif %}
                 <li><span class="dropdown-item-text"><strong>Email:</strong> {{ user.email }}</span></li>
                 <li><span class="dropdown-item-text"><strong>Role:</strong> {{ user.role }}</span></li>
+                <a href="{% url 'update_profile' %}" class="rounded-0 btn">Change Profile</a>
               </ul>
               <!--TODO: add more for visible account details?-->
             </div>
