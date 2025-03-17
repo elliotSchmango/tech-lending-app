@@ -35,9 +35,9 @@ def borrow_item(request, item_name):
 
 def update_profile(request):
     if request.user.is_authenticated:
-        print("HERE",request)
+        #print("HERE",request)
         if request.method == "POST":
-            print("HERE2")
+            #print("HERE2")
             form = ProfilePictureForm(request.POST, request.FILES, instance=request.user.profile)
             
             if form.is_valid():

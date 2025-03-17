@@ -8,11 +8,15 @@
         <p style="color: red;">{{ message }}</p>
     {% endfor %}
 {% endif %}
-
-<form method="post" enctype="multipart/form-data">
+<ul></ul>
+<form method="post" enctype="multipart/form-data" class="mt-4">
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Update Picture</button>
+    
+    <div class="mb-3 pt-2">
+        {{ form.as_p }}
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-3">Update Picture</button>
 </form>
 
 {% endblock %}
