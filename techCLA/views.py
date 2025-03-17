@@ -1,18 +1,20 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.views import generic
 from .models import Collection, Item
 from django.http import HttpResponse
 from .forms import ProfilePictureForm
-
+from django.contrib.auth.decorators import user_passes_test
+from .models import Item, ItemImage
+from .forms import ItemForm
 
 def index(request):
     if request.user.is_authenticated:
         username = request.user.get_full_name() or request.user.username
-        if request.user.role == 'librarian':
-            role = 'librarian'
+        if request.user.role == 'Librarian':
+            role = 'Librarian'
             welcome_message = f"Welcome, {username}! You have administrative privileges."
         else:
-            role = 'patron'
+            role = 'Patron'
             welcome_message = f"Welcome, {username}! Enjoy browsing our collections."
     else:
         role = 'anonymous'
@@ -54,3 +56,51 @@ class CatalogView(generic.ListView):
 
     def get_queryset(self):
         return Collection.objects
+
+def is_librarian(user):
+    return user.is_authenticated and user.groups.filter(name='Librarian').exists()
+
+@user_passes_test(is_librarian)
+def manage_items(request):
+    items = Item.objects.all()
+
+    if request.method == "POST":
+        form = ItemForm(request.POST, request.FILES)
+        files = request.FILES.getlist('additional_images')  # Multiple image support
+
+        if form.is_valid():
+            item = form.save()
+
+            # Save additional images
+            for file in files:
+                ItemImage.objects.create(item=item, image=file)
+
+            return redirect('manage_items')
+
+    else:
+        form = ItemForm()
+
+    return render(request, 'techCLA/manage_items.html', {'form': form, 'items': items})
+
+@user_passes_test(is_librarian)
+def edit_item(request, item_id):
+    item = get_object_or_404(Item, id=item_id)
+    if request.method == "POST":
+        form = ItemForm(request.POST, request.FILES, instance=item)
+        if form.is_valid():
+            form.save()
+            return redirect('manage_items')
+    else:
+        form = ItemForm(instance=item)
+
+    return render(request, 'techCLA/edit_item.html', {'form': form, 'item': item})
+
+@user_passes_test(is_librarian)
+def delete_item(request, item_id):
+    item = get_object_or_404(Item, id=item_id)
+
+    if request.method == "POST":  # Confirm deletion
+        item.delete()
+        return redirect('manage_items')
+
+    return render(request, 'techCLA/delete_item.html', {'item': item})
