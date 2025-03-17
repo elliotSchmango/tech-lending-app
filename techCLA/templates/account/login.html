@@ -31,7 +31,9 @@
                         {{ redirect_field }}
                     {% endslot %}
                     {% slot actions %}
-                        <button data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-lg btn-block" type="submit">{% trans "Sign In" %}</button>
+                        {% element button type="submit" tags="prominent,login" %}
+                            {% trans "Sign In" %}
+                        {% endelement %}
                     {% endslot %}
                 {% endelement %}
             {% endif %}
