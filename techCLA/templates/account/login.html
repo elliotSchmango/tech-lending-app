@@ -9,9 +9,7 @@
 <div class="container d-flex justify-content-center align-items-center">
     <div class="card" style="border-radius: 1rem;">
         <div class="card-body text-center">
-            {% element h1 %}
-                {% trans "Sign In" %}
-            {% endelement %}
+            <h3>Sign In</h3>
             {% if not SOCIALACCOUNT_ONLY %}
                 {% setvar link %}
                     <a href="{{ signup_url }}">
