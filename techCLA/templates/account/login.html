@@ -10,7 +10,7 @@
     <div class="card" style="border-radius: 1rem;">
         <div class="card-body text-center">
             {% element h1 %}
-                <h3 class="card-title mb-3">{% trans "Sign In" %}</h3>
+                {% trans "Sign In" %}
             {% endelement %}
             {% if not SOCIALACCOUNT_ONLY %}
                 {% setvar link %}
