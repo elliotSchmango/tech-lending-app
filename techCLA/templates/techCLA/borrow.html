@@ -1,15 +1,46 @@
 {% extends "techCLA/index.html" %}
 
 {% block content %}
-<h2>Borrow: {{ item.title }}</h2>
-<p><strong>Description:</strong> {{ item.description }}</p>
-<p><strong>Status:</strong> {{ item.get_status_display }}</p>
+<div class="container mt-4">
+  
+  <div class="card shadow-lg rounded-3">
+    
+    <div class="card-body p-4">
+      
+        <!--<h2 class="card-title text-center mb-4 fs-2">{{ item.title }}</h2>-->
 
-{% if item.image %}
-    <p>Image URL: {{ item.image.url }}</p>
-    <img src="{{ item.image.url }}" alt="{{ item.title }}" width="300">
-{% else %}
-    <p>No image available.</p>
-{% endif %}
+      <div class="row align-items-start">
+        
+        <!-- Image -->
+        <div class="col-md-6 text-center mb-3 mb-md-0">
+          {% if item.image and "default.jpg" not in item.image.url %}
+            <img src="{{ item.image.url }}" alt="{{ item.title }}" class="img-fluid rounded-3 shadow-sm" style="max-width: 100%; height: auto;">
+          {% else %}
+            <div class="alert alert-warning" role="alert">
+              No image available.
+            </div>
+          {% endif %}
+        </div>
 
+        <!-- Item info section -->
+        <div class="col-md-6">
+          <h2 class="fs-5 text-center mb-3" ><strong>{{ item.title }}</strong></h2>
+          <p class="fs-5"><strong>Description:</strong> {{ item.description|default:"No description provided." }}</p>
+          <p class="fs-5"><strong>Status:</strong> 
+            <span class="badge 
+              {% if item.status == 'available' %} bg-success 
+              {% elif item.status == 'checked_out' %} bg-danger 
+              {% elif item.status == 'repair' %} bg-warning 
+              {% else %} bg-secondary 
+              {% endif %}">
+              {{ item.get_status_display }}
+            </span>
+          </p>
+          <p class="fs-5"><strong>Collection:</strong> {{ item.collections.name|default:"Not part of a collection." }}</p>
+          <p><strong>Location:</strong> {{ item.location|default:"No location provided." }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
