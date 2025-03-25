@@ -14,9 +14,11 @@
             {% setvar end_link %}
             </a>
         {% endsetvar %}
-        {% element p %}
-            <p>{% blocktranslate %}If you have not created an account yet, then please {{ link }}sign up{{ end_link }} first.{% endblocktranslate %}</p>
-        {% endelement %}
+        <div class="text-left">
+            {% element p %}
+                <p>{% blocktranslate %}If you have not created an account yet, then please {{ link }}sign up{{ end_link }} first.{% endblocktranslate %}</p>
+            {% endelement %}
+        </div>
         {% url 'account_login' as login_url %}
         {% element form form=form method="post" action=login_url tags="entrance,login" %}
             {% slot body %}
@@ -52,7 +54,7 @@
     {% endif %}
     {% if SOCIALACCOUNT_ENABLED %}
         <div class="text-center">
-        {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
+            {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
         </div>
     {% endif %}
 {% endblock card_content %}
