@@ -5,10 +5,8 @@
 {% block head_title %}
     {% trans "Sign In" %}
 {% endblock head_title %}
-{% block content %}
-    {% element h1 %}
-        {% trans "Sign In" %}
-    {% endelement %}
+{% block card_content %}
+    <h3 class="text-center">Sign In</h3>
     {% if not SOCIALACCOUNT_ONLY %}
         {% setvar link %}
             <a href="{{ signup_url }}">
@@ -16,9 +14,11 @@
             {% setvar end_link %}
             </a>
         {% endsetvar %}
-        {% element p %}
-            {% blocktranslate %}If you have not created an account yet, then please {{ link }}sign up{{ end_link }} first.{% endblocktranslate %}
-        {% endelement %}
+        <div class="text-left">
+            {% element p %}
+                <p>{% blocktranslate %}If you have not created an account yet, then please {{ link }}sign up{{ end_link }} first.{% endblocktranslate %}</p>
+            {% endelement %}
+        </div>
         {% url 'account_login' as login_url %}
         {% element form form=form method="post" action=login_url tags="entrance,login" %}
             {% slot body %}
@@ -28,9 +28,11 @@
                 {{ redirect_field }}
             {% endslot %}
             {% slot actions %}
+                <div class="text-center">
                 {% element button type="submit" tags="prominent,login" %}
                     {% trans "Sign In" %}
                 {% endelement %}
+                </div>
             {% endslot %}
         {% endelement %}
     {% endif %}
@@ -51,9 +53,11 @@
         {% endelement %}
     {% endif %}
     {% if SOCIALACCOUNT_ENABLED %}
-        {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
+        <div class="text-center">
+            {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
+        </div>
     {% endif %}
-{% endblock content %}
+{% endblock card_content %}
 {% block extra_body %}
     {{ block.super }}
     {% if PASSKEY_LOGIN_ENABLED %}

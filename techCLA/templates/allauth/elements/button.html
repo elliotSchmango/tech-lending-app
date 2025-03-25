@@ -1,0 +1,19 @@
+{% load allauth %}
+{% comment %} djlint:off {% endcomment %}
+<{% if attrs.href %}a href="{{ attrs.href }}"{% else %}button{% endif %}
+  {% if attrs.form %}form="{{ attrs.form }}"{% endif %}
+  {% if attrs.id %}id="{{ attrs.id }}"{% endif %}
+  {% if attrs.name %}name="{{ attrs.name }}"{% endif %}
+  {% if attrs.value %}value="{{ attrs.value }}"{% endif %}
+  {% if attrs.type %}type="{{ attrs.type }}"{% endif %}
+  class="{% block class %}
+      btn
+      {% if "prominent" in attrs.tags %}btn-lg{% elif "minor" in attrs.tags %}btn-sm{% endif %}
+      btn-{% if 'outline' in attrs.tags %}outline-{% endif %}{% if "danger" in attrs.tags %}danger{% elif "secondary" in attrs.tags %}secondary{% elif "warning" in attrs.tags %}warning{% else %}primary{% endif %}
+      rounded-pill
+      {% if "login" in attrs.tags or "signup" in attrs.tags %}w-100{% endif %}
+      {% endblock %}"
+>
+{% slot %}
+{% endslot %}
+</{% if attrs.href %}a{% else %}button{% endif %}>
