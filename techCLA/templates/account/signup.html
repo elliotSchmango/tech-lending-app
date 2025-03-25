@@ -1,7 +1,7 @@
 {% extends "allauth/layouts/base.html" %}
 {% load allauth i18n %}
 
-{% block content %}
+{% block card_content %}
     {% element h1 %}
         {% trans "Sign Up" %}
     {% endelement %}
@@ -40,4 +40,4 @@
     {% if SOCIALACCOUNT_ENABLED %}
         {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
     {% endif %}
-{% endblock content %}
+{% endblock card_content %}

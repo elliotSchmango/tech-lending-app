@@ -10,6 +10,8 @@
       btn
       {% if "prominent" in attrs.tags %}btn-lg{% elif "minor" in attrs.tags %}btn-sm{% endif %}
       btn-{% if 'outline' in attrs.tags %}outline-{% endif %}{% if "danger" in attrs.tags %}danger{% elif "secondary" in attrs.tags %}secondary{% elif "warning" in attrs.tags %}warning{% else %}primary{% endif %}
+      rounded-pill
+      {% if "login" in attrs.tags %}w-100{% endif %}
       {% endblock %}"
 >
 {% slot %}
