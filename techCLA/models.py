@@ -38,7 +38,7 @@ class Collection(models.Model):
     name = models.CharField(max_length=100, unique=True, default="Untitled Collection")
     description = models.TextField(blank=True, null=True)
     visibility = models.CharField(max_length=10, choices=VISIBILITY_CHOICES, default="public")
-    creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="created_collections",default=None)
+    creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="created_collections",null=True)
     allowed_users = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)    # To specify allowed patrons for private collections
 
 class Item(models.Model):
