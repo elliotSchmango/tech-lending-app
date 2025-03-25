@@ -4,7 +4,7 @@ from .models import Collection, Item
 from django.http import HttpResponse
 from .forms import ProfilePictureForm
 from django.contrib.auth.decorators import user_passes_test
-from .models import Item, ItemImage
+from .models import Item, ItemImage,Collection
 from .forms import ItemForm
 
 def index(request):
