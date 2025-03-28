@@ -1,11 +1,9 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import generic
-from .models import Collection, Item
-from django.http import HttpResponse
-from .forms import ProfilePictureForm
-from django.contrib.auth.decorators import user_passes_test
 from .models import Item, ItemImage,Collection
-from .forms import ItemForm
+from django.http import HttpResponse
+from .forms import ProfilePictureForm, ItemForm, CollectionForm
+from django.contrib.auth.decorators import user_passes_test
 
 def index(request):
     if request.user.is_authenticated:
@@ -56,6 +54,20 @@ class CatalogView(generic.ListView):
 
     def get_queryset(self):
         return Collection.objects
+    
+def create_collection(request):
+    if request.method == "POST":
+        form = CollectionForm(request.POST)
+        if form.is_valid():
+            collection = form.save(commit=False)
+            collection.creator = request.user
+            if request.user.role == "Patron":
+                collection.visibility = "public"
+            collection.save()
+            return redirect('collection_detail', pk=collection.pk)
+    else:
+        form = CollectionForm()
+    return render(request, 'techCLA/collections/create_collection.html', {'form': form})
 
 def is_librarian(user):
     return user.is_authenticated and user.groups.filter(name='Librarian').exists()
