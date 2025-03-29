@@ -1,9 +1,27 @@
-{% extends "techCLA/index.html" %}
-
-{% block secondNav %}
-{% endblock %}
+{% extends 'techCLA/base.html' %}
 
 {% block content %}
-<div class="row row-cols-4">
-</div>
+
+<h2 class="mt-4">All Collections</h2>
+<p class="text-muted mb-4">Browse all available collections in the library system.</p>
+
+{% if all_collections %}
+  <div class="row">
+    {% for collection in all_collections %}
+      <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
+        <a href="{% url 'collection_detail' collection.id %}" class="text-decoration-none text-dark">
+          <div class="card h-100">
+            <div class="card-body">
+              <h5 class="card-title">{{ collection.name }}</h5>
+              <p class="card-text small">{{ collection.description|default:"No description."|truncatewords:15 }}</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <p class="text-muted">No collections found.</p>
+{% endif %}
+
 {% endblock %}
