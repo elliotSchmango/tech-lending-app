@@ -30,12 +30,6 @@ def index(request):
     
     return render(request, 'techCLA/index.html', context)
 
-def borrow_item(request, item_name):
-    for i in Item.objects.all():
-        print(i.title)
-    item = get_object_or_404(Item, title=item_name)
-    return render(request, "techCLA/borrow.html", {"item": item})
-
 def update_profile(request):
     if request.user.is_authenticated:
         #print("HERE",request)
@@ -50,13 +44,12 @@ def update_profile(request):
 
         return render(request, "techCLA/update_profile.html", {"form": form})
 
-
 class CatalogView(generic.ListView):
     template_name = "techCLA/catalog.html"
     context_object_name = "all_collections"
 
     def get_queryset(self):
-        return Collection.objects
+        return Collection.objects.all()
 
 def is_librarian(user):
     return user.is_authenticated and user.groups.filter(name='Librarian').exists()
@@ -105,3 +98,21 @@ def delete_item(request, item_id):
         return redirect('manage_items')
 
     return render(request, 'techCLA/delete_item.html', {'item': item})
+
+def collection_detail(request, collection_id):
+    collection = get_object_or_404(Collection, id=collection_id)
+
+    items = Item.objects.filter(
+        collections=collection
+    ).prefetch_related('itemimage_set')
+
+    return render(request, 'techCLA/collection.html', {
+        'collection': collection,
+        'items': items
+    })
+
+def item_detail(request, item_name):
+    for i in Item.objects.all():
+        print(i.title)
+    item = get_object_or_404(Item, title=item_name)
+    return render(request, "techCLA/item.html", {"item": item})
