@@ -6,7 +6,7 @@
   <div class="container">
     <div class="btn-group">
       {% for collection in collections %}
-        <a href="{% url 'collection_detail' collection.id %}" class="rounded-0 border-0 btn btn-outline-light">{{ collection.name }}</a>
+        <a href="" class="rounded-0 border-0 btn btn-outline-light">{{ collection.name }}</a>
       {% endfor %}
     </div>
 
@@ -41,18 +41,18 @@
       </div>
 
       <div class="row row-cols-1 row-cols-md-3 g-4">
-        {% for collection in collections %}
+        {% for collection in collections|slice:":6" %}
           <div class="col">
             <div class="card">
               <div class="card-body">
                 <h5 class="card-title">
-                  <a href="{% url 'collection_detail' collection.id %}" class="text-decoration-none text-dark">{{ collection.name }}</a>
+                  <a href="" class="text-decoration-none text-dark">{{ collection.name }}</a>
                 </h5>
                 <p class="card-text">{{ collection.description }}</p>
                 
                 <div class="list-group">
                   {% for item in collection.items.all|slice:":2" %}
-                    <a href="{% url 'item_detail' item.id %}" class="list-group-item list-group-item-action">
+                    <a href="" class="list-group-item list-group-item-action">
                       {{ item.name }}
                     </a>
                   {% endfor %}

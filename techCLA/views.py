@@ -25,6 +25,7 @@ def index(request):
         'welcome': welcome_message,
         'username': username,
         'role': role,
+        'collections': Collection.objects.all(),
     }
     
     return render(request, 'techCLA/index.html', context)
