@@ -21,11 +21,13 @@ def index(request):
         username = ''
         welcome_message = "Welcome to our Catalog! Please log in to access all features."
     
+    collections = Collection.objects.all()
+
     context = {
         'welcome': welcome_message,
         'username': username,
         'role': role,
-        'collections': Collection.objects.all(),
+        'collections': collections, 
     }
     
     return render(request, 'techCLA/index.html', context)

@@ -1,6 +1,5 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from django.contrib.auth.models import Group
 from .models import User, Item, Collection
 
 class CustomUserAdmin(UserAdmin):
@@ -16,6 +15,17 @@ class CustomUserAdmin(UserAdmin):
     
     get_groups.short_description = "Groups"  # Set column title in the admin panel
 
-admin.site.register(User, CustomUserAdmin)
-admin.site.register(Item)
-admin.site.register(Collection)
+@admin.register(Collection)
+class CollectionAdmin(admin.ModelAdmin):
+    list_display = ('name', 'visibility', 'creator') 
+    search_fields = ('name', 'description') 
+    list_filter = ('visibility',) 
+    ordering = ('name',)
+
+@admin.register(Item)
+class ItemAdmin(admin.ModelAdmin):
+    list_display = ('title', 'identifier', 'status', 'rating') 
+    search_fields = ('title',) 
+    list_filter = ('status',)  
+    ordering = ('title',)
+

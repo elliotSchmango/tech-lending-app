@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
 from django.db import models
+from django.forms import ValidationError
 from django.utils import timezone
 
 class User(AbstractUser):
@@ -39,7 +40,21 @@ class Collection(models.Model):
     description = models.TextField(blank=True, null=True)
     visibility = models.CharField(max_length=10, choices=VISIBILITY_CHOICES, default="public")
     creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="created_collections",null=True)
-    allowed_users = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)    # To specify allowed patrons for private collections
+    allowed_users = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)  
+    items = models.ManyToManyField('Item', blank=True, related_name="collections_of")
+
+    def clean(self):
+        if self.visibility == 'private':
+            for item in self.items.all():
+                if item.collections.exclude(id=self.id).filter(visibility='private').exists():
+                    raise ValidationError(f"Item '{item.title}' is already in another private collection.")
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = "Collection"
+        verbose_name_plural = "Collections"
 
 class Item(models.Model):
     STATUS_CHOICES = [
@@ -50,17 +65,34 @@ class Item(models.Model):
     ]
 
     title = models.CharField(max_length=255)
-    identifier = models.CharField(max_length=100, unique=True)
+    identifier = models.CharField(max_length=50, unique=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="available")
     location = models.CharField(max_length=100, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
-    collections = models.ManyToManyField(Collection, blank=True)
+    collections = models.ManyToManyField(Collection, blank=True, related_name='items_in')
     image = models.ImageField(upload_to='item_images/', blank=True, null=True, default="default.jpg")
 
+    rating = models.IntegerField(choices=[(i, str(i)) for i in range(1, 11)], default=0, null=True, blank=True) 
+    comments = models.TextField(blank=True, null=True)
+
+    def delete(self, *args, **kwargs):
+        if self.image:
+            self.image.delete(save=False)
+        super().delete(*args, **kwargs)
+
+    def __str__(self):
+        return self.title
+
 class ItemImage(models.Model):
-    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name="item_images")
     image = models.ImageField(upload_to='item_images/')
     uploaded_on = models.DateTimeField(auto_now_add=True)
+
+    def delete(self, *args, **kwargs):
+        # delete method to ensure the image file is deleted from S3
+        if self.image:
+            self.image.delete(save=False)
+        super().delete(*args, **kwargs)
 
 class Review(models.Model):
     item = models.ForeignKey(Item, on_delete=models.CASCADE)

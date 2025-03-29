@@ -5,7 +5,7 @@ from . import views
 from .views import index, item_detail, update_profile, manage_items, edit_item, delete_item, CatalogView, collection_detail
 from django.conf import settings
 from django.conf.urls.static import static
-from .views import index, borrow_item, update_profile, manage_items, edit_item, delete_item, CatalogView
+
 urlpatterns = [
     path("", views.index, name="index"),
     path("catalog/", views.CatalogView.as_view(), name="catalog"),
