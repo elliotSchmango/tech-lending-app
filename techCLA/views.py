@@ -17,7 +17,7 @@ def index(request):
             role = 'Patron'
             welcome_message = f"Welcome, {username}! Enjoy browsing our collections."
     else:
-        role = 'anonymous'
+        role = 'Anonymous'
         username = ''
         welcome_message = "Welcome to our Catalog! Please log in to access all features."
     
