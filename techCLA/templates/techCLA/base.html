@@ -46,7 +46,7 @@
                   {% endif %}
                   <li><span class="dropdown-item-text"><strong>Email:</strong> {{ user.email }}</span></li>
                   <li><span class="dropdown-item-text"><strong>Role:</strong> {{ user.role }}</span></li>
-                  <a href="{% url 'update_profile' %}" class="rounded-0 btn">Change Profile</a>
+                  <a href="{% url 'update_profile' %}" class="rounded-0 btn">View Profile</a>
                 </ul>
                 <!--TODO: add more for visible account details?-->
               </div>
@@ -104,7 +104,9 @@
 
   <!-- Footer -->
   <footer class="bg-dark text-light text-center py-4 mt-auto">
-    <p>Copyright &copy; 2025 Team B-06</p>
+    <p>Copyright &copy; 2025 Team B-06
+      <br>
+      This system is a class project. It is not monitored and no real information should be submitted.</p>
   </footer>
 
   {% bootstrap_javascript %}
