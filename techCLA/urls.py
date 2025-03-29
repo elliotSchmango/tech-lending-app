@@ -15,6 +15,7 @@ urlpatterns = [
     path("edit-item/<int:item_id>/", edit_item, name="edit_item"),
     path("delete-item/<int:item_id>/", delete_item, name="delete_item"),
     path('collections/create/', views.create_collection, name='create_collection'),
+    path('collections/<int:pk>/edit/', views.edit_collection, name='edit_collection'),
 ]
 
 if settings.DEBUG:

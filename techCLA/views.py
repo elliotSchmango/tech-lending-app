@@ -69,6 +69,20 @@ def create_collection(request):
         form = CollectionForm()
     return render(request, 'techCLA/collections/create_collection.html', {'form': form})
 
+def edit_collection(request, pk):
+    collection = get_object_or_404(Collection, pk=pk)
+    if request.user.is_librarian() or collection.creator == request.user:
+        if request.method == "POST":
+            form = CollectionForm(request.POST, instance=collection)
+            if form.is_valid():
+                form.save()
+                return redirect('collection_detail', pk=collection.pk)
+        else:
+            form = CollectionForm(instance=collection)
+        return render(request, 'techCLA/collections/edit_collection.html', {'form': form})
+    # else:
+    #     return redirect('collection_list')
+
 def is_librarian(user):
     return user.is_authenticated and user.groups.filter(name='Librarian').exists()
 
