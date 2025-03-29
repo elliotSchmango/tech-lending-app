@@ -11,15 +11,16 @@ def index(request):
         if request.user.role == 'Librarian':
             role = 'Librarian'
             welcome_message = f"Welcome, {username}! You have administrative privileges."
+            collections = Collection.objects.all()
         else:
             role = 'Patron'
             welcome_message = f"Welcome, {username}! Enjoy browsing our collections."
+            collections = Collection.objects.filter(visibility='public')
     else:
         role = 'Anonymous'
         username = ''
         welcome_message = "Welcome to our Catalog! Please log in to access all features."
-    
-    collections = Collection.objects.all()
+        collections = Collection.objects.filter(visibility='public')
 
     context = {
         'welcome': welcome_message,
@@ -57,22 +58,24 @@ def create_collection(request):
         if form.is_valid():
             collection = form.save(commit=False)
             collection.creator = request.user
+
             if request.user.role == "Patron":
                 collection.visibility = "public"
             collection.save()
-            return redirect('collection_detail', pk=collection.pk)
+
+            return redirect('collection_detail', collection_id=collection.id)
     else:
         form = CollectionForm()
     return render(request, 'techCLA/collections/create_collection.html', {'form': form})
 
-def edit_collection(request, pk):
-    collection = get_object_or_404(Collection, pk=pk)
+def edit_collection(request, collection_id):
+    collection = get_object_or_404(Collection, id=collection_id)
     if request.user.is_librarian() or collection.creator == request.user:
         if request.method == "POST":
             form = CollectionForm(request.POST, instance=collection)
             if form.is_valid():
                 form.save()
-                return redirect('collection_detail', pk=collection.pk)
+                return redirect('collection_detail', collection_id=collection_id)
         else:
             form = CollectionForm(instance=collection)
         return render(request, 'techCLA/collections/edit_collection.html', {'form': form})

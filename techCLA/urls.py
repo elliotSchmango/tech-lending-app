@@ -15,6 +15,8 @@ urlpatterns = [
     
     # Collections and Item URLs
     path('collection/<int:collection_id>/', views.collection_detail, name='collection_detail'),
+    path('collection/create/', views.create_collection, name='create_collection'),
+    path('collection/<int:collection_id>/edit/', views.edit_collection, name='edit_collection'),
     path('item/<str:item_name>/', item_detail, name='item_detail'),
 
     # Catalog Manage URLs
@@ -22,8 +24,6 @@ urlpatterns = [
     # path("manage-items/create/", create_item, name="create_item"),
     path("edit-item/<int:item_id>/", edit_item, name="edit_item"),
     path("delete-item/<int:item_id>/", delete_item, name="delete_item"),
-    path('collections/create/', views.create_collection, name='create_collection'),
-    path('collections/<int:pk>/edit/', views.edit_collection, name='edit_collection'),
 
 ]
 
