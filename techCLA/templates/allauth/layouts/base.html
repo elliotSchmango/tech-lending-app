@@ -1,29 +1,27 @@
-<!DOCTYPE html>
 {% extends "techCLA/base.html" %}
-<html lang="en">
 
 {% block navbar %}
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-<div class="container">
-  <!-- Navbar : Brand -->
-  <a class="navbar-brand" href="{% url 'index' %}">Technology CLA</a>
-</div>
+  <div class="container">
+    <a class="navbar-brand" href="{% url 'index' %}">Technology CLA</a>
+  </div>
 </nav>
+{% endblock %}
+
+{% block secondNav %}
 {% endblock %}
 
 {% block content %}
 <div class="container d-flex justify-content-center align-items-center">
-    <div class="row d-flex">
-        <div class="card" style="border-radius: 1rem; width: 535px">
-            <div class="card-body px-3 mx-2">
-                {% block card_content %}
-                {% endblock %}
-                <br><br>
-            </div>
-        </div>
+  <div class="row d-flex">
+    <div class="card" style="border-radius: 1rem; width: 535px">
+      <div class="card-body px-3 mx-2">
+        {% block card_content %}
+        {% endblock %}
+        <br><br>
+      </div>
     </div>
+  </div>
 </div>
 {% endblock %}
-
-</html>

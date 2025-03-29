@@ -1,0 +1,46 @@
+{% extends 'techCLA/base.html' %}
+{% block content %}
+
+<h2 class="mt-4">{{ collection.name }}</h2>
+<p class="text-muted mb-4">{{ collection.description }}</p>
+
+<div class="row">
+  {% for item in items %}
+    <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
+      <div class="card h-100 {% if item.status != 'available' %}unavailable{% endif %}">
+        
+        {% if item.image %}
+          <img src="{{ item.image.url }}" class="card-img-top" style="height: 180px; object-fit: cover;" alt="{{ item.title }}">
+        {% else %}
+          <div class="card-img-top bg-light text-center d-flex align-items-center justify-content-center" style="height: 180px;">
+            <span class="text-muted">No Image</span>
+          </div>
+        {% endif %}
+
+        <div class="card-body">
+          <h5 class="card-title">{{ item.title }}</h5>
+          <p class="card-text small">{{ item.description|default:"No description."|truncatewords:15 }}</p>
+
+          {% if item.status == 'available' %}
+            <form method="post" action="{% url 'item_detail' item.title %}">
+              {% csrf_token %}
+              <button class="btn btn-primary btn-sm w-100">Borrow</button>
+            </form>
+          {% else %}
+            <button class="btn btn-secondary btn-sm w-100" disabled>{{ item.get_status_display }}</button>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  {% empty %}
+    <p class="text-muted">There are no items in this collection.</p>
+  {% endfor %}
+</div>
+
+<style>
+  .unavailable {
+    opacity: 0.6;
+  }
+</style>
+
+{% endblock %}
