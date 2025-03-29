@@ -6,7 +6,7 @@
     {% trans "Sign In" %}
 {% endblock head_title %}
 {% block card_content %}
-    <h3 class="text-center">Sign In</h3>
+    <h3 class="text-center">{% trans "Sign In" %}</h3>
     {% if not SOCIALACCOUNT_ONLY %}
         {% setvar link %}
             <a href="{{ signup_url }}">
