@@ -21,7 +21,12 @@ class ItemForm(forms.ModelForm):
             item.save()
         return item
 
-class CollectionForm(forms.ModelForm):
+class CollectionFormLibrarian(forms.ModelForm):
     class Meta:
         model = Collection
         fields = ['name', 'description', 'visibility']
+
+class CollectionFormPatron(forms.ModelForm):
+    class Meta:
+        model = Collection
+        fields = ['name', 'description']

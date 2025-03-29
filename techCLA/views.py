@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views import generic
 from .models import Item, ItemImage,Collection
 from django.http import HttpResponse
-from .forms import ProfilePictureForm, ItemForm, CollectionForm
+from .forms import ProfilePictureForm, ItemForm, CollectionFormLibrarian,CollectionFormPatron
 from django.contrib.auth.decorators import user_passes_test
 
 def index(request):
@@ -53,8 +53,14 @@ class CatalogView(generic.ListView):
         return Collection.objects.all()
     
 def create_collection(request):
+    # Determine which form to use
+    if request.user.role == "Patron":
+        FormClass = CollectionFormPatron
+    else:
+        FormClass = CollectionFormLibrarian
+
     if request.method == "POST":
-        form = CollectionForm(request.POST)
+        form = FormClass(request.POST)
         if form.is_valid():
             collection = form.save(commit=False)
             collection.creator = request.user
@@ -62,22 +68,29 @@ def create_collection(request):
             if request.user.role == "Patron":
                 collection.visibility = "public"
             collection.save()
-
             return redirect('collection_detail', collection_id=collection.id)
     else:
-        form = CollectionForm()
+        form = FormClass()
+
     return render(request, 'techCLA/collections/create_collection.html', {'form': form})
 
 def edit_collection(request, collection_id):
     collection = get_object_or_404(Collection, id=collection_id)
     if request.user.is_librarian() or collection.creator == request.user:
+
+        if request.user.role == "Patron":
+            FormClass = CollectionFormPatron
+        else:
+            FormClass = CollectionFormLibrarian
+
         if request.method == "POST":
-            form = CollectionForm(request.POST, instance=collection)
+            form = FormClass(request.POST, instance=collection)
             if form.is_valid():
                 form.save()
                 return redirect('collection_detail', collection_id=collection_id)
         else:
-            form = CollectionForm(instance=collection)
+            form = FormClass(instance=collection)
+        
         return render(request, 'techCLA/collections/edit_collection.html', {'form': form})
     # else:
     #     return redirect('collection_list')
