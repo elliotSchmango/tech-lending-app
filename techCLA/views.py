@@ -15,14 +15,17 @@ def index(request):
             role = 'Patron'
             welcome_message = f"Welcome, {username}! Enjoy browsing our collections."
     else:
-        role = 'anonymous'
+        role = 'Anonymous'
         username = ''
         welcome_message = "Welcome to our Catalog! Please log in to access all features."
     
+    collections = Collection.objects.all()
+
     context = {
         'welcome': welcome_message,
         'username': username,
         'role': role,
+        'collections': collections, 
     }
     
     return render(request, 'techCLA/index.html', context)
@@ -39,7 +42,7 @@ def update_profile(request):
         else:
             form = ProfilePictureForm(instance=request.user.profile)
 
-        return render(request, "techCLA/update.html", {"form": form})
+        return render(request, "techCLA/update_profile.html", {"form": form})
 
 class CatalogView(generic.ListView):
     template_name = "techCLA/catalog.html"

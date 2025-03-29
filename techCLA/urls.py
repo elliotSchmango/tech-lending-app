@@ -19,6 +19,7 @@ urlpatterns = [
 
     # Catalog Manage URLs
     path("manage-items/", manage_items, name="manage_items"),
+    # path("manage-items/create/", create_item, name="create_item"),
     path("edit-item/<int:item_id>/", edit_item, name="edit_item"),
     path("delete-item/<int:item_id>/", delete_item, name="delete_item"),
     path('collections/create/', views.create_collection, name='create_collection'),
