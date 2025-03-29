@@ -47,7 +47,7 @@ def update_profile(request):
         else:
             form = ProfilePictureForm(instance=request.user.profile)
 
-        return render(request, "techCLA/update.html", {"form": form})
+        return render(request, "techCLA/update_profile.html", {"form": form})
 
 
 class CatalogView(generic.ListView):

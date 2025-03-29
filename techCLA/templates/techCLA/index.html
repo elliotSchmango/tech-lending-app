@@ -5,8 +5,9 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container">
     <div class="btn-group">
-      <a class="rounded-0 border-0 btn btn-outline-light">Placeholder Category</a>
-      <a class="rounded-0 border-0 btn btn-outline-light">Placeholder Category</a>
+      {% for collection in collections %}
+        <a href="{% url 'collection_detail' collection.id %}" class="rounded-0 border-0 btn btn-outline-light">{{ collection.name }}</a>
+      {% endfor %}
     </div>
 
     <div class="collapse navbar-collapse justify-content-end">
@@ -39,18 +40,27 @@
         <a href="{% url 'catalog' %}" class="rounded-0 btn btn-outline-dark">View All Collections</a>
       </div>
 
-      <div class="row row-cols-4">
-        <div class="col">
-          <!-- TODO: Placeholder, fix when collections are implemented -->
-          <a href="/collection/{{ collection.id }}/" class="text-decoration-none text-dark">
+      <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for collection in collections %}
+          <div class="col">
             <div class="card">
               <div class="card-body">
-                <h5 class="card-title">Placeholder</h5>
-                <p class="card-text">placeholder</p>
+                <h5 class="card-title">
+                  <a href="{% url 'collection_detail' collection.id %}" class="text-decoration-none text-dark">{{ collection.name }}</a>
+                </h5>
+                <p class="card-text">{{ collection.description }}</p>
+                
+                <div class="list-group">
+                  {% for item in collection.items.all|slice:":2" %}
+                    <a href="{% url 'item_detail' item.id %}" class="list-group-item list-group-item-action">
+                      {{ item.name }}
+                    </a>
+                  {% endfor %}
+                </div>
               </div>
             </div>
-          </a>
-        </div>
+          </div>
+        {% endfor %}
       </div>
     </div>
   </div>
