@@ -46,7 +46,8 @@
                   {% endif %}
                   <li><span class="dropdown-item-text"><strong>Email:</strong> {{ user.email }}</span></li>
                   <li><span class="dropdown-item-text"><strong>Role:</strong> {{ user.role }}</span></li>
-                  <a href="{% url 'update_profile' %}" class="rounded-0 btn">View Profile</a>
+                  <a href="{% url 'profile_detail' %}" class="rounded-0 btn">View Profile</a>
+                  <a href="{% url 'update_profile' %}" class="rounded-0 btn">Update Profile</a>
                 </ul>
                 <!--TODO: add more for visible account details?-->
               </div>

@@ -32,6 +32,9 @@ def index(request):
     
     return render(request, 'techCLA/index.html', context)
 
+def profile_detail(request):
+    return render(request, "techCLA/profile.html")
+
 def update_profile(request):
     if request.user.is_authenticated:
         #print("HERE",request)

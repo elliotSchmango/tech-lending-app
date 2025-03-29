@@ -1,0 +1,30 @@
+{% extends "allauth/layouts/base.html" %}
+{% load allauth i18n %}
+
+{% block head_title %}
+    {% trans "Sign Out" %}
+{% endblock head_title %}
+{% block card_content %}
+    <h3 class="text-center">{% trans "Sign Out" %}</h3>
+    {% element p %}
+    <p class="text-center">{% trans 'Are you sure you want to sign out?' %}</p>
+    {% endelement %}
+    {% url 'account_logout' as action_url %}
+    {% url 'update_profile' as backaction_url %}
+    {% element form method="post" action=action_url no_visible_fields=True %}
+        {% slot body %}
+            {% csrf_token %}
+            {{ redirect_field }}
+        {% endslot %}
+        {% slot actions %}
+            <div class="text-center">
+            {% element button type="submit" tags="secondary" %}
+                {% trans 'Sign Out' %}
+            {% endelement %}
+            {% element button type="submit" href=backaction_url %}
+                {% trans 'Go Back' %}
+            {% endelement %}
+            </div>
+        {% endslot %}
+    {% endelement %}
+{% endblock card_content %}
