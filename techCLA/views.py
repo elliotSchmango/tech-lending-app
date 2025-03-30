@@ -95,6 +95,16 @@ def edit_collection(request, collection_id):
     # else:
     #     return redirect('collection_list')
 
+def delete_collection(request, collection_id):
+    collection = get_object_or_404(Collection, id=collection_id)
+
+    if request.user == collection.creator or request.user.is_librarian():
+        if request.method == "POST":
+            collection.delete()
+            return redirect('catalog')
+
+    return render(request, 'techCLA/collections/delete_collection.html', {'collection': collection})
+
 def is_librarian(user):
     return user.is_authenticated and user.groups.filter(name='Librarian').exists()
 
