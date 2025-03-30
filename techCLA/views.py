@@ -156,9 +156,7 @@ def delete_item(request, item_id):
 def collection_detail(request, collection_id):
     collection = get_object_or_404(Collection, id=collection_id)
 
-    items = Item.objects.filter(
-        collections=collection
-    ).prefetch_related('itemimage_set')
+    items = collection.items.all()
 
     return render(request, 'techCLA/collection.html', {
         'collection': collection,
