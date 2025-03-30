@@ -44,6 +44,10 @@
   </div>
 {% endif %}
 
+{% if user == collection.creator or user.is_librarian %}
+    <a href="{% url 'delete_collection' collection.id %}" class="btn btn-danger">Delete Collection</a>
+{% endif %}
+
 <style>
   .unavailable {
     opacity: 0.6;
