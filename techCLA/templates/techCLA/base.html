@@ -74,7 +74,7 @@
     <div class="container">
       <div class="btn-group">
         {% for collection in collections %}
-          <a class="rounded-0 border-0 btn btn-outline-light">{{ collection.name }}</a>
+          <a href="{% url 'collection_detail' collection.id %}" class="rounded-0 border-0 btn btn-outline-light">{{ collection.name }}</a>
         {% endfor %}
       </div>
 
@@ -94,9 +94,7 @@
       <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"></button>
     </div>
     <div class="offcanvas-body">
-      <div>
-        placeholder
-      </div>
+        <!-- <div></div> -->
     </div>
   </div>
   {% endblock %}
