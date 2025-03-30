@@ -44,7 +44,7 @@ class Collection(models.Model):
     items = models.ManyToManyField('Item', blank=True, related_name="collections_of")
 
     def clean(self):
-        if self.visibility == 'private':
+        if self.visibility == 'private' and self.pk:
             for item in self.items.all():
                 if item.collections.exclude(id=self.id).filter(visibility='private').exists():
                     raise ValidationError(f"Item '{item.title}' is already in another private collection.")

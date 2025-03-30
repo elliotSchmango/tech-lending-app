@@ -1,5 +1,5 @@
 from django import forms
-from .models import Profile, Item
+from .models import Profile, Item, Collection
 
 class ProfilePictureForm(forms.ModelForm):
     class Meta:
@@ -20,3 +20,13 @@ class ItemForm(forms.ModelForm):
         if commit:
             item.save()
         return item
+
+class CollectionFormLibrarian(forms.ModelForm):
+    class Meta:
+        model = Collection
+        fields = ['name', 'description', 'visibility']
+
+class CollectionFormPatron(forms.ModelForm):
+    class Meta:
+        model = Collection
+        fields = ['name', 'description']

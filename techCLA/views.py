@@ -1,11 +1,9 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import generic
-from .models import Collection, Item
-from django.http import HttpResponse
-from .forms import ProfilePictureForm
-from django.contrib.auth.decorators import user_passes_test
 from .models import Item, ItemImage,Collection
-from .forms import ItemForm
+from django.http import HttpResponse
+from .forms import ProfilePictureForm, ItemForm, CollectionFormLibrarian,CollectionFormPatron
+from django.contrib.auth.decorators import user_passes_test
 
 def index(request):
     if request.user.is_authenticated:
@@ -13,15 +11,16 @@ def index(request):
         if request.user.role == 'Librarian':
             role = 'Librarian'
             welcome_message = f"Welcome, {username}! You have administrative privileges."
+            collections = Collection.objects.all()
         else:
             role = 'Patron'
             welcome_message = f"Welcome, {username}! Enjoy browsing our collections."
+            collections = Collection.objects.filter(visibility='public')
     else:
         role = 'Anonymous'
         username = ''
         welcome_message = "Welcome to our Catalog! Please log in to access all features."
-    
-    collections = Collection.objects.all()
+        collections = Collection.objects.filter(visibility='public')
 
     context = {
         'welcome': welcome_message,
@@ -52,6 +51,59 @@ class CatalogView(generic.ListView):
 
     def get_queryset(self):
         return Collection.objects.all()
+    
+def create_collection(request):
+    # Determine which form to use
+    if request.user.role == "Patron":
+        FormClass = CollectionFormPatron
+    else:
+        FormClass = CollectionFormLibrarian
+
+    if request.method == "POST":
+        form = FormClass(request.POST)
+        if form.is_valid():
+            collection = form.save(commit=False)
+            collection.creator = request.user
+
+            if request.user.role == "Patron":
+                collection.visibility = "public"
+            collection.save()
+            return redirect('collection_detail', collection_id=collection.id)
+    else:
+        form = FormClass()
+
+    return render(request, 'techCLA/collections/create_collection.html', {'form': form})
+
+def edit_collection(request, collection_id):
+    collection = get_object_or_404(Collection, id=collection_id)
+    if request.user.is_librarian() or collection.creator == request.user:
+
+        if request.user.role == "Patron":
+            FormClass = CollectionFormPatron
+        else:
+            FormClass = CollectionFormLibrarian
+
+        if request.method == "POST":
+            form = FormClass(request.POST, instance=collection)
+            if form.is_valid():
+                form.save()
+                return redirect('collection_detail', collection_id=collection_id)
+        else:
+            form = FormClass(instance=collection)
+        
+        return render(request, 'techCLA/collections/edit_collection.html', {'form': form})
+    # else:
+    #     return redirect('collection_list')
+
+def delete_collection(request, collection_id):
+    collection = get_object_or_404(Collection, id=collection_id)
+
+    if request.user == collection.creator or request.user.is_librarian():
+        if request.method == "POST":
+            collection.delete()
+            return redirect('catalog')
+
+    return render(request, 'techCLA/collections/delete_collection.html', {'collection': collection})
 
 def is_librarian(user):
     return user.is_authenticated and user.groups.filter(name='Librarian').exists()

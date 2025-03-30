@@ -2,7 +2,7 @@ from django.urls import path
 from django.contrib.auth import views as auth_views
 from allauth.account import views as allauth_views
 from . import views
-from .views import index, item_detail, update_profile, manage_items, edit_item, delete_item, CatalogView, collection_detail
+from .views import index, item_detail, update_profile, manage_items, edit_item, delete_item, CatalogView, collection_detail,delete_collection
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -15,6 +15,9 @@ urlpatterns = [
     
     # Collections and Item URLs
     path('collection/<int:collection_id>/', views.collection_detail, name='collection_detail'),
+    path('collection/create/', views.create_collection, name='create_collection'),
+    path('collection/<int:collection_id>/edit/', views.edit_collection, name='edit_collection'),
+    path('collection/<int:collection_id>/delete/', delete_collection, name='delete_collection'),
     path('item/<str:item_name>/', item_detail, name='item_detail'),
 
     # Catalog Manage URLs
