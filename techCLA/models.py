@@ -48,8 +48,6 @@ class Collection(models.Model):
             for item in self.items.all():
                 if item.collections.exclude(id=self.id).filter(visibility='private').exists():
                     raise ValidationError(f"Item '{item.title}' is already in another private collection.")
-        if self.creator.role != 'Librarian' and self.visibility == 'private':
-            raise ValidationError("Only librarians can create private collections.")
 
     def __str__(self):
         return self.name

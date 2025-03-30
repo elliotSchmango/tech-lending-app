@@ -27,7 +27,7 @@
             <div class="card">
               <div class="card-body">
                 <h5 class="card-title">
-                  <a href="" class="text-decoration-none text-dark">{{ collection.name }}</a>
+                  <a href="{% url 'collection_detail' collection.id %}" class="text-decoration-none text-dark">{{ collection.name }}</a>
                 </h5>
                 <p class="card-text">{{ collection.description }}</p>
                 

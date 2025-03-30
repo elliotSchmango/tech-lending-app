@@ -4,6 +4,8 @@ from .models import Item, ItemImage,Collection
 from django.http import HttpResponse
 from .forms import ProfilePictureForm, ItemForm, CollectionFormLibrarian,CollectionFormPatron
 from django.contrib.auth.decorators import user_passes_test
+from django.contrib import messages
+
 
 def index(request):
     if request.user.is_authenticated:
@@ -67,7 +69,12 @@ def create_collection(request):
 
             if request.user.role == "Patron":
                 collection.visibility = "public"
+            elif request.user.role != "Librarian" and collection.visibility == "private":
+                messages.error(request, "Only librarians can create private collections.")
+                return render(request, 'techCLA/collections/create_collection.html', {'form': form})
+
             collection.save()
+            form.save_m2m()
             return redirect('collection_detail', collection_id=collection.id)
     else:
         form = FormClass()
