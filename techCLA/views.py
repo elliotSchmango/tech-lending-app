@@ -1,3 +1,4 @@
+from django.contrib.auth.views import LogoutView
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import generic
 from .models import Item, ItemImage,Collection
@@ -33,7 +34,7 @@ def index(request):
     
     return render(request, 'techCLA/index.html', context)
 
-def update_profile(request):
+def profile_detail(request):
     if request.user.is_authenticated:
         #print("HERE",request)
         if request.method == "POST":
@@ -45,7 +46,17 @@ def update_profile(request):
         else:
             form = ProfilePictureForm(instance=request.user.profile)
 
-        return render(request, "techCLA/update_profile.html", {"form": form})
+        return render(request, "techCLA/profile.html", {"form": form})
+
+class SignoutView(LogoutView):
+    def get(self, request, *args, **kwargs):
+        last_url = request.META.get("HTTP_REFERER", "")
+
+        context = {
+            "backaction_url": last_url
+        }
+
+        return render(request, "account/logout.html", context)
 
 class CatalogView(generic.ListView):
     template_name = "techCLA/catalog.html"

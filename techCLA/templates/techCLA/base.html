@@ -33,27 +33,37 @@
           <li class="nav-item d-flex align-items-center">
             {% if user.is_authenticated %}
             <div class="d-flex align-items-center">
-              
+
               <!-- Dropdown for Account Options -->
               <div class="nav-item dropdown">
-                  <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" 
+                  <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                     data-bs-toggle="dropdown" aria-expanded="false">
                       {{ user.get_full_name|default:user.username }}
                   </a>
                   <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                      <li><span class="dropdown-item-text"><strong>Email:</strong> {{ user.email }}</span></li>
-                      <li><span class="dropdown-item-text"><strong>Role:</strong> {{ user.role }}</span></li>
-                      <li><a class="dropdown-item" href="{% url 'update_profile' %}">Change Profile</a></li>
-                      <li><a class="dropdown-item" href="{% url 'account_logout' %}">Sign Out</a></li>
+                    <li><span class="dropdown-header"><b>Role:</b> {{ user.role }}</span></li>
+                    <li><a class="dropdown-item" href="{% url 'profile_detail' %}">View Profile</a></li>
+                    {% if user.is_patron %}
+                      <li><a class="dropdown-item" href="{% url 'profile_detail' %}">Borrowed Items</a></li>
+                    {% endif %}
+                    {% if user.is_librarian %} <!-- only librarians can access and edit items -->
+                    <li>
+                      <a class="dropdown-item text-white" style="background-color: orange;" href="{% url 'manage_items' %}">
+                        Manage Items
+                      </a>
+                    </li>
+                    {% endif %}
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="{% url 'account_logout' %}">Sign Out</a></li>
                   </ul>
               </div>
               <div class="me-2">
                 {% if user.profile.profile_picture and "default_profile" not in user.profile.profile_picture.url %}
-                    <img src="{{ user.profile.profile_picture.url }}" alt="Profile Picture" 
-                        class="rounded-circle border" width="40" height="40">
+                  <img src="{{ user.profile.profile_picture.url }}" alt="Profile Picture"
+                       class="rounded-circle border" width="40" height="40">
                 {% else %}
-                    <img src="{% static '/techCLA/default_profile.jpg' %}" alt="Default Profile Picture"
-                        class="rounded-circle border" width="40" height="40">
+                  <img src="{% static '/techCLA/default_profile.jpg' %}" alt="Default Profile Picture"
+                      class="rounded-circle border" width="40" height="40">
                 {% endif %}
               </div>
             </div>
@@ -107,7 +117,9 @@
 
   <!-- Footer -->
   <footer class="bg-dark text-light text-center py-4 mt-auto">
-    <p>Copyright &copy; 2025 Team B-06</p>
+    <p>Copyright &copy; 2025 Team B-06
+      <br>
+      This system is a class project. It is not monitored and no real information should be submitted.</p>
   </footer>
 
   {% bootstrap_javascript %}
