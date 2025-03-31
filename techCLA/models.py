@@ -41,10 +41,10 @@ class Collection(models.Model):
     visibility = models.CharField(max_length=10, choices=VISIBILITY_CHOICES, default="public")
     creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="created_collections",null=True)
     allowed_users = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)  
-    items = models.ManyToManyField('Item', blank=True, related_name="collections_of")
+    items = models.ManyToManyField('Item', blank=True)
 
     def clean(self):
-        if self.visibility == 'private':
+        if self.visibility == 'private' and self.pk:
             for item in self.items.all():
                 if item.collections.exclude(id=self.id).filter(visibility='private').exists():
                     raise ValidationError(f"Item '{item.title}' is already in another private collection.")
@@ -69,7 +69,6 @@ class Item(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="available")
     location = models.CharField(max_length=100, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
-    collections = models.ManyToManyField(Collection, blank=True, related_name='items_in')
     image = models.ImageField(upload_to='item_images/', blank=True, null=True, default="default.jpg")
 
     rating = models.IntegerField(choices=[(i, str(i)) for i in range(1, 11)], default=0, null=True, blank=True) 

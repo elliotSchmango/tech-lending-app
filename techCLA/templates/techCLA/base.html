@@ -33,25 +33,29 @@
           <li class="nav-item d-flex align-items-center">
             {% if user.is_authenticated %}
             <div class="d-flex align-items-center">
-              <div class="nav-item dropdown me-3">
-                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Hello, {{ user.role }} {{ user.get_full_name|default:user.username }}
-                </a>
 
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                  {% if user.profile.profile_picture and "default_profile" not in user.profile.profile_picture.url %}
-                      <img src="{{ user.profile.profile_picture.url }}" alt="Profile Picture" width="150" class="d-block mx-auto mb-2">
-                  {% else %}
-                      <p class="card-text">No profile picture available.</p>
-                  {% endif %}
-                  <li><span class="dropdown-item-text"><strong>Email:</strong> {{ user.email }}</span></li>
-                  <li><span class="dropdown-item-text"><strong>Role:</strong> {{ user.role }}</span></li>
-                  <a href="{% url 'profile_detail' %}" class="rounded-0 btn">View Profile</a>
-                  <a href="{% url 'update_profile' %}" class="rounded-0 btn">Update Profile</a>
-                </ul>
-                <!--TODO: add more for visible account details?-->
+              <!-- Dropdown for Account Options -->
+              <div class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                      {{ user.get_full_name|default:user.username }}
+                  </a>
+                  <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                      <li><span class="dropdown-item-text"><strong>Email:</strong> {{ user.email }}</span></li>
+                      <li><span class="dropdown-item-text"><strong>Role:</strong> {{ user.role }}</span></li>
+                      <li><a class="dropdown-item" href="{% url 'update_profile' %}">Change Profile</a></li>
+                      <li><a class="dropdown-item" href="{% url 'account_logout' %}">Sign Out</a></li>
+                  </ul>
               </div>
-              <a href="{% url 'account_logout' %}" class="btn btn-outline-dark">Sign Out</a>
+              <div class="me-2">
+                {% if user.profile.profile_picture and "default_profile" not in user.profile.profile_picture.url %}
+                    <img src="{{ user.profile.profile_picture.url }}" alt="Profile Picture"
+                        class="rounded-circle border" width="40" height="40">
+                {% else %}
+                    <img src="{% static '/techCLA/default_profile.jpg' %}" alt="Default Profile Picture"
+                        class="rounded-circle border" width="40" height="40">
+                {% endif %}
+              </div>
             </div>
             {% else %}
               <a href="{% url 'account_login' %}" class="nav-link">
@@ -70,7 +74,7 @@
     <div class="container">
       <div class="btn-group">
         {% for collection in collections %}
-          <a class="rounded-0 border-0 btn btn-outline-light">{{ collection.name }}</a>
+          <a href="{% url 'collection_detail' collection.id %}" class="rounded-0 border-0 btn btn-outline-light">{{ collection.name }}</a>
         {% endfor %}
       </div>
 
@@ -90,9 +94,7 @@
       <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"></button>
     </div>
     <div class="offcanvas-body">
-      <div>
-        placeholder
-      </div>
+        <!-- <div></div> -->
     </div>
   </div>
   {% endblock %}
