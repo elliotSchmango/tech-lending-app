@@ -34,9 +34,6 @@ def index(request):
     return render(request, 'techCLA/index.html', context)
 
 def profile_detail(request):
-    return render(request, "techCLA/profile.html")
-
-def update_profile(request):
     if request.user.is_authenticated:
         #print("HERE",request)
         if request.method == "POST":
@@ -48,7 +45,7 @@ def update_profile(request):
         else:
             form = ProfilePictureForm(instance=request.user.profile)
 
-        return render(request, "techCLA/update_profile.html", {"form": form})
+        return render(request, "techCLA/profile.html", {"form": form})
 
 class CatalogView(generic.ListView):
     template_name = "techCLA/catalog.html"

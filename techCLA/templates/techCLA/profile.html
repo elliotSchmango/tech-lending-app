@@ -1,1 +1,40 @@
 {% extends "techCLA/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="d-flex justify-content-center align-items-center">
+    <div class="card" style="width: 50rem;">
+        <div class="row g-0">
+            <div class="col-md-4">
+                {% if user.profile.profile_picture and "default_profile" not in user.profile.profile_picture.url %}
+                    <img src="{{ user.profile.profile_picture.url }}" alt="Profile Picture"
+                        class="rounded-circle border" width="40" height="40">
+                {% else %}
+                    <img src="{% static '/techCLA/default_profile.jpg' %}" alt="Default Profile Picture"
+                        class="rounded-circle border" width="40" height="40">
+                {% endif %}
+            </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h5 class="card-title">Update Your Profile</h5>
+                    {% if messages %}
+                        {% for message in messages %}
+                            <p style="color: red;">{{ message }}</p>
+                        {% endfor %}
+                    {% endif %}
+                    <ul></ul>
+                    <form method="post" enctype="multipart/form-data" class="mt-4">
+                        {% csrf_token %}
+
+                        <div class="mb-3 pt-2">
+                            {{ form.as_p }}
+                        </div>
+
+                        <button type="submit" class="btn btn-primary mt-3">Update Picture</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

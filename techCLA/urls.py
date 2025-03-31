@@ -2,9 +2,9 @@ from django.urls import path
 from django.contrib.auth import views as auth_views
 from allauth.account import views as allauth_views
 from . import views
-from .views import index, item_detail, update_profile, manage_items, edit_item, delete_item, CatalogView, \
+from .views import index, item_detail, manage_items, edit_item, delete_item, CatalogView, \
     collection_detail, profile_detail
-from .views import index, item_detail, update_profile, manage_items, edit_item, delete_item, CatalogView, collection_detail,delete_collection
+from .views import index, item_detail, manage_items, edit_item, delete_item, CatalogView, collection_detail,delete_collection
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -14,7 +14,6 @@ urlpatterns = [
 
     # Profile URLs
     path("profile", profile_detail, name="profile_detail"),
-    path("profile/update-profile/", update_profile, name="update_profile"),
     
     # Collections and Item URLs
     path('collection/<int:collection_id>/', views.collection_detail, name='collection_detail'),
