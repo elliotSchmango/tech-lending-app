@@ -44,6 +44,15 @@
                       <li><span class="dropdown-item-text"><strong>Email:</strong> {{ user.email }}</span></li>
                       <li><span class="dropdown-item-text"><strong>Role:</strong> {{ user.role }}</span></li>
                       <li><a class="dropdown-item" href="{% url 'update_profile' %}">Change Profile</a></li>
+
+                      {% if user.is_librarian %} <!-- only librarians can access an edit items -->
+                      <li>
+                          <a class="dropdown-item text-white" style="background-color: orange;" href="{% url 'manage_items' %}">
+                              Manage Items
+                          </a>
+                      </li>
+                      {% endif %}
+
                       <li><a class="dropdown-item" href="{% url 'account_logout' %}">Sign Out</a></li>
                   </ul>
               </div>
