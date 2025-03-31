@@ -2,21 +2,21 @@
 {% load static %}
 
 {% block content %}
-<div class="d-flex justify-content-center align-items-center">
-    <div class="card" style="width: 50rem;">
+<div class="row d-flex justify-content-center align-items-center">
+    <div class="card d-flex flex-column mb-4" style="width: 50rem;">
         <div class="row g-0">
-            <div class="col-md-4">
+            <div class="col-2 ps-3 d-flex justify-content-center align-items-center">
                 {% if user.profile.profile_picture and "default_profile" not in user.profile.profile_picture.url %}
                     <img src="{{ user.profile.profile_picture.url }}" alt="Profile Picture"
-                        class="rounded-circle border" width="40" height="40">
+                        class="card-img img-fluid rounded-circle border" style="width: 160px; height: 112px;">
                 {% else %}
                     <img src="{% static '/techCLA/default_profile.jpg' %}" alt="Default Profile Picture"
-                        class="rounded-circle border" width="40" height="40">
+                        class="card-img img-fluid rounded-circle border" style="width: 160px; height: 112px;">
                 {% endif %}
             </div>
-            <div class="col-md-8">
+            <div class="col-8 ps-3">
                 <div class="card-body">
-                    <h5 class="card-title">Update Your Profile</h5>
+                    <h5 class="card-title">Change Profile Picture</h5>
                     {% if messages %}
                         {% for message in messages %}
                             <p style="color: red;">{{ message }}</p>
@@ -25,15 +25,41 @@
                     <ul></ul>
                     <form method="post" enctype="multipart/form-data" class="mt-4">
                         {% csrf_token %}
-
                         <div class="mb-3 pt-2">
                             {{ form.as_p }}
                         </div>
-
                         <button type="submit" class="btn btn-primary mt-3">Update Picture</button>
                     </form>
                 </div>
             </div>
+        </div>
+    </div>
+    <div class="card d-flex flex-column mb-4" style="width: 50rem;">
+        <div class="card-body">
+            <h5 class="card-title mb-3">Profile Details</h5>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                  <b>Name:</b><br>
+                  {{ user.get_full_name|default:user.username }}
+                </li>
+                <li class="list-group-item">
+                  <b>Email:</b><br>
+                  {{ user.email }}
+                </li>
+                <li class="list-group-item">
+                  <b>Role:</b><br>
+                  {{ user.role }}
+                </li>
+                <li class="list-group-item">
+                  <b>Date Joined:</b><br>
+                  {{ user.date_joined.date }}
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="card d-flex flex-column" style="width: 50rem;">
+        <div class="card-body">
+            <h5 class="card-title mb-3">Items</h5>
         </div>
     </div>
 </div>
