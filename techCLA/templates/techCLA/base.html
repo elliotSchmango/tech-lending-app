@@ -41,19 +41,22 @@
                       {{ user.get_full_name|default:user.username }}
                   </a>
                   <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                      <li><span class="dropdown-header"><b>Role:</b> {{ user.role }}</span></li>
-                      <li><a class="dropdown-item" href="{% url 'profile_detail' %}">View Profile</a></li>
-                      <li><hr class="dropdown-divider"></li>
-                      <li><a class="dropdown-item" href="{% url 'account_logout' %}">Sign Out</a></li>
+                    <li><span class="dropdown-header"><b>Role:</b> {{ user.role }}</span></li>
+                    <li><a class="dropdown-item" href="{% url 'profile_detail' %}">View Profile</a></li>
+                    {% if user.is_patron %}
+                      <li><a class="dropdown-item" href="{% url 'profile_detail' %}">Borrowed Items</a></li>
+                    {% endif %}
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="{% url 'account_logout' %}">Sign Out</a></li>
                   </ul>
               </div>
               <div class="me-2">
                 {% if user.profile.profile_picture and "default_profile" not in user.profile.profile_picture.url %}
-                    <img src="{{ user.profile.profile_picture.url }}" alt="Profile Picture"
-                        class="rounded-circle border" width="40" height="40">
+                  <img src="{{ user.profile.profile_picture.url }}" alt="Profile Picture"
+                       class="rounded-circle border" width="40" height="40">
                 {% else %}
-                    <img src="{% static '/techCLA/default_profile.jpg' %}" alt="Default Profile Picture"
-                        class="rounded-circle border" width="40" height="40">
+                  <img src="{% static '/techCLA/default_profile.jpg' %}" alt="Default Profile Picture"
+                      class="rounded-circle border" width="40" height="40">
                 {% endif %}
               </div>
             </div>

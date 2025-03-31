@@ -17,11 +17,6 @@
             <div class="col-8 ps-3">
                 <div class="card-body">
                     <h5 class="card-title">Change Profile Picture</h5>
-                    {% if messages %}
-                        {% for message in messages %}
-                            <p style="color: red;">{{ message }}</p>
-                        {% endfor %}
-                    {% endif %}
                     <ul></ul>
                     <form method="post" enctype="multipart/form-data" class="mt-4">
                         {% csrf_token %}
@@ -55,11 +50,6 @@
                   {{ user.date_joined.date }}
                 </li>
             </ul>
-        </div>
-    </div>
-    <div class="card d-flex flex-column" style="width: 50rem;">
-        <div class="card-body">
-            <h5 class="card-title mb-3">Items</h5>
         </div>
     </div>
 </div>
