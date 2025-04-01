@@ -1,12 +1,11 @@
 from django.contrib.auth.views import LogoutView
-from django.shortcuts import render, get_object_or_404, redirect
-from django.views import generic
-from .models import Item, ItemImage,Collection
-from django.http import HttpResponse
-from .forms import ProfilePictureForm, ItemForm, CollectionFormLibrarian,CollectionFormPatron
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib import messages
+from django.shortcuts import render, get_object_or_404, redirect
+from django.views import generic
 
+from .models import Item, ItemImage,Collection
+from .forms import ProfilePictureForm, ItemForm, CollectionFormLibrarian,CollectionFormPatron
 
 def index(request):
     if request.user.is_authenticated:
@@ -64,7 +63,7 @@ class CatalogView(generic.ListView):
 
     def get_queryset(self):
         return Collection.objects.all()
-    
+
 def create_collection(request):
     # Determine which form to use
     if request.user.role == "Patron":

@@ -1,12 +1,9 @@
 from django.contrib.auth.models import Group
-from django.db.models.signals import post_save, post_migrate
-from django.dispatch import receiver
 from django.contrib.auth import get_user_model
-from allauth.account.signals import user_logged_in, user_signed_up
-from allauth.socialaccount.signals import pre_social_login
-from .models import Profile, ItemImage
-from django.db.models.signals import post_delete
+from django.db.models.signals import post_save, post_migrate, post_delete
 from django.dispatch import receiver
+
+from .models import Profile, ItemImage
 
 User = get_user_model()
 

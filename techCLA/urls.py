@@ -1,32 +1,33 @@
 from django.urls import path
-from django.contrib.auth import views as auth_views
-from allauth.account import views as allauth_views
-from . import views
-from .views import index, item_detail, manage_items, edit_item, delete_item, CatalogView, collection_detail, \
-    profile_detail, delete_collection, SignoutView
 from django.conf import settings
 from django.conf.urls.static import static
 
+from .views import (index, CatalogView,
+                    profile_detail, SignoutView,
+                    collection_detail, create_collection, edit_collection, delete_collection,
+                    item_detail, manage_items, edit_item, delete_item)
+
 urlpatterns = [
-    path("", views.index, name="index"),
-    path("catalog/", views.CatalogView.as_view(), name="catalog"),
+    # Catalog URLs
+    path("", index, name="index"),
+    path("catalog/", CatalogView.as_view(), name="catalog"),
 
     # Profile URLs
     path("profile/", profile_detail, name="profile_detail"),
     path("accounts/logout/", SignoutView.as_view(), name="signout"),
     
-    # Collections and Item URLs
-    path('collection/<int:collection_id>/', views.collection_detail, name='collection_detail'),
-    path('collection/create/', views.create_collection, name='create_collection'),
-    path('collection/<int:collection_id>/edit/', views.edit_collection, name='edit_collection'),
+    # Collection URLs
+    path('collection/<int:collection_id>/', collection_detail, name='collection_detail'),
+    path('collection/create/', create_collection, name='create_collection'),
+    path('collection/<int:collection_id>/edit/', edit_collection, name='edit_collection'),
     path('collection/<int:collection_id>/delete/', delete_collection, name='delete_collection'),
-    path('item/<str:item_name>/', item_detail, name='item_detail'),
 
-    # Catalog Manage URLs
+    # Item URLs
+    path('item/<str:item_name>/', item_detail, name='item_detail'),
     path("manage-items/", manage_items, name="manage_items"),
-    # path("manage-items/create/", create_item, name="create_item"),
     path("edit-item/<int:item_id>/", edit_item, name="edit_item"),
     path("delete-item/<int:item_id>/", delete_item, name="delete_item"),
+    # path("manage-items/create/", create_item, name="create_item"),
 
 ]
 
