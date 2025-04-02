@@ -1,10 +1,31 @@
 {% extends "../base.html" %}
 
 {% block content %}
-<h2>Create Collection</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Create</button>
-</form>
+<div class="d-flex justify-content-center align-items-center">
+    <div class="card" style="width: 50rem;">
+        <h3 class="card-header">Create New Collection</h3>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-floating mb-3">
+                    {{ form.name }}
+                    <label style="color: gray;">{{ form.name.label }}</label>
+                </div>
+                <div class="form-floating mb-3">
+                    {{ form.description }}
+                    <label style="color: gray;">{{ form.description.label }}</label>
+                </div>
+                <div class="mb-3">
+                    <label>{{ form.visibility.label }}</label>
+                    {{ form.visibility }}
+                </div>
+                <div class="mb-3">
+                    {{ form.items.label_tag }}
+                    {{ form.items }}
+                </div>
+                <button type="submit" class="btn btn-primary">Create Collection</button>
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}

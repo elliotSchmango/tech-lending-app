@@ -56,11 +56,15 @@
               </div>
               <div class="me-2">
                 {% if user.profile.profile_picture and "default_profile" not in user.profile.profile_picture.url %}
-                  <img src="{{ user.profile.profile_picture.url }}" alt="Profile Picture"
-                       class="rounded-circle border" width="40" height="40">
+                  <a href="{% url 'profile_detail' %}">
+                    <img src="{{ user.profile.profile_picture.url }}" alt="Profile Picture"
+                         class="rounded-circle border" width="40" height="40">
+                  </a>
                 {% else %}
-                  <img src="{% static '/techCLA/default_profile.jpg' %}" alt="Default Profile Picture"
-                      class="rounded-circle border" width="40" height="40">
+                  <a href="{% url 'profile_detail' %}">
+                    <img src="{% static '/techCLA/default_profile.jpg' %}" alt="Default Profile Picture"
+                        class="rounded-circle border" width="40" height="40">
+                  </a>
                 {% endif %}
               </div>
             </div>

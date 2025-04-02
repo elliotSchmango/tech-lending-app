@@ -24,7 +24,10 @@ class CollectionFormLibrarian(forms.ModelForm):
         model = Collection
         fields = ['name', 'description', 'visibility', 'items']
         widgets = {
-            'items': forms.CheckboxSelectMultiple, 
+            'items': forms.CheckboxSelectMultiple(attrs={'class': 'form-check-input'}),
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'style': 'height: 100px;'}),
+            'visibility': forms.Select(attrs={'class': 'form-select'}),
         }
 
 class CollectionFormPatron(forms.ModelForm):
