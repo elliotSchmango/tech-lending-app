@@ -21,7 +21,7 @@
                     <form method="post" enctype="multipart/form-data" class="mt-4">
                         {% csrf_token %}
                         <div class="mb-3 pt-2">
-                            {{ form.as_p }}
+                            {{ form.profile_picture }}
                         </div>
                         <button type="submit" class="btn btn-primary mt-3">Update Picture</button>
                     </form>
@@ -39,7 +39,11 @@
                 </li>
                 <li class="list-group-item">
                   <b>Email:</b><br>
-                  {{ user.email }}
+                      {% if user.email %}
+                          {{ user.email }}
+                      {% else %}
+                          None
+                      {% endif %}
                 </li>
                 <li class="list-group-item">
                   <b>Role:</b><br>

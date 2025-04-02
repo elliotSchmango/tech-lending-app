@@ -12,7 +12,7 @@ def index(request):
         username = request.user.get_full_name() or request.user.username
         if request.user.role == 'Librarian':
             role = 'Librarian'
-            welcome_message = f"Welcome, {username}! You have administrative privileges."
+            welcome_message = f"Welcome, {username}! You have librarian privileges."
             collections = Collection.objects.all()
         else:
             role = 'Patron'
