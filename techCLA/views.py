@@ -63,7 +63,16 @@ class CatalogView(generic.ListView):
     context_object_name = "all_collections"
 
     def get_queryset(self):
-        return Collection.objects.all()
+        user = self.request.user
+
+        if user.is_authenticated:
+            if user.is_librarian():
+                return Collection.objects.all()
+            else:
+                return Collection.objects.filter(creator=user) | Collection.objects.filter(visibility="public")
+        else:
+            return Collection.objects.filter(visibility="public")
+        #return Collection.objects.all()
     
 def create_collection(request):
     # Determine which form to use
