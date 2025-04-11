@@ -104,10 +104,26 @@
       <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"></button>
     </div>
     <div class="offcanvas-body">
-        <!-- <div></div> -->
+      
+      {% if user.is_authenticated %}
+        <div class="mb-2">
+          <a class="btn btn-secondary w-100 text-start" href="{% url 'private_collections' %}">
+            Your Private Collections
+          </a>
+        </div>
+      {% endif %}
+
+      {% for collection in other_collections %}
+        <div class="mb-2">
+          <a class="btn btn-outline-secondary w-100 text-start" href="{% url 'collection_detail' collection.id %}">
+            {{ collection.name }}
+          </a>
+        </div>
+      {% endfor %}
     </div>
   </div>
   {% endblock %}
+
 
   <!-- Page content -->
   <div class="container mt-4 content-area">
