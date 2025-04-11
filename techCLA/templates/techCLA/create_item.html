@@ -11,7 +11,7 @@
 
                 <div class="form-floating mb-3">
                     {{ form.title }}
-                    <label style="color: gray;">{{ form.title.label }}</label>
+                    <label style="color: gray;">Name</label>
                 </div>
                 <div class="form-floating mb-3">
                     {{ form.identifier }}
@@ -26,15 +26,15 @@
                     <label style="color: gray;">{{ form.description.label }}</label>
                 </div>
                 <div class="mb-3">
-                    <label>{{ form.status.label }}</label>
+                    <label class="form-label">{{ form.status.label }}</label>
                     {{ form.status }}
                 </div>
                 <div class="mb-3">
-                    <label>{{ form.image.label }}</label>
+                    <label class="form-label">Item Image</label>
                     {{ form.image }}
                 </div>
                 <div class="mb-3">
-                    <label for="additional_images">Upload Additional Images</label>
+                    <label for="additional_images" class="form-label">Upload Additional Images</label>
                     <input class="form-control" type="file" name="additional_images" multiple>
                 </div>
 
