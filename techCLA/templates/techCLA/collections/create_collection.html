@@ -3,8 +3,8 @@
 {% block content %}
 <div class="d-flex justify-content-center align-items-center">
     <div class="card" style="width: 50rem;">
-        <h3 class="card-header">Create New Collection</h3>
         <div class="card-body">
+            <h3 class="card-title text-center mb-3">Create New Collection</h3>
             <form method="post">
                 {% csrf_token %}
                 <div class="form-floating mb-3">
@@ -23,7 +23,9 @@
                     {{ form.items.label_tag }}
                     {{ form.items }}
                 </div>
-                <button type="submit" class="btn btn-primary">Create Collection</button>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary">Create Collection</button>
+                </div>
             </form>
         </div>
     </div>
