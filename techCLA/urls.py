@@ -6,7 +6,7 @@ from .views import (index, CatalogView,
                     profile_detail, SignoutView,
                     private_collections_view,
                     collection_detail, create_collection, edit_collection, delete_collection,
-                    item_detail, manage_items, edit_item, delete_item)
+                    item_detail, manage_items, create_item, edit_item, delete_item)
 
 urlpatterns = [
     # Catalog URLs
@@ -29,9 +29,9 @@ urlpatterns = [
     # Item URLs
     path('item/<str:item_name>/', item_detail, name='item_detail'),
     path("manage-items/", manage_items, name="manage_items"),
+    path("manage-items/create/", create_item,  name="create_item"),
     path("edit-item/<int:item_id>/", edit_item, name="edit_item"),
     path("delete-item/<int:item_id>/", delete_item, name="delete_item"),
-    # path("manage-items/create/", create_item, name="create_item"),
 
 ]
 

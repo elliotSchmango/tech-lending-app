@@ -134,6 +134,10 @@ def is_librarian(user):
 def manage_items(request):
     items = Item.objects.all()
 
+    return render(request, 'techCLA/manage_items.html', {'items': items})
+
+@user_passes_test(is_librarian)
+def create_item(request):
     if request.method == "POST":
         form = ItemForm(request.POST, request.FILES)
         files = request.FILES.getlist('additional_images')  # Multiple image support
@@ -145,12 +149,11 @@ def manage_items(request):
             for file in files:
                 ItemImage.objects.create(item=item, image=file)
 
-            return redirect('manage_items')
-
+            return redirect('create_item')
     else:
         form = ItemForm()
 
-    return render(request, 'techCLA/manage_items.html', {'form': form, 'items': items})
+    return render(request, 'techCLA/create_item.html', {'form': form})
 
 @user_passes_test(is_librarian)
 def edit_item(request, item_id):
