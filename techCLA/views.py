@@ -113,7 +113,7 @@ def edit_collection(request, collection_id):
         else:
             form = FormClass(instance=collection)
         
-        return render(request, 'techCLA/collections/edit_collection.html', {'form': form})
+        return render(request, 'techCLA/collections/edit_collection.html', {'form': form, 'collection': collection})
     # else:
     #     return redirect('collection_list')
 

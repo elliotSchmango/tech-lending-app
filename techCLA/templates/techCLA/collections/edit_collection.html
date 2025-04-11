@@ -1,38 +1,38 @@
 {% extends "techCLA/index.html" %}
 
 {% block content %}
-<div class="container mt-5">
-    <h2 class="mb-4">Edit Collection</h2>
+<div class="d-flex justify-content-center align-items-center">
+    <div class="card" style="width: 50rem;">
+        <div class="card-body">
+            <h3 class="card-title text-center mb-3">Edit
+                {% if collection.visibility == "public" %} Public {% else %} Private {% endif %}
+                Collection</h3>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
 
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-info">{{ message }}</div>
-        {% endfor %}
-    {% endif %}
+                <div class="form-floating mb-3">
+                    {{ form.name }}
+                    <label for="id_name" class="form-label">Collection Name</label>
+                </div>
+                <div class="form-floating mb-3">
+                    {{ form.description }}
+                    <label for="id_description" class="form-label">Description</label>
+                </div>
 
-    <form method="post" enctype="multipart/form-data" class="p-4 border rounded shadow-sm">
-        {% csrf_token %}
-        
-        <div class="mb-3">
-            <label for="id_name" class="form-label">Collection Name</label>
-            {{ form.name}}
+                {% if user.is_librarian %}
+                <div class="mb-3">
+                    <label for="id_visibility" class="form-label">Visibility</label>
+                    {{ form.visibility }}
+                </div>
+                {% else %}
+                <input type="hidden" name="visibility" value="public">
+                {% endif %}
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
         </div>
-
-        <div class="mb-3">
-            <label for="id_description" class="form-label">Description</label>
-            {{ form.description}}
-        </div>
-
-        {% if user.is_librarian %}
-        <div class="mb-3">
-            <label for="id_visibility" class="form-label">Visibility</label>
-            {{ form.visibility}}
-        </div>
-        {% else %}
-        <input type="hidden" name="visibility" value="public">
-        {% endif %}
-
-        <button type="submit" class="btn btn-primary">Save Changes</button>
-    </form>
+    </div>
 </div>
 {% endblock %}

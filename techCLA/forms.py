@@ -38,7 +38,9 @@ class CollectionFormPatron(forms.ModelForm):
         model = Collection
         fields = ['name', 'description', 'items']
         widgets = {
-            'items': forms.CheckboxSelectMultiple, 
+            'items': forms.CheckboxSelectMultiple(attrs={'class': 'form-check-input'}),
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'style': 'height: 100px;'}),
         }
         
     def __init__(self, *args, **kwargs):
