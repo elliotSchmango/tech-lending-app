@@ -3,7 +3,7 @@ from django.contrib.auth import views as auth_views
 from allauth.account import views as allauth_views
 from . import views
 from .views import index, item_detail, manage_items, edit_item, delete_item, CatalogView, collection_detail, \
-    profile_detail, delete_collection, SignoutView
+    profile_detail, delete_collection, SignoutView, private_collections_view
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -15,6 +15,9 @@ urlpatterns = [
     path("profile/", profile_detail, name="profile_detail"),
     path("accounts/logout/", SignoutView.as_view(), name="signout"),
     
+    # Private Collection URL
+    path('private-collections/', views.private_collections_view, name='private_collections'),
+
     # Collections and Item URLs
     path('collection/<int:collection_id>/', views.collection_detail, name='collection_detail'),
     path('collection/create/', views.create_collection, name='create_collection'),

@@ -1,4 +1,6 @@
 from django.test import TestCase
+from django.urls import reverse
+from django.contrib.auth.models import Group
 
 from .models import User, Collection, Item, BorrowRequest
 
@@ -45,8 +47,8 @@ class BorrowModelTests(TestCase):
 
 class PrivateCollectionsTests(TestCase):
     def setUp(self):
-        Group.objects.create(name="Librarian")
-        Group.objects.create(name="Patron")
+        Group.objects.get_or_create(name="Librarian")
+        Group.objects.get_or_create(name="Patron")
 
         self.librarian = User.objects.create_user("lib", password="pass")
         self.librarian.groups.add(Group.objects.get(name="Librarian"))
