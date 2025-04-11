@@ -1,11 +1,12 @@
 from django.contrib.auth.views import LogoutView
-from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.decorators import user_passes_test, login_required
 from django.contrib import messages
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import generic
 
 from .models import Item, ItemImage,Collection
 from .forms import ProfilePictureForm, ItemForm, CollectionFormLibrarian,CollectionFormPatron
+
 
 def index(request):
     if request.user.is_authenticated:
@@ -24,11 +25,15 @@ def index(request):
         welcome_message = "Welcome to our Catalog! Please log in to access all features."
         collections = Collection.objects.filter(visibility='public')
 
+    main_collections = collections[:5]          # first 5 in navbar
+    other_collections = collections[5:]         # rest in hamburger
+
     context = {
         'welcome': welcome_message,
         'username': username,
         'role': role,
-        'collections': collections, 
+        'collections': main_collections,
+        'other_collections': other_collections,
     }
     
     return render(request, 'techCLA/index.html', context)
@@ -185,3 +190,20 @@ def item_detail(request, item_name):
         print(i.title)
     item = get_object_or_404(Item, title=item_name)
     return render(request, "techCLA/item.html", {"item": item})
+
+@login_required
+def private_collections_view(request):
+    user = request.user
+
+    if user.is_librarian():
+        private_collections = Collection.objects.filter(visibility='private')
+    else:
+        # Patrons see collections they created OR are allowed to access
+        created = Collection.objects.filter(visibility='private', creator=user)
+        allowed = Collection.objects.filter(visibility='private', allowed_users=user)
+
+        private_collections = (created | allowed).distinct()
+
+    return render(request, 'techCLA/private_collections.html', {
+        'private_collections': private_collections
+    })

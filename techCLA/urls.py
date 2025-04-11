@@ -4,6 +4,7 @@ from django.conf.urls.static import static
 
 from .views import (index, CatalogView,
                     profile_detail, SignoutView,
+                    private_collections_view,
                     collection_detail, create_collection, edit_collection, delete_collection,
                     item_detail, manage_items, edit_item, delete_item)
 
@@ -15,7 +16,10 @@ urlpatterns = [
     # Profile URLs
     path("profile/", profile_detail, name="profile_detail"),
     path("accounts/logout/", SignoutView.as_view(), name="signout"),
-    
+
+    # Private Collection URL
+    path('private-collections/', private_collections_view, name='private_collections'),
+
     # Collection URLs
     path('collection/<int:collection_id>/', collection_detail, name='collection_detail'),
     path('collection/create/', create_collection, name='create_collection'),
