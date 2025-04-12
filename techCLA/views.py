@@ -1,11 +1,13 @@
 from django.contrib.auth.views import LogoutView
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.contrib import messages
+from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import generic
+from django.views.generic import ListView
 
-from .models import Item, ItemImage,Collection
-from .forms import ProfilePictureForm, ItemForm, CollectionFormLibrarian,CollectionFormPatron
+from .models import Item, ItemImage, Collection
+from .forms import ProfilePictureForm, ItemForm, CollectionFormLibrarian, CollectionFormPatron
 
 
 def index(request):
@@ -76,7 +78,6 @@ class CatalogView(generic.ListView):
                 return Collection.objects.filter(creator=user) | Collection.objects.filter(visibility="public")
         else:
             return Collection.objects.filter(visibility="public")
-        #return Collection.objects.all()
     
 def create_collection(request):
     # Determine which form to use
@@ -229,3 +230,16 @@ def private_collections_view(request):
     return render(request, 'techCLA/private_collections.html', {
         'private_collections': private_collections
     })
+
+class SearchResultsView(ListView):
+    model = Collection
+    template_name = "techCLA/search_results.html"
+
+    def get_queryset(self):
+        query = self.request.GET.get("q")
+
+        object_list = Collection.objects.filter(
+            Q(name__icontains=query)
+        )
+
+        return object_list

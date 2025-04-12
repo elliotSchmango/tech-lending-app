@@ -1,0 +1,13 @@
+{% extends 'techCLA/base.html' %}
+
+{% block content %}
+<h1>Search Results</h1>
+
+<ul>
+  {% for collection in object_list %}
+    <li>
+      {{ collection.name }}
+    </li>
+  {% endfor %}
+</ul>
+{% endblock %}

@@ -21,10 +21,10 @@
       <a class="navbar-brand" href="{% url 'index' %}">Technology CLA</a>
 
       <!-- Search Bar -->
-      <form class="d-flex flex-grow-1 mx-3" action="{% url 'index' %}">
-        <input class="form-control w-100 me-2" type="search" placeholder="Search..." name="q" aria-label="Search">
+      <form class="d-flex flex-grow-1 mx-3" action="{% url 'search_results' %}" method="get">
+        <input class="form-control w-100 me-2" type="search" placeholder="Search items and collections..." name="q" aria-label="Search">
         <button class="btn btn-outline-dark" type="submit">Search</button>
-        <!-- TODO: add search functionality -->
+
       </form>
 
       <!-- Navbar : Sign in / Sign out -->

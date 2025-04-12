@@ -6,7 +6,8 @@ from .views import (index, CatalogView,
                     profile_detail, SignoutView,
                     private_collections_view,
                     collection_detail, create_collection, edit_collection, delete_collection,
-                    item_detail, manage_items, create_item, edit_item, delete_item)
+                    item_detail, manage_items, create_item, edit_item, delete_item,
+                    SearchResultsView)
 
 urlpatterns = [
     # Catalog URLs
@@ -33,6 +34,7 @@ urlpatterns = [
     path("edit-item/<int:item_id>/", edit_item, name="edit_item"),
     path("delete-item/<int:item_id>/", delete_item, name="delete_item"),
 
+    path("search/", SearchResultsView.as_view(), name="search_results")
 ]
 
 if settings.DEBUG:
