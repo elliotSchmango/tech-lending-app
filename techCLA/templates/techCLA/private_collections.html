@@ -1,0 +1,20 @@
+{% extends 'techCLA/base.html' %}
+
+{% block content %}
+  <h2 class="mb-4">Private Collections You Can Access</h2>
+
+  {% if private_collections %}
+    {% for collection in private_collections %}
+      <div class="card mb-3">
+        <div class="card-body">
+          <a href="{% url 'collection_detail' collection.id %}">
+            <h5 class="card-title">{{ collection.name }}</h5>
+          </a>
+          <p class="card-text">{{ collection.description }}</p>
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p>You don't have access to any private collections.</p>
+  {% endif %}
+{% endblock %}
