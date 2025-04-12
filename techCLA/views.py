@@ -208,7 +208,19 @@ def item_detail(request, item_name):
     # for i in Item.objects.all():
     #     print(i.title)
     item = get_object_or_404(Item, title=item_name)
-    return render(request, "techCLA/item.html", {"item": item})
+
+    context = {"item": item}
+    
+    if request.method == "POST":
+        if item.status != "available":
+            context["error"] = "This item is not available for borrowing."
+        elif BorrowRequest.objects.filter(item=item, user=request.user, status="pending").exists():
+            context["warning"] = "You already have a pending borrow request for this item."
+        else:
+            BorrowRequest.objects.create(item=item, user=request.user)
+            context["success"] = "Borrow request submitted successfully."
+
+    return render(request, "techCLA/item.html", context)
 
 @login_required
 def private_collections_view(request):
