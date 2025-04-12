@@ -44,7 +44,7 @@
                     <li><span class="dropdown-header"><b>Role:</b> {{ user.role }}</span></li>
                     <li><a class="dropdown-item" href="{% url 'profile_detail' %}">View Profile</a></li>
                     {% if user.is_patron %}
-                      <li><a class="dropdown-item" href="{% url 'profile_detail' %}">Borrowed Items</a></li>
+                      <li><a class="dropdown-item" href="{% url 'my_borrowed_items' %}">Borrowed Items</a></li>
                     {% endif %}
                     {% if user.is_librarian %} <!-- only librarians can access and edit items -->
                     <li>
