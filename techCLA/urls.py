@@ -33,6 +33,7 @@ urlpatterns = [
 
     #Borrow Requests
     path('borrowed-items/', views.my_borrowed_items, name='my_borrowed_items'),
+    path("borrow-requests/", views.manage_borrow_requests, name="manage_borrow_requests"),
 
 ]
 

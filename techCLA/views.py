@@ -240,3 +240,26 @@ def my_borrowed_items(request):
     }
 
     return render(request, "techCLA/borrowed_items.html", context)
+
+@user_passes_test(is_librarian)
+def manage_borrow_requests(request):
+    requests = BorrowRequest.objects.select_related('item', 'user').order_by('-requested_on')
+
+    if request.method == "POST":
+        action = request.POST.get("action")
+        request_id = request.POST.get("request_id")
+
+        borrow_request = BorrowRequest.objects.get(id=request_id)
+
+        if action == "approve":
+            borrow_request.approve()
+            borrow_request.item.status = "checked_out"
+            borrow_request.item.save()
+        elif action == "deny":
+            borrow_request.deny()
+
+        return redirect("manage_borrow_requests")
+
+    return render(request, "techCLA/manage_requests.html", {
+        "requests": requests
+    })
