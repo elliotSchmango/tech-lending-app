@@ -31,6 +31,9 @@ urlpatterns = [
     path("edit-item/<int:item_id>/", edit_item, name="edit_item"),
     path("delete-item/<int:item_id>/", delete_item, name="delete_item"),
 
+    #Borrow Requests
+    path('borrowed-items/', views.my_borrowed_items, name='my_borrowed_items'),
+
 ]
 
 if settings.DEBUG:

@@ -1,0 +1,26 @@
+{% extends "techCLA/base.html" %}
+{% block content %}
+  <h2 class="mt-4">My Borrowed Items</h2>
+  <ul class="list-group mb-4">
+    {% for req in borrowed_requests %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        {{ req.item.title }}
+        <span class="text-muted">Approved on {{ req.approved_on|date:"M d, Y" }}</span>
+      </li>
+    {% empty %}
+      <li class="list-group-item text-muted">You have no borrowed items.</li>
+    {% endfor %}
+  </ul>
+
+  <h2>Pending Requests</h2>
+  <ul class="list-group">
+    {% for req in pending_requests %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        {{ req.item.title }}
+        <span class="text-muted">Requested on {{ req.requested_on|date:"M d, Y" }}</span>
+      </li>
+    {% empty %}
+      <li class="list-group-item text-muted">You have no outgoing requests.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

@@ -1,7 +1,7 @@
 from django.contrib.auth.views import LogoutView
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import generic
-from .models import Item, ItemImage,Collection
+from .models import Item, ItemImage,Collection, BorrowRequest
 from django.http import HttpResponse
 from .forms import ProfilePictureForm, ItemForm, CollectionFormLibrarian,CollectionFormPatron
 from django.contrib.auth.decorators import user_passes_test, login_required
@@ -205,8 +205,8 @@ def collection_detail(request, collection_id):
     })
 
 def item_detail(request, item_name):
-    for i in Item.objects.all():
-        print(i.title)
+    # for i in Item.objects.all():
+    #     print(i.title)
     item = get_object_or_404(Item, title=item_name)
     return render(request, "techCLA/item.html", {"item": item})
 
@@ -226,3 +226,17 @@ def private_collections_view(request):
     return render(request, 'techCLA/private_collections.html', {
         'private_collections': private_collections
     })
+
+def my_borrowed_items(request):
+    if not request.user.is_authenticated:
+        return redirect('')
+
+    borrowed_requests = BorrowRequest.objects.filter(user=request.user, status="approved")
+    pending_requests = BorrowRequest.objects.filter(user=request.user, status="pending")
+
+    context = {
+        "borrowed_requests": borrowed_requests,
+        "pending_requests": pending_requests,
+    }
+
+    return render(request, "techCLA/borrowed_items.html", context)
