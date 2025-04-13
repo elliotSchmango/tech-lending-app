@@ -235,8 +235,16 @@ class SearchResultsView(ListView):
     model = Collection
     template_name = "techCLA/search_results.html"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context["query"] = self.request.GET.get("q")
+        context["search_by"] = self.request.GET.get("search_by")
+
+        return context
+
     def get_queryset(self):
-        query = self.request.GET.get("q")
+        query = self.request.GET.get("q", "")
         search_by = self.request.GET.get("search_by")
 
         if search_by == "collections":
