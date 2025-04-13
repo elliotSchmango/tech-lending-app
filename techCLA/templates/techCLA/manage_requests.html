@@ -1,0 +1,43 @@
+{% extends "techCLA/base.html" %}
+{% block content %}
+<h2>Borrow Request Management</h2>
+
+{% if requests %}
+  <table class="table mt-3">
+    <thead>
+      <tr>
+        <th>Item</th>
+        <th>User</th>
+        <th>Status</th>
+        <th>Requested On</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for req in requests %}
+        <tr>
+          <td>{{ req.item.title }}</td>
+          <td>{{ req.user.get_full_name|default:req.user.username }}</td>
+          <td>{{ req.get_status_display }}</td>
+          <td>{{ req.requested_on }}</td>
+          <td>
+            {% if req.status == "pending" %}
+              <form method="post" style="display: inline;">
+                {% csrf_token %}
+                <input type="hidden" name="request_id" value="{{ req.id }}">
+                <button name="action" value="approve" class="btn btn-success btn-sm">Approve</button>
+                <button name="action" value="deny" class="btn btn-danger btn-sm">Deny</button>
+              </form>
+            {% else %}
+              <span class="text-muted">No actions</span>
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <p>No borrow requests found.</p>
+{% endif %}
+
+{% endblock %}
