@@ -1,6 +1,42 @@
 {% extends 'techCLA/base.html' %}
 
 {% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="grid">
+        <div class="grid-body">
+          <div class="row">
+            <div class="col-md-3">
+              <h3 class="grid-title">Filters</h3>
+              <hr>
+
+              <div class="checkbox">
+                <label><input type="checkbox"> Collection</label>
+              </div>
+              <div class="checkbox">
+                <label><input type="checkbox"> Item</label>
+              </div>
+
+              <div class="padding"></div>
+
+            </div>
+            <div class="col-md-9">
+              <h3>Search Results</h3>
+              <hr>
+
+              <div class="input-group">
+                <input type="text" class="form-control" placeholder="Search...">
+                <span><button class="btn btn-primary" type="button">Search</button></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <h1>Search Results</h1>
 
 <ul>
