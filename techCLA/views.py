@@ -237,9 +237,15 @@ class SearchResultsView(ListView):
 
     def get_queryset(self):
         query = self.request.GET.get("q")
+        search_by = self.request.GET.get("search_by")
 
-        object_list = Collection.objects.filter(
-            Q(name__icontains=query)
-        )
+        if search_by == "collections":
+            object_list = Collection.objects.filter(
+                Q(name__icontains=query)
+            )
+        elif search_by == "items":
+            object_list = Item.objects.filter(
+                Q(title__icontains=query)
+            )
 
         return object_list
