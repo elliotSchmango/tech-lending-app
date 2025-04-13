@@ -123,4 +123,3 @@ class BorrowRequest(models.Model):
         self.status = "denied"
         self.denied_on = timezone.now()
         self.save()
-

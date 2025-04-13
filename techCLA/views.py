@@ -1,11 +1,13 @@
 from django.contrib.auth.views import LogoutView
-from django.shortcuts import render, get_object_or_404, redirect
-from django.views import generic
-from .models import Item, ItemImage,Collection, BorrowRequest
-from django.http import HttpResponse
-from .forms import ProfilePictureForm, ItemForm, CollectionFormLibrarian,CollectionFormPatron
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.contrib import messages
+from django.db.models import Q
+from django.shortcuts import render, get_object_or_404, redirect
+from django.views import generic
+from django.views.generic import ListView
+
+from .models import Item, ItemImage, Collection, BorrowRequest
+from .forms import ProfilePictureForm, ItemForm, CollectionFormLibrarian, CollectionFormPatron
 
 
 def index(request):
@@ -13,7 +15,7 @@ def index(request):
         username = request.user.get_full_name() or request.user.username
         if request.user.role == 'Librarian':
             role = 'Librarian'
-            welcome_message = f"Welcome, {username}! You have administrative privileges."
+            welcome_message = f"Welcome, {username}! You have librarian privileges."
             collections = Collection.objects.all()
         else:
             role = 'Patron'
@@ -32,7 +34,7 @@ def index(request):
         'welcome': welcome_message,
         'username': username,
         'role': role,
-        'collections': main_collections, 
+        'collections': main_collections,
         'other_collections': other_collections,
     }
     
@@ -76,7 +78,6 @@ class CatalogView(generic.ListView):
                 return Collection.objects.filter(creator=user) | Collection.objects.filter(visibility="public")
         else:
             return Collection.objects.filter(visibility="public")
-        #return Collection.objects.all()
     
 def create_collection(request):
     # Determine which form to use
@@ -122,7 +123,7 @@ def edit_collection(request, collection_id):
         else:
             form = FormClass(instance=collection)
         
-        return render(request, 'techCLA/collections/edit_collection.html', {'form': form})
+        return render(request, 'techCLA/collections/edit_collection.html', {'form': form, 'collection': collection})
     # else:
     #     return redirect('collection_list')
 
@@ -143,6 +144,10 @@ def is_librarian(user):
 def manage_items(request):
     items = Item.objects.all()
 
+    return render(request, 'techCLA/manage_items.html', {'items': items})
+
+@user_passes_test(is_librarian)
+def create_item(request):
     if request.method == "POST":
         form = ItemForm(request.POST, request.FILES)
         files = request.FILES.getlist('additional_images')  # Multiple image support
@@ -154,12 +159,11 @@ def manage_items(request):
             for file in files:
                 ItemImage.objects.create(item=item, image=file)
 
-            return redirect('manage_items')
-
+            return redirect('create_item')
     else:
         form = ItemForm()
 
-    return render(request, 'techCLA/manage_items.html', {'form': form, 'items': items})
+    return render(request, 'techCLA/create_item.html', {'form': form})
 
 @user_passes_test(is_librarian)
 def edit_item(request, item_id):
@@ -186,7 +190,7 @@ def delete_item(request, item_id):
 
 def collection_detail(request, collection_id):
     collection = get_object_or_404(Collection, id=collection_id)
-    
+
     user = request.user
     has_access = (
         collection.visibility == 'public' or
@@ -210,7 +214,7 @@ def item_detail(request, item_name):
     item = get_object_or_404(Item, title=item_name)
 
     context = {"item": item}
-    
+
     if request.method == "POST":
         if item.status != "available":
             context["error"] = "This item is not available for borrowing."
@@ -275,3 +279,30 @@ def manage_borrow_requests(request):
     return render(request, "techCLA/manage_requests.html", {
         "requests": requests
     })
+
+class SearchResultsView(ListView):
+    model = Collection
+    template_name = "techCLA/search_results.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context["query"] = self.request.GET.get("q")
+        context["search_by"] = self.request.GET.get("search_by")
+
+        return context
+
+    def get_queryset(self):
+        query = self.request.GET.get("q", "")
+        search_by = self.request.GET.get("search_by")
+
+        if search_by == "collections":
+            object_list = Collection.objects.filter(
+                Q(name__icontains=query)
+            )
+        elif search_by == "items":
+            object_list = Item.objects.filter(
+                Q(title__icontains=query)
+            )
+
+        return object_list

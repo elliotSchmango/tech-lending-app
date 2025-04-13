@@ -1,16 +1,28 @@
 from django import forms
+
 from .models import Profile, Item, Collection
 
 class ProfilePictureForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ['profile_picture']
+        widgets = {
+            'profile_picture': forms.FileInput(attrs={'class': 'form-control'}),
+        }
 
 class ItemForm(forms.ModelForm):
 
     class Meta:
         model = Item
         fields = ['title', 'identifier', 'status', 'location', 'description', 'image']
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control'}),
+            'identifier': forms.TextInput(attrs={'class': 'form-control'}),
+            'status': forms.Select(attrs={'class': 'form-select'}),
+            'location': forms.TextInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'style': 'height: 100px;'}),
+            'image': forms.FileInput(attrs={'class': 'form-control'}),
+        }
 
     def save(self, commit=True):
         item = super().save(commit=False)
@@ -23,7 +35,10 @@ class CollectionFormLibrarian(forms.ModelForm):
         model = Collection
         fields = ['name', 'description', 'visibility', 'items']
         widgets = {
-            'items': forms.CheckboxSelectMultiple, 
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'style': 'height: 100px;'}),
+            'visibility': forms.Select(attrs={'class': 'form-select'}),
+            'items': forms.CheckboxSelectMultiple(attrs={'class': 'form-check-input'}),
         }
 
 class CollectionFormPatron(forms.ModelForm):
@@ -31,7 +46,9 @@ class CollectionFormPatron(forms.ModelForm):
         model = Collection
         fields = ['name', 'description', 'items']
         widgets = {
-            'items': forms.CheckboxSelectMultiple, 
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'style': 'height: 100px;'}),
+            'items': forms.CheckboxSelectMultiple(attrs={'class': 'form-check-input'}),
         }
         
     def __init__(self, *args, **kwargs):

@@ -1,0 +1,49 @@
+{% extends 'techCLA/base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-center align-items-center">
+    <div class="card" style="width: 50rem;">
+        <div class="card-body">
+            <h3 class="card-title text-center mb-3">Add New Item</h3>
+            <!-- Add New Item Form -->
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="form-floating mb-3">
+                    {{ form.title }}
+                    <label style="color: gray;">Name</label>
+                </div>
+                <div class="form-floating mb-3">
+                    {{ form.identifier }}
+                    <label style="color: gray;">{{ form.identifier.label }}</label>
+                </div>
+                <div class="form-floating mb-3">
+                    {{ form.location }}
+                    <label style="color: gray;">{{ form.location.label }}</label>
+                </div>
+                <div class="form-floating mb-3">
+                    {{ form.description }}
+                    <label style="color: gray;">{{ form.description.label }}</label>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">{{ form.status.label }}</label>
+                    {{ form.status }}
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Item Image</label>
+                    {{ form.image }}
+                </div>
+                <div class="mb-3">
+                    <label for="additional_images" class="form-label">Upload Additional Images</label>
+                    <input class="form-control" type="file" name="additional_images" multiple>
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary">Add Item</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<br>
+{% endblock %}

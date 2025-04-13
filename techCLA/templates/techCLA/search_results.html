@@ -1,0 +1,87 @@
+{% extends 'techCLA/base.html' %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="grid">
+        <div class="grid-body">
+          <div class="row">
+            <div class="col-md-3">
+              <h3 class="grid-title">Filters</h3>
+              <hr>
+
+              <div class="form-check">
+                {% if search_by == "collections" %}
+                  <label><input class="form-check-input" type="radio" name="search_by_filter" value="collections" checked> Collection</label>
+                {% else %}
+                  <label><input class="form-check-input" type="radio" name="search_by_filter" value="collections"> Collection</label>
+                {% endif %}
+              </div>
+              <div class="form-check">
+                {% if search_by == "items" %}
+                  <label><input class="form-check-input" type="radio" name="search_by_filter" value="items" checked> Item</label>
+                {% else %}
+                  <label><input class="form-check-input" type="radio" name="search_by_filter" value="items"> Item</label>
+                {% endif %}
+              </div>
+
+              <div class="padding"></div>
+
+            </div>
+            <div class="col-md-9">
+              <h3>Search Results</h3>
+              <hr>
+
+<!--              <form class="input-group mb-1" action="{% url 'search_results' %}" method="get">-->
+<!--                <input class="form-control" type="search" placeholder="Search..." name="q">-->
+<!--                <span><button class="btn btn-outline-dark" type="submit">Search</button></span>-->
+<!--              </form>-->
+              {% if query %}
+                <p style="color: gray;">Showing <strong>{% if search_by == "collections" %} collections {% else %} items {% endif %}</strong> matching "{{ query }}"</p>
+              {% else %}
+                <p style="color: gray;">Showing all <strong>{% if search_by == "collections" %} collections {% else %} items {% endif %}</strong></p>
+              {% endif %}
+              <div class="padding"></div>
+
+              <table class="table table-responsive table-hover align-middle">
+                <thead>
+                  <tr>
+                    {% if search_by == "collections" %}
+                      <th>Name</th>
+                      <th>Creator</th>
+                      <th>Items</th>
+                      <th>Visibility</th>
+                    {% elif search_by == "items" %}
+                      <th>Name</th>
+                      <th>Identifier</th>
+                      <th>Status</th>
+                      <th>Location</th>
+                      <th>Rating</th>
+                    {% endif %}
+                  </tr>
+                </thead>
+                {% if object_list %}
+                  <tbody>
+                    {% for result in object_list %}
+                      {% if search_by == "collections" %}
+                        <tr onclick="window.location='{% url 'collection_detail' result.id %}'" style="cursor: pointer;">
+                          <td><strong>{{ result.name }}</strong><br>{{ result.description }}</td>
+                          <td>{{ result.creator }}</td>
+                          <td>{{ result.items }}</td>
+                          <td class="text-right">{{ result.visibility.upper }}</td>
+                        </tr>
+                      {% elif search_by == "items" %}
+                      {% endif %}
+                    {% endfor %}
+                  </tbody>
+                {% endif %}
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

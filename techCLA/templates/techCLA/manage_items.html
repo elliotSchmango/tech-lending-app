@@ -1,32 +1,28 @@
 {% extends 'techCLA/base.html' %}
+
 {% block content %}
-<h2>Manage Items</h2>
-
-<!-- Add New Item Form -->
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <label for="additional_images">Upload Additional Images:</label>
-    <input type="file" name="additional_images" multiple>
-    <button type="submit">Add Item</button>
-</form>
-
-<hr>
-
-<!-- Existing Items -->
-<h3>Existing Items</h3>
-<ul>
-    {% for item in items %}
-        <li>
-            <strong>{{ item.title }}</strong> ({{ item.status }}) - {{ item.description }}
-            {% if item.image %}
-                <img src="{{ item.image.url }}" alt="{{ item.title }}" width="100">
-            {% endif %}
-            <br>
-            <a href="{% url 'edit_item' item.id %}">Edit</a> |
-            <a href="{% url 'delete_item' item.id %}" onclick="return confirm('Are you sure?');">Delete</a>
-        </li>
-    {% endfor %}
-</ul>
-
+<div class="row d-flex justify-content-center align-items-center">
+    <div class="text-center mb-3">
+        <a class="btn btn-primary" href="{% url 'create_item' %}">Add New Item</a>
+    </div>
+    <div class="card d-flex flex-column mb-4" style="width: 50rem;">
+        <div class="card-body">
+            <h5 class="card-title text-center mb-3">All Items</h5>
+            <!-- Existing Items -->
+            <ul>
+                {% for item in items %}
+                    <li>
+                        <strong>{{ item.title }}</strong> ({{ item.status }}) - {{ item.description }}
+                        {% if item.image %}
+                            <img src="{{ item.image.url }}" alt="{{ item.title }}" width="100">
+                        {% endif %}
+                        <br>
+                        <a href="{% url 'edit_item' item.id %}">Edit</a> |
+                        <a href="{% url 'delete_item' item.id %}" onclick="return confirm('Are you sure?');">Delete</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
 {% endblock %}

@@ -17,10 +17,10 @@
         {% endslot %}
         {% slot actions %}
             <div class="text-center">
-            {% element button type="submit" tags="secondary" %}
+            {% element button type="submit" tags="danger" %}
                 {% trans 'Sign Out' %}
             {% endelement %}
-            {% element button type="submit" href=backaction_url %}
+            {% element button type="submit" tags="secondary" href=backaction_url %}
                 {% trans 'Go Back' %}
             {% endelement %}
             </div>
