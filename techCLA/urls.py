@@ -7,7 +7,8 @@ from .views import (index, CatalogView,
                     private_collections_view,
                     collection_detail, create_collection, edit_collection, delete_collection,
                     item_detail, manage_items, create_item, edit_item, delete_item,
-                    SearchResultsView)
+                    SearchResultsView,
+                    my_borrowed_items, manage_borrow_requests)
 
 urlpatterns = [
     # Catalog URLs
@@ -18,7 +19,7 @@ urlpatterns = [
     path("profile/", profile_detail, name="profile_detail"),
     path("accounts/logout/", SignoutView.as_view(), name="signout"),
 
-    # Private Collection URL
+    # Private Collection
     path('private-collections/', private_collections_view, name='private_collections'),
 
     # Collection URLs
@@ -34,7 +35,13 @@ urlpatterns = [
     path("edit-item/<int:item_id>/", edit_item, name="edit_item"),
     path("delete-item/<int:item_id>/", delete_item, name="delete_item"),
 
-    path("search/", SearchResultsView.as_view(), name="search_results")
+    # Search
+    path("search/", SearchResultsView.as_view(), name="search_results"),
+
+    # Borrow Requests
+    path('borrowed-items/', my_borrowed_items, name='my_borrowed_items'),
+    path("borrow-requests/", manage_borrow_requests, name="manage_borrow_requests"),
+
 ]
 
 if settings.DEBUG:

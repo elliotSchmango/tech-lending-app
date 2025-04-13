@@ -6,7 +6,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views import generic
 from django.views.generic import ListView
 
-from .models import Item, ItemImage, Collection
+from .models import Item, ItemImage, Collection, BorrowRequest
 from .forms import ProfilePictureForm, ItemForm, CollectionFormLibrarian, CollectionFormPatron
 
 
@@ -209,10 +209,22 @@ def collection_detail(request, collection_id):
     })
 
 def item_detail(request, item_name):
-    for i in Item.objects.all():
-        print(i.title)
+    # for i in Item.objects.all():
+    #     print(i.title)
     item = get_object_or_404(Item, title=item_name)
-    return render(request, "techCLA/item.html", {"item": item})
+
+    context = {"item": item}
+
+    if request.method == "POST":
+        if item.status != "available":
+            context["error"] = "This item is not available for borrowing."
+        elif BorrowRequest.objects.filter(item=item, user=request.user, status="pending").exists():
+            context["warning"] = "You already have a pending borrow request for this item."
+        else:
+            BorrowRequest.objects.create(item=item, user=request.user)
+            context["success"] = "Borrow request submitted successfully."
+
+    return render(request, "techCLA/item.html", context)
 
 @login_required
 def private_collections_view(request):
@@ -229,6 +241,43 @@ def private_collections_view(request):
 
     return render(request, 'techCLA/private_collections.html', {
         'private_collections': private_collections
+    })
+
+def my_borrowed_items(request):
+    if not request.user.is_authenticated:
+        return redirect('')
+
+    borrowed_requests = BorrowRequest.objects.filter(user=request.user, status="approved")
+    pending_requests = BorrowRequest.objects.filter(user=request.user, status="pending")
+
+    context = {
+        "borrowed_requests": borrowed_requests,
+        "pending_requests": pending_requests,
+    }
+
+    return render(request, "techCLA/borrowed_items.html", context)
+
+@user_passes_test(is_librarian)
+def manage_borrow_requests(request):
+    requests = BorrowRequest.objects.select_related('item', 'user').order_by('-requested_on')
+
+    if request.method == "POST":
+        action = request.POST.get("action")
+        request_id = request.POST.get("request_id")
+
+        borrow_request = BorrowRequest.objects.get(id=request_id)
+
+        if action == "approve":
+            borrow_request.approve()
+            borrow_request.item.status = "checked_out"
+            borrow_request.item.save()
+        elif action == "deny":
+            borrow_request.deny()
+
+        return redirect("manage_borrow_requests")
+
+    return render(request, "techCLA/manage_requests.html", {
+        "requests": requests
     })
 
 class SearchResultsView(ListView):
