@@ -10,7 +10,6 @@
             <div class="col-md-3">
               <h3 class="grid-title">Filters</h3>
               <hr>
-
               <form action="{% url 'search_results' %}" method="get">
                 <input type="hidden" name="q" value="{{ query }}">
                 <div class="form-check">
@@ -27,9 +26,7 @@
                     <label><input class="form-check-input" type="radio" name="search_by" value="items"> Item</label>
                   {% endif %}
                 </div>
-
                 <div class="padding"></div>
-
                 <hr>
                 <button class="btn btn-outline-dark" type="submit">Filter</button>
               </form>
@@ -37,15 +34,17 @@
             <div class="col-md-9">
               <h3>Search Results</h3>
               <hr>
-
               <form class="input-group mb-1" action="{% url 'search_results' %}" method="get">
                 <input class="form-control" type="search" placeholder="Search..." name="q">
-                <span><button class="btn btn-outline-dark" type="submit">Search</button></span>
                 <input type="hidden" name="search_by" value="{{ search_by }}">
+<!--                <select class="form-select w-25 me-2" name="advanced_filter">-->
+<!--                  <option value="collections">Collections</option>-->
+<!--                  <option value="items">Items</option>-->
+<!--                </select>-->
+                <span><button class="btn btn-outline-dark" type="submit">Search</button></span>
               </form>
               <p style="color: gray;">Showing all <strong>{% if search_by == "collections" %} collections {% else %} items {% endif %}</strong>{% if query %} matching "{{ query }}"{% endif %}</p>
               <div class="padding"></div>
-
               <table class="table table-responsive table-hover align-middle" style="table-layout: fixed;">
                 <thead>
                   <tr>
