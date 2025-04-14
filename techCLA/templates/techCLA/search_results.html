@@ -55,12 +55,12 @@
                     {% if search_by == "collections" %}
                       <th>Name</th>
                       <th style="width: 12%;">Creator</th>
-                      <th style="width: 40%;">Items</th>
+                      <th style="width: 25%;">Items</th>
                       <th style="width: 10%;">Visibility</th>
                     {% elif search_by == "items" %}
                       <th style="width: 10%">Title</th>
                       <th></th>
-                      <th style="width: 22%;">Identifier</th>
+                      <th style="width: 15%;">Identifier</th>
                       <th style="width: 10%;">Status</th>
                       <th style="width: 20%;">Location</th>
                       <th style="width: 10%;">Rating</th>
@@ -75,9 +75,22 @@
                           <td style="overflow: hidden; text-overflow: ellipsis;"><strong>{{ result.name }}</strong><br>{{ result.description }}</td>
                           <td style="overflow: hidden; text-overflow: ellipsis;">{{ result.creator }}</td>
                           {% if result.items.exists %}
-                            <td style="overflow: hidden; text-overflow: ellipsis;">{{ result.items }}</td>
+                            <td style="overflow: hidden; text-overflow: ellipsis;">
+                              <ul class="list-group list-group-flush">
+                                {% for item in result.items.all %}
+                                  <li class="list-group-item d-flex align-items-center">{{ item.title }}</li>
+                                {% endfor %}
+<!--                                {% if result.items.count > 3 %}-->
+<!--                                  <li class="list-group-item">....</li>-->
+<!--                                {% endif %}-->
+                              </ul>
+                            </td>
                           {% else %}
-                            <td style="overflow: hidden; text-overflow: ellipsis;">None</td>
+                            <td style="overflow: hidden; text-overflow: ellipsis;">
+                              <ul class="list-group list-group-flush">
+                                  <li class="list-group-item d-flex align-items-center">None</li>
+                              </ul>
+                            </td>
                           {% endif %}
                           <td class="text-right">{{ result.visibility.upper }}</td>
                         </tr>
