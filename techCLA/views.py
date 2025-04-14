@@ -159,7 +159,7 @@ def create_item(request):
             for file in files:
                 ItemImage.objects.create(item=item, image=file)
 
-            return redirect('create_item')
+            return redirect('manage_items')
     else:
         form = ItemForm()
 
@@ -287,14 +287,16 @@ class SearchResultsView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context["query"] = self.request.GET.get("q")
+        context["query"] = self.request.GET.get("q", "")
         context["search_by"] = self.request.GET.get("search_by")
+        context["advanced_filter"] = self.request.GET.get("advanced_filter")
 
         return context
 
     def get_queryset(self):
         query = self.request.GET.get("q", "")
         search_by = self.request.GET.get("search_by")
+        advanced_filter = self.request.GET.get("advanced_filter")
 
         if search_by == "collections":
             object_list = Collection.objects.filter(

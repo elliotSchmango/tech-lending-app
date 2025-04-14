@@ -45,7 +45,9 @@
 {% endif %}
 
 {% if user == collection.creator or user.is_librarian %}
+  <div class="mb-4">
     <a href="{% url 'delete_collection' collection.id %}" class="btn btn-danger">Delete Collection</a>
+  </div>
 {% endif %}
 
 <style>
