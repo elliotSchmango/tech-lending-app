@@ -35,11 +35,15 @@
               <h3>Search Results</h3>
               <hr>
               <form class="input-group mb-1" action="{% url 'search_results' %}" method="get">
-                <input class="form-control" type="search" placeholder="Search..." name="q">
+                <input class="form-control w-50" type="search" placeholder="Searching {% if search_by == 'collections' %}collections...{% else %}items...{% endif %}" name="q">
                 <input type="hidden" name="search_by" value="{{ search_by }}">
-<!--                <select class="form-select w-25 me-2" name="advanced_filter">-->
-<!--                  <option value="collections">Collections</option>-->
-<!--                  <option value="items">Items</option>-->
+<!--                <select class="form-select" name="advanced_filter">-->
+<!--                  {% if search_by == "collections" %}-->
+<!--                    <option value="name">Name</option>-->
+<!--                    <option value="creator">Creator</option>-->
+<!--                    <option value="items">Items</option>-->
+<!--                  {% elif search_by == "items" %}-->
+<!--                  {% endif %}-->
 <!--                </select>-->
                 <span><button class="btn btn-outline-dark" type="submit">Search</button></span>
               </form>
@@ -88,6 +92,12 @@
                         </tr>
                       {% endif %}
                     {% endfor %}
+                  </tbody>
+                {% else %}
+                  <tbody>
+                    <tr style="height: 150px;">
+                      <td colspan="{% if search_by == 'collections' %}4{% else %}6{% endif %}" class="text-center"><h5><span class="badge rounded-pill bg-danger">No Results</span></h5></td>
+                    </tr>
                   </tbody>
                 {% endif %}
               </table>
