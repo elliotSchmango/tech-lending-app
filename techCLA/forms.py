@@ -38,7 +38,7 @@ class CollectionFormLibrarian(forms.ModelForm):
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'style': 'height: 100px;'}),
             'visibility': forms.Select(attrs={'class': 'form-select'}),
-            'items': forms.CheckboxSelectMultiple(attrs={'class': 'form-check-input'}),
+            'items': forms.SelectMultiple(attrs={'class': 'form-select'}),
         }
 
 class CollectionFormPatron(forms.ModelForm):
