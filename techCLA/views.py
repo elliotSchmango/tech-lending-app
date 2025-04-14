@@ -287,7 +287,7 @@ class SearchResultsView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context["query"] = self.request.GET.get("q")
+        context["query"] = self.request.GET.get("q", "")
         context["search_by"] = self.request.GET.get("search_by")
 
         return context
