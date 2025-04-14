@@ -44,20 +44,20 @@
               {% endif %}
               <div class="padding"></div>
 
-              <table class="table table-responsive table-hover align-middle">
+              <table class="table table-responsive table-hover align-middle" style="table-layout: fixed;">
                 <thead>
                   <tr>
                     {% if search_by == "collections" %}
                       <th>Name</th>
-                      <th>Creator</th>
-                      <th>Items</th>
-                      <th>Visibility</th>
+                      <th style="width: 12%;">Creator</th>
+                      <th style="width: 40%;">Items</th>
+                      <th style="width: 10%;">Visibility</th>
                     {% elif search_by == "items" %}
-                      <th>Name</th>
-                      <th>Identifier</th>
-                      <th>Status</th>
-                      <th>Location</th>
-                      <th>Rating</th>
+                      <th>Title</th>
+                      <th style="width: 22%;">Identifier</th>
+                      <th style="width: 10%;">Status</th>
+                      <th style="width: 20%;">Location</th>
+                      <th style="width: 10%;">Rating</th>
                     {% endif %}
                   </tr>
                 </thead>
@@ -66,12 +66,23 @@
                     {% for result in object_list %}
                       {% if search_by == "collections" %}
                         <tr onclick="window.location='{% url 'collection_detail' result.id %}'" style="cursor: pointer;">
-                          <td><strong>{{ result.name }}</strong><br>{{ result.description }}</td>
-                          <td>{{ result.creator }}</td>
-                          <td>{{ result.items }}</td>
+                          <td style="overflow: hidden; text-overflow: ellipsis;"><strong>{{ result.name }}</strong><br>{{ result.description }}</td>
+                          <td style="overflow: hidden; text-overflow: ellipsis;">{{ result.creator }}</td>
+                          {% if result.items.exists %}
+                            <td style="overflow: hidden; text-overflow: ellipsis;">{{ result.items }}</td>
+                          {% else %}
+                            <td style="overflow: hidden; text-overflow: ellipsis;">None</td>
+                          {% endif %}
                           <td class="text-right">{{ result.visibility.upper }}</td>
                         </tr>
                       {% elif search_by == "items" %}
+                        <tr onclick="window.location='{% url 'item_detail' result.title %}'" style="cursor: pointer;">
+                          <td style="overflow: hidden; text-overflow: ellipsis;"><strong>{{ result.title }}</strong><br>{{ result.description }}</td>
+                          <td style="overflow: hidden; text-overflow: ellipsis;">{{ result.identifier }}</td>
+                          <td>{{ result.status }}</td>
+                          <td style="overflow: hidden; text-overflow: ellipsis;">{{ result.location }}</td>
+                          <td class="text-right">{{ result.rating }}</td>
+                        </tr>
                       {% endif %}
                     {% endfor %}
                   </tbody>

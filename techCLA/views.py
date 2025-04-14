@@ -159,7 +159,7 @@ def create_item(request):
             for file in files:
                 ItemImage.objects.create(item=item, image=file)
 
-            return redirect('create_item')
+            return redirect('manage_items')
     else:
         form = ItemForm()
 
