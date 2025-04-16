@@ -47,7 +47,11 @@
 <!--                </select>-->
                 <span><button class="btn btn-outline-dark" type="submit">Search</button></span>
               </form>
-              <p style="color: gray;">Showing all <strong>{% if search_by == "collections" %} collections {% else %} items {% endif %}</strong>{% if query %} matching "{{ query }}"{% endif %}</p>
+              <p style="color: gray;">
+                Showing all {% if not user.is_authenticated %} public {% endif %}
+                <strong>{% if search_by == "collections" %} collections {% else %} items {% endif %}</strong>
+                {% if query %} matching "{{ query }}"{% endif %}
+              </p>
               <div class="padding"></div>
               <table class="table table-responsive table-hover align-middle" style="table-layout: fixed;">
                 <thead>

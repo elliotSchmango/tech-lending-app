@@ -287,6 +287,7 @@ class SearchResultsView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
+        context["user"] = self.request.user
         context["query"] = self.request.GET.get("q", "")
         context["search_by"] = self.request.GET.get("search_by")
         context["advanced_filter"] = self.request.GET.get("advanced_filter")
@@ -294,14 +295,20 @@ class SearchResultsView(ListView):
         return context
 
     def get_queryset(self):
+        user = self.request.user
         query = self.request.GET.get("q", "")
         search_by = self.request.GET.get("search_by")
         advanced_filter = self.request.GET.get("advanced_filter")
 
         if search_by == "collections":
-            object_list = Collection.objects.filter(
-                Q(name__icontains=query)
-            )
+            if user.is_authenticated:
+                object_list = Collection.objects.filter(
+                    Q(name__icontains=query)
+                )
+            else:
+                object_list = Collection.objects.filter(
+                    Q(name__icontains=query) & Q(visibility="public")
+                )
         elif search_by == "items":
             object_list = Item.objects.filter(
                 Q(title__icontains=query)
