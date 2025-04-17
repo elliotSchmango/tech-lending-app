@@ -6,8 +6,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views import generic
 from django.views.generic import ListView
 
-from .models import Item, ItemImage, Collection, BorrowRequest
-from .forms import ProfilePictureForm, ItemForm, CollectionFormLibrarian, CollectionFormPatron
+from .models import Item, ItemImage, Collection, BorrowRequest, Review
+from .forms import ProfilePictureForm, ItemForm, CollectionFormLibrarian, CollectionFormPatron, ReviewForm
 
 
 def index(request):
@@ -215,14 +215,31 @@ def item_detail(request, item_name):
 
     context = {"item": item}
 
+    reviews = Review.objects.filter(item=item).order_by("-date_created")
+    user_review = reviews.filter(user=request.user).first()
+    context["reviews"] = reviews
+    context["user_review"] = user_review
+    context["form"] = ReviewForm()
+
     if request.method == "POST":
-        if item.status != "available":
-            context["error"] = "This item is not available for borrowing."
-        elif BorrowRequest.objects.filter(item=item, user=request.user, status="pending").exists():
-            context["warning"] = "You already have a pending borrow request for this item."
-        else:
-            BorrowRequest.objects.create(item=item, user=request.user)
-            context["success"] = "Borrow request submitted successfully."
+        if "borrow_request" in request.POST:
+            if item.status != "available":
+                context["error"] = "This item is not available for borrowing."
+            elif BorrowRequest.objects.filter(item=item, user=request.user, status="pending").exists():
+                context["warning"] = "You already have a pending borrow request for this item."
+            else:
+                BorrowRequest.objects.create(item=item, user=request.user)
+                context["success"] = "Borrow request submitted successfully."
+
+        elif "submit_review" in request.POST:
+            if not user_review:
+                form = ReviewForm(request.POST)
+                if form.is_valid():
+                    review = form.save(commit=False)
+                    review.item = item
+                    review.user = request.user
+                    review.save()
+                    return redirect("item_detail", item_name=item.title)
 
     return render(request, "techCLA/item.html", context)
 
