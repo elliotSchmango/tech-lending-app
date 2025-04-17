@@ -23,10 +23,7 @@
           <p class="card-text small">{{ item.description|default:"No description."|truncatewords:15 }}</p>
 
           {% if item.status == 'available' %}
-            <form method="post" action="{% url 'item_detail' item.title %}">
-              {% csrf_token %}
-              <button class="btn btn-primary btn-sm w-100">Borrow</button>
-            </form>
+            <a href="{% url 'item_detail' item.title %}" class="btn btn-primary btn-sm w-100">View & Borrow</a>
           {% else %}
             <button class="btn btn-secondary btn-sm w-100" disabled>{{ item.get_status_display }}</button>
           {% endif %}

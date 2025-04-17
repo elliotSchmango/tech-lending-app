@@ -231,5 +231,5 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 #redirect to https and secure csrf
-SECURE_SSL_REDIRECT = True
-CSRF_COOKIE_SECURE = True
+SECURE_SSL_REDIRECT = False
+CSRF_COOKIE_SECURE = False
