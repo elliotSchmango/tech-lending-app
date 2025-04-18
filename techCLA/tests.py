@@ -67,7 +67,7 @@ class PrivateCollectionsTests(TestCase):
 
     def test_patron_sees_own_and_shared_only(self):
         self.client.login(username="pat", password="pass")
-        response = self.client.get(reverse("private_collections"))
+        response = self.client.get(reverse("private_collections"), follow=True)
         collections = response.context["private_collections"]
 
         self.assertIn(self.own, collections)
@@ -76,7 +76,7 @@ class PrivateCollectionsTests(TestCase):
 
     def test_librarian_sees_all_private(self):
         self.client.login(username="lib", password="pass")
-        response = self.client.get(reverse("private_collections"))
+        response = self.client.get(reverse("private_collections"), follow=True)
         collections = response.context["private_collections"]
 
         self.assertIn(self.own, collections)

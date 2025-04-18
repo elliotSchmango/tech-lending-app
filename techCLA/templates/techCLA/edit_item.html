@@ -1,0 +1,65 @@
+{% extends 'techCLA/base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-center align-items-center">
+    <div class="card" style="width: 50rem;">
+        <div class="card-body">
+            <h3 class="card-title text-center mb-3">Edit Item</h3>
+
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="form-floating mb-3">
+                    {{ form.title }}
+                    <label style="color: gray;">Name</label>
+                </div>
+
+                <div class="form-floating mb-3">
+                    {{ form.identifier }}
+                    <label style="color: gray;">{{ form.identifier.label }}</label>
+                </div>
+
+                <div class="form-floating mb-3">
+                    {{ form.location }}
+                    <label style="color: gray;">{{ form.location.label }}</label>
+                </div>
+
+                <div class="form-floating mb-3">
+                    {{ form.description }}
+                    <label style="color: gray;">{{ form.description.label }}</label>
+                </div>
+
+                <div class="hidden mb-3">
+                    <label class="form-label">{{ form.status.label }}</label>
+                    {{ form.status }}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Current Image</label><br>
+                    {% if item.image %}
+                        <img src="{{ item.image.url }}" alt="Current Image" width="200" class="mb-2">
+                    {% else %}
+                        <p>No image uploaded yet.</p>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Upload New Image</label>
+                    {{ form.image }}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Upload Additional Images</label>
+                    <input class="form-control" type="file" name="additional_images" multiple>
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <a href="{% url 'manage_items' %}" class="btn btn-secondary ms-2">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<br>
+{% endblock %}
