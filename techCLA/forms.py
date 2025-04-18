@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Profile, Item, Collection
+from .models import Profile, Item, Collection, Review
 
 class ProfilePictureForm(forms.ModelForm):
     class Meta:
@@ -55,3 +55,13 @@ class CollectionFormPatron(forms.ModelForm):
         super().__init__(*args, **kwargs)
         # Force visibility to "public" for all patron-created collections
         self.instance.visibility = 'public'
+
+
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model = Review
+        fields = ['rating', 'comment']
+        widgets = {
+            'rating': forms.Select(choices=[(i, str(i)) for i in range(1, 11)], attrs={'class': 'form-control'}),
+            'comment': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+        }
