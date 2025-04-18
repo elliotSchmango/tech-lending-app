@@ -40,18 +40,30 @@
           <p><strong>Location:</strong> {{ item.location|default:"No location provided." }}</p>
         </div>
         <!--review listing-->
-        <div class="mt-4">
-          <h4>Reviews</h4>
-          {% for review in reviews %}
-            <div class="border rounded p-3 mb-3">
-              <strong>{{ review.user.get_full_name|default:review.user.username }}</strong>
-              <span class="text-muted">rated it {{ review.rating }}/10</span>
-              <p>{{ review.comment }}</p>
-              <small class="text-muted">{{ review.date_created|date:"M d, Y H:i" }}</small>
+        <div class="col-md-12 mt-4">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="card-title mb-3">Reviews</h4>
+              {% if reviews %}
+                <div class="list-group">
+                  {% for review in reviews %}
+                    <div class="list-group-item list-group-item-action flex-column align-items-start mb-2">
+                      <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">{{ review.user.get_full_name|default:review.user.username }}</h5>
+                        <small class="text-muted">{{ review.date_created|date:"M d, Y H:i" }}</small>
+                      </div>
+                      <p class="mb-1">{{ review.comment }}</p>
+                      <small>
+                        <span class="badge bg-warning text-dark">Rating: {{ review.rating }}/10</span>
+                      </small>
+                    </div>
+                  {% endfor %}
+                </div>
+              {% else %}
+                <p class="text-muted">No reviews yet.</p>
+              {% endif %}
             </div>
-          {% empty %}
-            <p class="text-muted">No reviews yet.</p>
-          {% endfor %}
+          </div>
         </div>
 
         <!-- button for requesting an item-->
@@ -72,13 +84,29 @@
         {% endif %}
         <!--review and comment code-->
         {% if user.is_authenticated and not user_review %}
-          <hr>
+          <hr class="mt-4">
           <h5>Leave a Review</h5>
-          <form method="post">
+          <form method="post" class="mt-3">
             {% csrf_token %}
             <input type="hidden" name="submit_review" value="1">
-            {{ form.as_p }}
-            <button type="submit" class="btn btn-success mt-2">Submit Review</button>
+
+            <div class="mb-3">
+              {{ form.rating.label_tag }}
+              {{ form.rating }}
+              {% if form.rating.errors %}
+                <div class="text-danger small">{{ form.rating.errors }}</div>
+              {% endif %}
+            </div>
+
+            <div class="mb-3">
+              {{ form.comment.label_tag }}
+              {{ form.comment }}
+              {% if form.comment.errors %}
+                <div class="text-danger small">{{ form.comment.errors }}</div>
+              {% endif %}
+            </div>
+
+            <button type="submit" class="btn btn-success">Submit Review</button>
           </form>
         {% elif user_review %}
           <p class="text-muted">You've already reviewed this item.</p>
