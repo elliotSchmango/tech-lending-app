@@ -34,7 +34,7 @@
             <div class="col-md-9">
               <h3>Search Results</h3>
               <hr>
-              <form class="input-group mb-1" action="{% url 'search_results' %}" method="get">
+              <form class="input-group mb-1" action="{{ request.path }}" method="get">
                 <input class="form-control w-50" type="search" placeholder="Searching {% if search_by == 'collections' %}collections...{% else %}items...{% endif %}" name="q">
                 <input type="hidden" name="search_by" value="{{ search_by }}">
 <!--                <select class="form-select" name="advanced_filter">-->

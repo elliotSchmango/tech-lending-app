@@ -202,10 +202,19 @@ def collection_detail(request, collection_id):
         return render(request, 'techCLA/collections/access_denied.html', {'collection': collection})
 
     items = collection.items.all()
+    query = ""
+
+    if request.method == "GET":
+        query = request.GET.get("q", "")
+
+        items = items.objects.filter(
+            Q(title__icontains=query)
+        )
 
     return render(request, 'techCLA/collection.html', {
         'collection': collection,
-        'items': items
+        'items': items,
+        'query': query,
     })
 
 def item_detail(request, item_name):
