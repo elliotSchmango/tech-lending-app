@@ -36,15 +36,43 @@
               {{ item.get_status_display }}
             </span>
           </p>
-          <p class="fs-5"><strong>Collection:</strong> {{ item.collections.name|default:"Not part of a collection." }}</p>
+          <!--<p class="fs-5"><strong>Collection:</strong> {{ item.collections.name|default:"Not part of a collection." }}</p>-->
           <p><strong>Location:</strong> {{ item.location|default:"No location provided." }}</p>
         </div>
+        <!--review listing-->
+        <div class="col-md-12 mt-4">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="card-title mb-3">Reviews</h4>
+              {% if reviews %}
+                <div class="list-group">
+                  {% for review in reviews %}
+                    <div class="list-group-item list-group-item-action flex-column align-items-start mb-2">
+                      <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">{{ review.user.get_full_name|default:review.user.username }}</h5>
+                        <small class="text-muted">{{ review.date_created|date:"M d, Y H:i" }}</small>
+                      </div>
+                      <p class="mb-1">{{ review.comment }}</p>
+                      <small>
+                        <span class="badge bg-warning text-dark">Rating: {{ review.rating }}/10</span>
+                      </small>
+                    </div>
+                  {% endfor %}
+                </div>
+              {% else %}
+                <p class="text-muted">No reviews yet.</p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
         <!-- button for requesting an item-->
         {% if user.is_authenticated %}
           <form method="post" class="mt-3">
             {% csrf_token %}
+            <input type="hidden" name="borrow_request" value="1">
             {% if item.status == "available" %}
-              <button type="submit" class="btn btn-primary btn-block">Request to Borrow</button>
+              <button type="submit" class="btn btn-primary btn-block">Borrow</button>
             {% else %}
               <button type="submit" class="btn btn-secondary btn-block" disabled>This item is not available</button>
             {% endif %}
@@ -54,6 +82,36 @@
             <a href="{% url 'account_login' %}">Log in</a> to request this item.
           </div>
         {% endif %}
+        <!--review and comment code-->
+        {% if user.is_authenticated and not user_review %}
+          <hr class="mt-4">
+          <h5>Leave a Review</h5>
+          <form method="post" class="mt-3">
+            {% csrf_token %}
+            <input type="hidden" name="submit_review" value="1">
+
+            <div class="mb-3">
+              {{ form.rating.label_tag }}
+              {{ form.rating }}
+              {% if form.rating.errors %}
+                <div class="text-danger small">{{ form.rating.errors }}</div>
+              {% endif %}
+            </div>
+
+            <div class="mb-3">
+              {{ form.comment.label_tag }}
+              {{ form.comment }}
+              {% if form.comment.errors %}
+                <div class="text-danger small">{{ form.comment.errors }}</div>
+              {% endif %}
+            </div>
+
+            <button type="submit" class="btn btn-success">Submit Review</button>
+          </form>
+        {% elif user_review %}
+          <p class="text-muted">You've already reviewed this item.</p>
+        {% endif %}
+
         {% if success %}
           <div class="alert alert-success mt-3">{{ success }}</div>
         {% endif %}
