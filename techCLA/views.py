@@ -207,7 +207,7 @@ def collection_detail(request, collection_id):
     if request.method == "GET":
         query = request.GET.get("q", "")
 
-        items = items.objects.filter(
+        items = items.filter(
             Q(title__icontains=query)
         )
 
