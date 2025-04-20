@@ -34,7 +34,8 @@
           {% if item.status == 'available' %}
             <a href="{% url 'item_detail' item.title %}" class="btn btn-primary btn-sm w-100">View & Borrow</a>
           {% else %}
-            <button class="btn btn-secondary btn-sm w-100" disabled>{{ item.get_status_display }}</button>
+            <button class="btn btn-secondary btn-sm w-100 mb-2" disabled>{{ item.get_status_display }}</button>
+            <a href="{% url 'item_detail' item.title %}" class="btn btn-primary btn-sm w-100">View</a>
           {% endif %}
         </div>
       </div>
