@@ -17,4 +17,20 @@
   {% else %}
     <p>You don't have access to any private collections.</p>
   {% endif %}
+
+  <h2 class="mb-4">Private Collections You Cannot Access</h2>
+
+  {% if inaccessible %}
+    {% for collection in inaccessible %}
+      <div class="card mb-3 border-danger">
+        <div class="card-body">
+          <h5 class="card-title">{{ collection.name }}</h5>
+          <p class="card-text text-muted">{{ collection.description }}</p>
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p>You already have access to all available private collections.</p>
+  {% endif %}
+
 {% endblock %}

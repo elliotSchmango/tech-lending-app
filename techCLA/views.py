@@ -258,15 +258,23 @@ def private_collections_view(request):
 
     if user.is_librarian():
         private_collections = Collection.objects.filter(visibility='private')
+        inaccessible = Collection.objects.none()
     else:
         # Patrons see collections they created OR are allowed to access
         created = Collection.objects.filter(visibility='private', creator=user)
         allowed = Collection.objects.filter(visibility='private', allowed_users=user)
 
         private_collections = (created | allowed).distinct()
+        inaccessible = Collection.objects.filter(
+            visibility='private'
+        ).exclude(
+            id__in=private_collections.values_list('id', flat=True)
+        )
+        print(inaccessible)
 
     return render(request, 'techCLA/private_collections.html', {
-        'private_collections': private_collections
+        'private_collections': private_collections,
+        'inaccessible': inaccessible
     })
 
 def my_borrowed_items(request):
