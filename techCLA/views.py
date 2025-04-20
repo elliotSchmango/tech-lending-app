@@ -20,7 +20,7 @@ def index(request):
         else:
             role = 'Patron'
             welcome_message = f"Welcome, {username}! Enjoy browsing our collections."
-            collections = Collection.objects.filter(visibility='public')
+            collections = Collection.objects.filter(creator=request.user) | Collection.objects.filter(visibility="public") | Collection.objects.filter(allowed_users=request.user)
     else:
         role = 'Anonymous'
         username = ''
@@ -75,7 +75,7 @@ class CatalogView(generic.ListView):
             if user.is_librarian():
                 return Collection.objects.all()
             else:
-                return Collection.objects.filter(creator=user) | Collection.objects.filter(visibility="public")
+                return Collection.objects.filter(creator=user) | Collection.objects.filter(visibility="public") | Collection.objects.filter(allowed_users=user)
         else:
             return Collection.objects.filter(visibility="public")
     
@@ -270,7 +270,7 @@ def private_collections_view(request):
         ).exclude(
             id__in=private_collections.values_list('id', flat=True)
         )
-        print(inaccessible)
+        #print(inaccessible)
 
     return render(request, 'techCLA/private_collections.html', {
         'private_collections': private_collections,
@@ -439,3 +439,24 @@ def request_access_view(request, collection_id):
         'collection': collection,
         'form': form,
     })
+
+@user_passes_test(is_librarian)
+def manage_access_requests_view(request):
+    if request.method == "POST":
+        request_id = request.POST.get('request_id')
+        action = request.POST.get('action')
+        access_request = get_object_or_404(RequestAccess, id=request_id)
+
+        if action == 'approve':
+            access_request.status = 'approved'
+            access_request.collection.allowed_users.add(access_request.requester)
+            messages.success(request, f"Approved access for {access_request.requester.username}")
+        elif action == 'deny':
+            access_request.status = 'denied'
+            messages.info(request, f"Denied access for {access_request.requester.username}")
+
+        access_request.save()
+        return redirect('manage_access_requests')
+
+    requests = RequestAccess.objects.filter(status='pending').order_by('-timestamp')
+    return render(request, 'techCLA/manage_access_requests.html', {'requests': requests})

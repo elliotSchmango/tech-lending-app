@@ -26,6 +26,12 @@
         <div class="card-body">
           <h5 class="card-title">{{ collection.name }}</h5>
           <p class="card-text text-muted">{{ collection.description }}</p>
+          {% if user not in collection.allowed_users.all and collection.creator != user %}
+            <a class="btn btn-outline-primary btn-sm"
+              href="{% url 'request_access' collection.id %}">
+              Request Access
+            </a>
+          {% endif %}
         </div>
       </div>
     {% endfor %}
