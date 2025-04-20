@@ -6,8 +6,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views import generic
 from django.views.generic import ListView
 
-from .models import Item, ItemImage, Collection, BorrowRequest, Review
-from .forms import ProfilePictureForm, ItemForm, CollectionFormLibrarian, CollectionFormPatron, ReviewForm
+from .models import Item, ItemImage, Collection, BorrowRequest, Review, RequestAccess
+from .forms import ProfilePictureForm, ItemForm, CollectionFormLibrarian, CollectionFormPatron, ReviewForm, RequestAccessForm
 
 
 def index(request):
@@ -20,7 +20,7 @@ def index(request):
         else:
             role = 'Patron'
             welcome_message = f"Welcome, {username}! Enjoy browsing our collections."
-            collections = Collection.objects.filter(visibility='public')
+            collections = Collection.objects.filter(creator=request.user) | Collection.objects.filter(visibility="public") | Collection.objects.filter(allowed_users=request.user)
     else:
         role = 'Anonymous'
         username = ''
@@ -75,7 +75,7 @@ class CatalogView(generic.ListView):
             if user.is_librarian():
                 return Collection.objects.all()
             else:
-                return Collection.objects.filter(creator=user) | Collection.objects.filter(visibility="public")
+                return Collection.objects.filter(creator=user) | Collection.objects.filter(visibility="public") | Collection.objects.filter(allowed_users=user)
         else:
             return Collection.objects.filter(visibility="public")
     
@@ -258,15 +258,23 @@ def private_collections_view(request):
 
     if user.is_librarian():
         private_collections = Collection.objects.filter(visibility='private')
+        inaccessible = Collection.objects.none()
     else:
         # Patrons see collections they created OR are allowed to access
         created = Collection.objects.filter(visibility='private', creator=user)
         allowed = Collection.objects.filter(visibility='private', allowed_users=user)
 
         private_collections = (created | allowed).distinct()
+        inaccessible = Collection.objects.filter(
+            visibility='private'
+        ).exclude(
+            id__in=private_collections.values_list('id', flat=True)
+        )
+        #print(inaccessible)
 
     return render(request, 'techCLA/private_collections.html', {
-        'private_collections': private_collections
+        'private_collections': private_collections,
+        'inaccessible': inaccessible
     })
 
 def my_borrowed_items(request):
@@ -399,3 +407,56 @@ class SearchResultsView(ListView):
                 object_list = object_list.filter(status_query)
 
         return object_list
+
+@login_required
+def request_access_view(request, collection_id):
+    collection = get_object_or_404(Collection, id=collection_id)
+
+    #already has access
+    if request.user in collection.allowed_users.all() or request.user == collection.creator:
+        messages.info(request, "You already have access to this collection.")
+        return redirect('collection_detail', collection.id)
+
+    #if request already exists
+    existing = RequestAccess.objects.filter(requester=request.user, collection=collection).first()
+    if existing:
+        messages.warning(request, "You have already requested access.")
+        return redirect('collection_detail', collection.id)
+
+    if request.method == "POST":
+        form = RequestAccessForm(request.POST)
+        if form.is_valid():
+            request_access = form.save(commit=False)
+            request_access.requester = request.user
+            request_access.collection = collection
+            request_access.save()
+            messages.success(request, "Access request submitted.")
+            return redirect('collection_detail', collection.id)
+    else:
+        form = RequestAccessForm()
+
+    return render(request, 'techCLA/request_access.html', {
+        'collection': collection,
+        'form': form,
+    })
+
+@user_passes_test(is_librarian)
+def manage_access_requests_view(request):
+    if request.method == "POST":
+        request_id = request.POST.get('request_id')
+        action = request.POST.get('action')
+        access_request = get_object_or_404(RequestAccess, id=request_id)
+
+        if action == 'approve':
+            access_request.status = 'approved'
+            access_request.collection.allowed_users.add(access_request.requester)
+            messages.success(request, f"Approved access for {access_request.requester.username}")
+        elif action == 'deny':
+            access_request.status = 'denied'
+            messages.info(request, f"Denied access for {access_request.requester.username}")
+
+        access_request.save()
+        return redirect('manage_access_requests')
+
+    requests = RequestAccess.objects.filter(status='pending').order_by('-timestamp')
+    return render(request, 'techCLA/manage_access_requests.html', {'requests': requests})

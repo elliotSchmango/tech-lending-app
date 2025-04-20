@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Profile, Item, Collection, Review
+from .models import Profile, Item, Collection, Review, RequestAccess
 
 class ProfilePictureForm(forms.ModelForm):
     class Meta:
@@ -64,4 +64,12 @@ class ReviewForm(forms.ModelForm):
         widgets = {
             'rating': forms.Select(choices=[(i, str(i)) for i in range(1, 11)], attrs={'class': 'form-control'}),
             'comment': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+        }
+
+class RequestAccessForm(forms.ModelForm):
+    class Meta:
+        model = RequestAccess
+        fields = ['message']
+        widgets = {
+            'message': forms.Textarea(attrs={'rows': 2, 'placeholder': 'Optional message...'}),
         }

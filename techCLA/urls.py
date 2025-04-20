@@ -8,7 +8,7 @@ from .views import (index, CatalogView,
                     collection_detail, create_collection, edit_collection, delete_collection,
                     item_detail, manage_items, create_item, edit_item, delete_item,
                     SearchResultsView,
-                    my_borrowed_items, manage_borrow_requests)
+                    my_borrowed_items, manage_borrow_requests,request_access_view,manage_access_requests_view)
 
 urlpatterns = [
     # Catalog URLs
@@ -42,6 +42,9 @@ urlpatterns = [
     path('borrowed-items/', my_borrowed_items, name='my_borrowed_items'),
     path("borrow-requests/", manage_borrow_requests, name="manage_borrow_requests"),
 
+    # Collection Access Requests URLs
+    path('collections/<int:collection_id>/request-access/', request_access_view, name='request_access'),
+    path('collections/access-requests/', manage_access_requests_view, name='manage_access_requests'),
 ]
 
 if settings.DEBUG:

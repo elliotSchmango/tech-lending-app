@@ -123,3 +123,21 @@ class BorrowRequest(models.Model):
         self.status = "denied"
         self.denied_on = timezone.now()
         self.save()
+
+class RequestAccess(models.Model):
+    requester = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    collection = models.ForeignKey('Collection', on_delete=models.CASCADE)
+    message = models.TextField(blank=True)
+    status_choices = [
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('denied', 'Denied'),
+    ]
+    status = models.CharField(max_length=10, choices=status_choices, default='pending')
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('requester', 'collection')  # Prevent duplicate requests
+
+    def __str__(self):
+        return f"{self.requester.username} → {self.collection.name} ({self.status})"
