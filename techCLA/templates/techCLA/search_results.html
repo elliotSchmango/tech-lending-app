@@ -110,16 +110,24 @@
                           <td style="overflow: hidden; text-overflow: ellipsis;"><strong>{{ result.name }}</strong><br>{{ result.description }}</td>
                           <td style="overflow: hidden; text-overflow: ellipsis;">{{ result.creator }}</td>
                           {% if result.items.exists %}
-                            <td style="overflow: hidden; text-overflow: ellipsis;">
-                              <ul class="list-group list-group-flush">
-                                {% for item in result.items.all %}
-                                  <li class="list-group-item d-flex align-items-center">{{ item.title }}</li>
-                                {% endfor %}
-<!--                                {% if result.items.count > 3 %}-->
-<!--                                  <li class="list-group-item">....</li>-->
-<!--                                {% endif %}-->
-                              </ul>
-                            </td>
+                            {% if result.visibility == "public" or user.is_librarian %}
+                              <td style="overflow: hidden; text-overflow: ellipsis;">
+                                <ul class="list-group list-group-flush">
+                                  {% for item in result.items.all %}
+                                    <li class="list-group-item d-flex align-items-center">{{ item.title }}</li>
+                                  {% endfor %}
+  <!--                                {% if result.items.count > 3 %}-->
+  <!--                                  <li class="list-group-item">....</li>-->
+  <!--                                {% endif %}-->
+                                </ul>
+                              </td>
+                            {% else %}
+                              <td style="overflow: hidden; text-overflow: ellipsis;">
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item d-flex align-items-center">Private</li>
+                                </ul>
+                              </td>
+                            {% endif %}
                           {% else %}
                             <td style="overflow: hidden; text-overflow: ellipsis;">
                               <ul class="list-group list-group-flush">
