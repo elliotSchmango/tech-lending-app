@@ -6,8 +6,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views import generic
 from django.views.generic import ListView
 
-from .models import Item, ItemImage, Collection, BorrowRequest, Review
-from .forms import ProfilePictureForm, ItemForm, CollectionFormLibrarian, CollectionFormPatron, ReviewForm
+from .models import Item, ItemImage, Collection, BorrowRequest, Review, RequestAccess
+from .forms import ProfilePictureForm, ItemForm, CollectionFormLibrarian, CollectionFormPatron, ReviewForm, RequestAccessForm
 
 
 def index(request):
@@ -407,3 +407,35 @@ class SearchResultsView(ListView):
                 object_list = object_list.filter(status_query)
 
         return object_list
+
+@login_required
+def request_access_view(request, collection_id):
+    collection = get_object_or_404(Collection, id=collection_id)
+
+    #already has access
+    if request.user in collection.allowed_users.all() or request.user == collection.creator:
+        messages.info(request, "You already have access to this collection.")
+        return redirect('collection_detail', collection.id)
+
+    #if request already exists
+    existing = RequestAccess.objects.filter(requester=request.user, collection=collection).first()
+    if existing:
+        messages.warning(request, "You have already requested access.")
+        return redirect('collection_detail', collection.id)
+
+    if request.method == "POST":
+        form = RequestAccessForm(request.POST)
+        if form.is_valid():
+            request_access = form.save(commit=False)
+            request_access.requester = request.user
+            request_access.collection = collection
+            request_access.save()
+            messages.success(request, "Access request submitted.")
+            return redirect('collection_detail', collection.id)
+    else:
+        form = RequestAccessForm()
+
+    return render(request, 'techCLA/request_access.html', {
+        'collection': collection,
+        'form': form,
+    })
