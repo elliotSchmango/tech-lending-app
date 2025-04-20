@@ -1,7 +1,7 @@
 from django.contrib.auth.views import LogoutView
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.contrib import messages
-from django.db.models import Q
+from django.db.models import Q, OuterRef, Subquery
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import generic
 from django.views.generic import ListView
@@ -273,7 +273,20 @@ def my_borrowed_items(request):
     if not request.user.is_authenticated:
         return redirect('')
 
-    borrowed_requests = BorrowRequest.objects.filter(user=request.user, status="approved")
+    if request.method == "POST":
+        item_name = request.POST.get("item_return")
+
+        item = Item.objects.get(title=item_name)
+        item.status = "available"
+        item.save()
+
+    latest_approve_dates = BorrowRequest.objects.filter(item__title=OuterRef("item__title")).order_by("-approved_on")
+    borrowed_requests = BorrowRequest.objects.filter(
+        user=request.user,
+        status="approved",
+        approved_on=Subquery(latest_approve_dates.values("approved_on")[:1])
+    ).exclude(item__status="available")
+
     pending_requests = BorrowRequest.objects.filter(user=request.user, status="pending")
 
     context = {
