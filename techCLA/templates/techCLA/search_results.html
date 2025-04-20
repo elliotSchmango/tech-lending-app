@@ -27,6 +27,31 @@
                   {% endif %}
                 </div>
                 <div class="padding"></div>
+                {% if search_by == "collections" and user.is_authenticated %}
+                  <h5 class="mt-2">Visibility</h5>
+                  <div class="form-check">
+                    <label><input class="form-check-input" type="checkbox" name="public" value="true"> Public</label>
+                  </div>
+                  <div class="form-check">
+                    <label><input class="form-check-input" type="checkbox" name="private" value="true"> Private</label>
+                  </div>
+                {% endif %}
+                <div class="padding"></div>
+                {% if search_by == "items" %}
+                  <h5 class="mt-2">Status</h5>
+                  <div class="form-check">
+                    <label><input class="form-check-input" type="checkbox" name="available" value="true"> Available</label>
+                  </div>
+                  <div class="form-check">
+                    <label><input class="form-check-input" type="checkbox" name="checked_out" value="true"> Checked Out</label>
+                  </div>
+                  <div class="form-check">
+                    <label><input class="form-check-input" type="checkbox" name="under_repair" value="true"> Under Repair</label>
+                  </div>
+                  <div class="form-check">
+                    <label><input class="form-check-input" type="checkbox" name="other" value="true"> Other</label>
+                  </div>
+                {% endif %}
                 <hr>
                 <button class="btn btn-outline-dark" type="submit">Filter</button>
               </form>
@@ -34,20 +59,30 @@
             <div class="col-md-9">
               <h3>Search Results</h3>
               <hr>
-              <form class="input-group mb-1" action="{% url 'search_results' %}" method="get">
+              <form class="input-group mb-1" action="{{ request.path }}" method="get">
                 <input class="form-control w-50" type="search" placeholder="Searching {% if search_by == 'collections' %}collections...{% else %}items...{% endif %}" name="q">
                 <input type="hidden" name="search_by" value="{{ search_by }}">
-<!--                <select class="form-select" name="advanced_filter">-->
-<!--                  {% if search_by == "collections" %}-->
-<!--                    <option value="name">Name</option>-->
-<!--                    <option value="creator">Creator</option>-->
-<!--                    <option value="items">Items</option>-->
-<!--                  {% elif search_by == "items" %}-->
-<!--                  {% endif %}-->
-<!--                </select>-->
+                <select class="form-select" name="advanced_filter">
+                  {% if search_by == "collections" %}
+                    <option value="name">Name</option>
+                    <option value="creator">Creator</option>
+                    <option value="items">Items</option>
+                  {% elif search_by == "items" %}
+                    <option value="title">Title</option>
+                    <option value="identifier">Identifier</option>
+                    <option value="location">Location</option>
+                  {% endif %}
+                </select>
                 <span><button class="btn btn-outline-dark" type="submit">Search</button></span>
               </form>
-              <p style="color: gray;">Showing all <strong>{% if search_by == "collections" %} collections {% else %} items {% endif %}</strong>{% if query %} matching "{{ query }}"{% endif %}</p>
+              <p style="color: gray;">
+                Showing all {% if not user.is_authenticated %} public {% endif %}
+                <strong>{% if search_by == "collections" %} collections {% else %} items {% endif %}</strong>
+                {% if query %} matching "{{ query }}"
+                {% if advanced_filter %} by {{ advanced_filter }}
+                {% endif %}
+                {% endif %}
+              </p>
               <div class="padding"></div>
               <table class="table table-responsive table-hover align-middle" style="table-layout: fixed;">
                 <thead>

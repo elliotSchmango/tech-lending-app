@@ -202,10 +202,19 @@ def collection_detail(request, collection_id):
         return render(request, 'techCLA/collections/access_denied.html', {'collection': collection})
 
     items = collection.items.all()
+    query = ""
+
+    if request.method == "GET":
+        query = request.GET.get("q", "")
+
+        items = items.filter(
+            Q(title__icontains=query)
+        )
 
     return render(request, 'techCLA/collection.html', {
         'collection': collection,
-        'items': items
+        'items': items,
+        'query': query,
     })
 
 def item_detail(request, item_name):
@@ -304,6 +313,7 @@ class SearchResultsView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
+        context["user"] = self.request.user
         context["query"] = self.request.GET.get("q", "")
         context["search_by"] = self.request.GET.get("search_by")
         context["advanced_filter"] = self.request.GET.get("advanced_filter")
@@ -311,17 +321,68 @@ class SearchResultsView(ListView):
         return context
 
     def get_queryset(self):
+        user = self.request.user
         query = self.request.GET.get("q", "")
         search_by = self.request.GET.get("search_by")
-        advanced_filter = self.request.GET.get("advanced_filter")
 
         if search_by == "collections":
-            object_list = Collection.objects.filter(
-                Q(name__icontains=query)
-            )
+            advanced_filter = self.request.GET.get("advanced_filter", "name")
+            visibility_filter = {
+                "public": self.request.GET.get("public"),
+                "private": self.request.GET.get("private")
+            }
+
+            if advanced_filter == "name":
+                object_list = Collection.objects.filter(
+                    Q(name__icontains=query)
+                )
+            elif advanced_filter == "creator":
+                object_list = Collection.objects.filter(
+                    Q(creator__username__icontains=query)
+                )
+            else:
+                object_list = Collection.objects.filter(
+                    Q(items__title__icontains=query)
+                ).distinct()
+
+            visibility_query = Q()
+            for visibility, visibility_status in visibility_filter.items():
+                if visibility_status == "true":
+                    visibility_query |= Q(visibility=visibility)
+
+            if visibility_query:
+                object_list = object_list.filter(visibility_query)
+
+            if not user.is_authenticated:
+                object_list = object_list.filter(Q(visibility="public"))
         elif search_by == "items":
-            object_list = Item.objects.filter(
-                Q(title__icontains=query)
-            )
+            advanced_filter = self.request.GET.get("advanced_filter", "title")
+            status_filter = {
+                "available": self.request.GET.get("available"),
+                "checked_out": self.request.GET.get("checked_out"),
+                "repair": self.request.GET.get("under_repair"),
+                "other": self.request.GET.get("other")
+            }
+
+            if advanced_filter == "title":
+                object_list = Item.objects.filter(
+                    Q(title__icontains=query)
+                )
+            elif advanced_filter == "identifier":
+                object_list = Item.objects.filter(
+                    Q(identifier__icontains=query)
+                )
+            else:
+                object_list = Item.objects.filter(
+                    Q(location__icontains=query)
+                )
+
+            status_query = Q()
+            for status, status_value in status_filter.items():
+                if status_value == "true":
+                    status_query |= Q(status__icontains=status)
+
+            if status_query:
+                object_list = object_list.filter(status_query)
 
         return object_list
