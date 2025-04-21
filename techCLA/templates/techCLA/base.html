@@ -23,11 +23,11 @@
       <!-- Search Bar -->
       <form class="d-flex flex-grow-1 mx-3" action="{% url 'search_results' %}" method="get">
         <input class="form-control w-100 me-2" type="search" placeholder="Search by name..." name="q" aria-label="Search">
-        <select class="form-select w-25 me-2" name="search_by">
+        <select class="form-select me-2" name="search_by" style="width: 150px;">
           <option value="collections">Collections</option>
           <option value="items">Items</option>
         </select>
-        <button class="btn btn-outline-dark" type="submit">Search</button>
+        <button class="btn btn-info btn-outline-dark" type="submit">Search</button>
       </form>
 
       <!-- Navbar : Sign in / Sign out -->
@@ -45,25 +45,26 @@
                   </a>
                   <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                     <li><span class="dropdown-header"><b>Role:</b> {{ user.role }}</span></li>
-                    <li><a class="dropdown-item" href="{% url 'profile_detail' %}">View Profile</a></li>
                     {% if user.is_patron %}
                       <li><a class="dropdown-item" href="{% url 'my_borrowed_items' %}">Borrowed Items</a></li>
                     {% endif %}
                     {% if user.is_librarian %} <!-- only librarians can access and edit items -->
+                    <li><a class="dropdown-item" href="{% url 'catalog' %}">Manage Collections</a></li>
                     <li>
                       <a class="dropdown-item text-white" style="background-color: orange;" href="{% url 'manage_items' %}">
                         Manage Items
                       </a>
                       <a class="dropdown-item text-white" style="background-color: orange;" href="{% url 'manage_borrow_requests' %}">
-                        Manage Requests
+                        Borrow Requests
                       </a>
                       <a class="dropdown-item text-white" style="background-color: orange;" href="{% url 'manage_access_requests' %}">
-                        Access Requests
+                        Collection Access Requests
                       </a>
                     </li>
                     {% endif %}
-                    <li><a class="dropdown-item" href="{% url 'catalog' %}">Manage Collections</a></li>
+                    
                     <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="{% url 'profile_detail' %}">View Profile</a></li>
                     <li><a class="dropdown-item" href="{% url 'account_logout' %}">Sign Out</a></li>
                   </ul>
               </div>
@@ -102,7 +103,7 @@
         {% endfor %}
       </div>
 
-      <div class="collapse navbar-collapse justify-content-end">
+      <div class="collapse navbar-collapse justify-content-end col">
         <button class="border-0 bg-transparent" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidenav">
           <span class="navbar-toggler-icon"></span>
         </button>

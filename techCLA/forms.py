@@ -40,6 +40,8 @@ class CollectionFormLibrarian(forms.ModelForm):
             'visibility': forms.Select(attrs={'class': 'form-select'}),
             'items': forms.SelectMultiple(attrs={'class': 'form-select'}),
         }
+        # For checkboxes in future instead of command-clicking values:
+        # 'items': forms.CheckboxSelectMultiple(),
 
 class CollectionFormPatron(forms.ModelForm):
     class Meta:

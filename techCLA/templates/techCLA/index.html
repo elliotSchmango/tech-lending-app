@@ -14,11 +14,11 @@
   <hr>
   <div class="row">
     <div class="col-md-12">
-      <h4>Our Collections</h4>
-      <p>This is where you can browse our collections and items.</p>
+      <h4>Public Collections</h4>
+      <p>This is where you can browse public collections and items.</p>
 
       <div class="pb-3">
-        <a href="{% url 'catalog' %}" class="rounded-0 btn btn-outline-dark">View All Collections</a>
+        <a href="{% url 'catalog' %}" class="rounded-2 btn btn-info btn-outline-dark">View All Collections</a>
       </div>
 
       <div class="row row-cols-1 row-cols-md-3 g-4">
@@ -44,12 +44,28 @@
                         <div class="fw-semibold">{{ item.title }}</div>
                       </a>
                     </div>
+                  
                   {% endfor %}
                 </div>
+                <div></div>
+                {% for item in collection.items.all|slice:"2:" %}
+                
+                  <a href="{% url 'item_detail' item.title %}" class="list-group-item list-group-item-action">
+                    {{ item.title }}
+                  </a>
+                
+                {% endfor %}
+                {% if collection.items.count > 2 %}
+                  <div class="list-group-item list-group-item-action">
+                    ...
+                  </div>
+                {% endif %}
+                </div>
+
               </div>
               
               <div class="card-footer text-muted">
-                <a href="{% url 'collection_detail' collection.id %}" class="btn btn-sm btn-outline-primary">View Collection</a>
+                <a href="{% url 'collection_detail' collection.id %}" class="btn btn-sm btn-outline-primary">View Full Collection</a>
               </div>
             </div>
           </div>
