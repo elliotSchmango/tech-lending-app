@@ -48,8 +48,8 @@
                     {% if user.is_patron %}
                       <li><a class="dropdown-item" href="{% url 'my_borrowed_items' %}">Borrowed Items</a></li>
                     {% endif %}
-                    {% if user.is_librarian %} <!-- only librarians can access and edit items -->
                     <li><a class="dropdown-item" href="{% url 'catalog' %}">Manage Collections</a></li>
+                    {% if user.is_librarian %} <!-- only librarians can access and edit items -->
                     <li>
                       <a class="dropdown-item text-white" style="background-color: orange;" href="{% url 'manage_items' %}">
                         Manage Items
@@ -103,10 +103,14 @@
         {% endfor %}
       </div>
 
+      
       <div class="collapse navbar-collapse justify-content-end col">
-        <button class="border-0 bg-transparent" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidenav">
-          <span class="navbar-toggler-icon"></span>
-        </button>
+        <div class="d-flex align-items-center gap-2">
+          <p class="text-light m-0">All Collections</p>
+          <button class="border-0 bg-transparent" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidenav">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+        </div>
       </div>
     </div>
   </nav>

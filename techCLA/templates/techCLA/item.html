@@ -54,6 +54,15 @@
               <a href="{% url 'account_login' %}" class="btn btn-info btn-outline-dark">Log in</a> to request this item.
             </div>
           {% endif %}
+          {% if success %}
+            <div class="alert alert-success mt-3">{{ success }}</div>
+          {% endif %}
+          {% if warning %}
+            <div class="alert alert-warning mt-3">{{ warning }}</div>
+          {% endif %}
+          {% if error %}
+            <div class="alert alert-danger mt-3">{{ error }}</div>
+        {% endif %}
         </div>
         
         <!--review and comment code-->
@@ -84,16 +93,6 @@
           </form>
         {% elif user_review %}
           <p class="text-muted my-3">You've already reviewed this item.</p>
-        {% endif %}
-
-        {% if success %}
-          <div class="alert alert-success mt-3">{{ success }}</div>
-        {% endif %}
-        {% if warning %}
-          <div class="alert alert-warning mt-3">{{ warning }}</div>
-        {% endif %}
-        {% if error %}
-          <div class="alert alert-danger mt-3">{{ error }}</div>
         {% endif %}
 
         <!--review listing-->
