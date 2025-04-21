@@ -47,19 +47,19 @@
                   
                   {% endfor %}
                 </div>
-                <div></div>
-                {% for item in collection.items.all|slice:"2:" %}
-                
-                  <a href="{% url 'item_detail' item.title %}" class="list-group-item list-group-item-action">
-                    {{ item.title }}
-                  </a>
-                
-                {% endfor %}
-                {% if collection.items.count > 2 %}
-                  <div class="list-group-item list-group-item-action">
-                    ...
-                  </div>
-                {% endif %}
+                <div>
+                  {% for item in collection.items.all|slice:"2:4" %}
+                  
+                    <a href="{% url 'item_detail' item.title %}" class="list-group-item list-group-item-action">
+                      {{ item.title }}
+                    </a>
+                  
+                  {% endfor %}
+                  {% if collection.items.count > 4 %}
+                    <div class="list-group-item list-group-item-action">
+                      ...
+                    </div>
+                  {% endif %}
                 </div>
 
               </div>
