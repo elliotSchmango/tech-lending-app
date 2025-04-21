@@ -20,7 +20,7 @@
       <div class="card h-100 {% if item.status != 'available' %}unavailable{% endif %}">
         
         {% if item.image %}
-          <img src="{{ item.image.url }}" class="card-img-top" style="height: 180px; object-fit: cover;" alt="{{ item.title }}">
+          <img src="{{ item.image.url }}" class="img-fluid rounded mb-2" style="max-width: 100%; height: auto;" alt="{{ item.title }}">
         {% else %}
           <div class="card-img-top bg-light text-center d-flex align-items-center justify-content-center" style="height: 180px;">
             <span class="text-muted">No Image</span>

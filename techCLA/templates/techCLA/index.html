@@ -22,22 +22,34 @@
       </div>
 
       <div class="row row-cols-1 row-cols-md-3 g-4">
-        {% for collection in collections %}
+        {% for collection in collections|slice:":6" %}
           <div class="col">
             <div class="card">
-              <div class="card-body">
+              <div class="card-header mt-1">
                 <h5 class="card-title">
-                  <a href="{% url 'collection_detail' collection.id %}" class="text-decoration-none text-dark">{{ collection.name }}</a>
+                  <a href="{% url 'collection_detail' collection.id %}" class="text-decoration-none text-dark">
+                    {{ collection.name }}
+                  </a>
                 </h5>
+              </div>
+              <div class="card-body">
                 <p class="card-text">{{ collection.description }}</p>
-                
-                <div class="list-group">
-                  {% for item in collection.items.all %}
-                    <a href="{% url 'item_detail' item.title %}" class="list-group-item list-group-item-action">
-                      {{ item.title }}
-                    </a>
+                <div class="d-flex justify-content-around px-3 pb-3 gap-3">
+                  {% for item in collection.items.all|slice:":2" %}
+                    <div class="text-center" style="width: 45%;">
+                      <a href="{% url 'item_detail' item.title %}" class="text-decoration-none">
+                        {% if item.image %}
+                          <img src="{{ item.image.url }}" class="img-fluid rounded mb-2" style="max-height: 120px; object-fit: cover;" alt="{{ item.title }}">
+                        {% endif %}
+                        <div class="fw-semibold">{{ item.title }}</div>
+                      </a>
+                    </div>
                   {% endfor %}
                 </div>
+              </div>
+              
+              <div class="card-footer text-muted">
+                <a href="{% url 'collection_detail' collection.id %}" class="btn btn-sm btn-outline-primary">View Collection</a>
               </div>
             </div>
           </div>

@@ -14,7 +14,7 @@
         <!-- Image -->
         <div class="col-md-6 text-center mb-3 mb-md-0">
           {% if item.image and "default.jpg" not in item.image.url %}
-            <img src="{{ item.image.url }}" alt="{{ item.title }}" class="img-fluid rounded-3 shadow-sm" style="max-width: 100%; height: auto;">
+            <img src="{{ item.image.url }}" alt="{{ item.title }}" class="img-fluid rounded-3 shadow-sm" style="max-height: 100%; width: auto;">
           {% else %}
             <div class="alert alert-warning" role="alert">
               No image available.
@@ -38,50 +38,51 @@
           </p>
           <!--<p class="fs-5"><strong>Collection:</strong> {{ item.collections.name|default:"Not part of a collection." }}</p>-->
           <p><strong>Location:</strong> {{ item.location|default:"No location provided." }}</p>
-        </div>
-        <!--review listing-->
-        <div class="col-md-12 mt-4">
-          <div class="card">
-            <div class="card-body">
-              <h4 class="card-title mb-3">Reviews</h4>
-              {% if reviews %}
-                <div class="list-group">
-                  {% for review in reviews %}
-                    <div class="list-group-item list-group-item-action flex-column align-items-start mb-2">
-                      <div class="d-flex w-100 justify-content-between">
-                        <h5 class="mb-1">{{ review.user.get_full_name|default:review.user.username }}</h5>
-                        <small class="text-muted">{{ review.date_created|date:"M d, Y H:i" }}</small>
-                      </div>
-                      <p class="mb-1">{{ review.comment }}</p>
-                      <small>
-                        <span class="badge bg-warning text-dark">Rating: {{ review.rating }}/10</span>
-                      </small>
-                    </div>
-                  {% endfor %}
-                </div>
+          <!-- button for requesting an item-->
+          {% if user.is_authenticated %}
+            <form method="post" class="mt-3">
+              {% csrf_token %}
+              <input type="hidden" name="borrow_request" value="1">
+              {% if item.status == "available" %}
+                <button type="submit" class="btn btn-primary btn-block">Borrow</button>
               {% else %}
-                <p class="text-muted">No reviews yet.</p>
+                <button type="submit" class="btn btn-secondary btn-block" disabled>This item is not available</button>
               {% endif %}
+            </form>
+          {% else %}
+            <div class="alert alert-info mt-3">
+              <a href="{% url 'account_login' %}">Log in</a> to request this item.
+            </div>
+          {% endif %}
+
+          <!--review listing-->
+          <div class="col-md-12 mt-4">
+            <div class="card">
+              <div class="card-body">
+                <h4 class="card-title mb-3">Reviews</h4>
+                {% if reviews %}
+                  <div class="list-group" style="max-height: 300px; overflow-y: auto;">
+                    {% for review in reviews %}
+                      <div class="list-group-item list-group-item-action flex-column align-items-start mb-2">
+                        <div class="d-flex w-100 justify-content-between">
+                          <h5 class="mb-1">{{ review.user.get_full_name|default:review.user.username }}</h5>
+                          <small class="text-muted">{{ review.date_created|date:"M d, Y H:i" }}</small>
+                        </div>
+                        <p class="mb-1">{{ review.comment }}</p>
+                        <small>
+                          <span class="badge bg-warning text-dark">Rating: {{ review.rating }}/10</span>
+                        </small>
+                      </div>
+                    {% endfor %}
+                  </div>
+                {% else %}
+                  <p class="text-muted">No reviews yet.</p>
+                {% endif %}
+              </div>
             </div>
           </div>
         </div>
-
-        <!-- button for requesting an item-->
-        {% if user.is_authenticated %}
-          <form method="post" class="mt-3">
-            {% csrf_token %}
-            <input type="hidden" name="borrow_request" value="1">
-            {% if item.status == "available" %}
-              <button type="submit" class="btn btn-primary btn-block">Borrow</button>
-            {% else %}
-              <button type="submit" class="btn btn-secondary btn-block" disabled>This item is not available</button>
-            {% endif %}
-          </form>
-        {% else %}
-          <div class="alert alert-info mt-3">
-            <a href="{% url 'account_login' %}">Log in</a> to request this item.
-          </div>
-        {% endif %}
+        
         <!--review and comment code-->
         {% if user.is_authenticated and not user_review %}
           <hr class="mt-4">
