@@ -5,6 +5,8 @@ from django.db.models import Q, OuterRef, Subquery
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import generic
 from django.views.generic import ListView
+from django.contrib.auth.models import Group, get_user_model
+from django.contrib import messages
 
 from .models import Item, ItemImage, Collection, BorrowRequest, Review, RequestAccess
 from .forms import ProfilePictureForm, ItemForm, CollectionFormLibrarian, CollectionFormPatron, ReviewForm, RequestAccessForm
@@ -462,3 +464,21 @@ def manage_access_requests_view(request):
 
     requests = RequestAccess.objects.filter(status='pending').order_by('-timestamp')
     return render(request, 'techCLA/manage_access_requests.html', {'requests': requests})
+
+
+User = get_user_model()
+@user_passes_test(lambda u: u.groups.filter(name='Librarian').exists())
+def promote_user_to_librarian(request):
+    if request.method == "POST":
+        user_id = request.POST.get("user_id")
+        try:
+            user = User.objects.get(id=user_id)
+            librarian_group = Group.objects.get(name="Librarian")
+            user.groups.add(librarian_group)
+            messages.success(request, f"{user.username} was promoted to librarian.")
+        except User.DoesNotExist:
+            messages.error(request, "User not found.")
+        return redirect("promote_user")
+
+    users = User.objects.exclude(groups__name='Librarian')
+    return render(request, "techCLA/promote_user.html", {"users": users})

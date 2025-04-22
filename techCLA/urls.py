@@ -8,7 +8,8 @@ from .views import (index, CatalogView,
                     collection_detail, create_collection, edit_collection, delete_collection,
                     item_detail, manage_items, create_item, edit_item, delete_item,
                     SearchResultsView,
-                    my_borrowed_items, manage_borrow_requests,request_access_view,manage_access_requests_view)
+                    my_borrowed_items, manage_borrow_requests,request_access_view,manage_access_requests_view,
+                    promote_user_to_librarian)
 
 urlpatterns = [
     # Catalog URLs
@@ -45,6 +46,9 @@ urlpatterns = [
     # Collection Access Requests URLs
     path('collections/<int:collection_id>/request-access/', request_access_view, name='request_access'),
     path('collections/access-requests/', manage_access_requests_view, name='manage_access_requests'),
+
+    # User Role Management
+    path("promote-user/", promote_user_to_librarian, name="promote_user"),
 ]
 
 if settings.DEBUG:
