@@ -1,0 +1,15 @@
+{% extends "techCLA/base.html" %}
+{% block content %}
+<h2>Promote a User to Librarian</h2>
+<form method="post">
+    {% csrf_token %}
+    <label for="user_id">Select User:</label>
+    <select name="user_id" class="form-control">
+        {% for user in users %}
+            <option value="{{ user.id }}">{{ user.username }} ({{ user.email }})</option>
+        {% endfor %}
+    </select>
+    <br>
+    <button type="submit" class="btn btn-primary">Promote</button>
+</form>
+{% endblock %}
