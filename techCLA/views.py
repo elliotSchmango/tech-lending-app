@@ -5,7 +5,8 @@ from django.db.models import Q, OuterRef, Subquery
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import generic
 from django.views.generic import ListView
-from django.contrib.auth.models import Group, get_user_model
+from django.contrib.auth.models import Group
+from django.contrib.auth import get_user_model
 from django.contrib import messages
 
 from .models import Item, ItemImage, Collection, BorrowRequest, Review, RequestAccess
