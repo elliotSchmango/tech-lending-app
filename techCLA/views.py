@@ -8,7 +8,7 @@ from django.views.generic import ListView
 from django.contrib.auth.models import Group
 from django.contrib.auth import get_user_model
 from django.contrib import messages
-
+from django.core.exceptions import ValidationError
 from .models import Item, ItemImage, Collection, BorrowRequest, Review, RequestAccess
 from .forms import ProfilePictureForm, ItemForm, CollectionFormLibrarian, CollectionFormPatron, ReviewForm, RequestAccessForm
 
@@ -101,9 +101,20 @@ def create_collection(request):
                 messages.error(request, "Only librarians can create private collections.")
                 return render(request, 'techCLA/collections/create_collection.html', {'form': form})
 
-            collection.save()
-            form.save_m2m()
-            return redirect('collection_detail', collection_id=collection.id)
+            items = form.cleaned_data['items']
+            try:
+                for item in items:
+                    other_collections = item.collection_set.filter(visibility="private")
+                    if other_collections.exists():
+                        raise ValidationError(
+                            f"Item '{item.title}' is already in another collection: '{other_collections.first().name}'."
+                        )
+
+                collection.save()
+                collection.items.set(items)
+                return redirect('collection_detail', collection_id=collection.id)
+            except ValidationError as e:
+                form.add_error(None, e)
     else:
         form = FormClass()
 
@@ -121,11 +132,36 @@ def edit_collection(request, collection_id):
         if request.method == "POST":
             form = FormClass(request.POST, instance=collection)
             if form.is_valid():
-                form.save()
-                return redirect('collection_detail', collection_id=collection_id)
+                items = form.cleaned_data['items']
+                visibility = form.cleaned_data.get('visibility', collection.visibility)
+
+                try:
+                    if visibility == "private" and not request.user.is_librarian():
+                        raise ValidationError("Only librarians can make collections private.")
+
+                    for item in items:
+                        other_collections = item.collection_set.exclude(id=collection.id)
+
+                        if visibility == "private":
+                            if other_collections.exists():
+                                raise ValidationError(
+                                    f"Item '{item.title}' is already in another collection: '{other_collections.first().name}'."
+                                )
+
+                        elif visibility == "public":
+                            if other_collections.filter(visibility="private").exists():
+                                raise ValidationError(
+                                    f"Item '{item.title}' is already in a private collection: '{other_collections.filter(visibility='private').first().name}'."
+                                )
+                    collection = form.save()
+                    collection.items.set(items)
+                    return redirect('collection_detail', collection_id=collection.id)
+
+                except ValidationError as e:
+                    form.add_error(None, e)
         else:
             form = FormClass(instance=collection)
-        
+
         return render(request, 'techCLA/collections/edit_collection.html', {'form': form, 'collection': collection})
     # else:
     #     return redirect('collection_list')

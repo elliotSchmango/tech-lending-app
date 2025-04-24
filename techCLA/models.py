@@ -46,8 +46,11 @@ class Collection(models.Model):
     def clean(self):
         if self.visibility == 'private' and self.pk:
             for item in self.items.all():
-                if item.collections.exclude(id=self.id).filter(visibility='private').exists():
-                    raise ValidationError(f"Item '{item.title}' is already in another private collection.")
+                if item.collection_set.exclude(id=self.id).exists():
+                    raise ValidationError(
+                        f"Item '{item.title}' is already in another collection. "
+                        f"Items in private collections must be exclusive."
+                    )
 
     def __str__(self):
         return self.name
@@ -55,6 +58,10 @@ class Collection(models.Model):
     class Meta:
         verbose_name = "Collection"
         verbose_name_plural = "Collections"
+
+    def save(self, *args, **kwargs):
+        self.full_clean()  # ensures `clean()` is called before saving
+        super().save(*args, **kwargs)
 
 class Item(models.Model):
     STATUS_CHOICES = [
