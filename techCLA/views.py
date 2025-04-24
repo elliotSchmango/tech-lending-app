@@ -436,7 +436,7 @@ def request_access_view(request, collection_id):
             request_access.collection = collection
             request_access.save()
             messages.success(request, "Access request submitted.")
-            return redirect('collection_detail', collection.id)
+            return redirect('private_collections')
     else:
         form = RequestAccessForm()
 
