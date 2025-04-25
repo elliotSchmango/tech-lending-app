@@ -9,7 +9,7 @@ from .views import (index, CatalogView,
                     item_detail, manage_items, create_item, edit_item, delete_item,
                     SearchResultsView,
                     my_borrowed_items, manage_borrow_requests,request_access_view,manage_access_requests_view,
-                    promote_user_to_librarian)
+                    promote_user_to_librarian,item_conflict_view)
 
 urlpatterns = [
     # Catalog URLs
@@ -28,6 +28,7 @@ urlpatterns = [
     path('collection/create/', create_collection, name='create_collection'),
     path('collection/<int:collection_id>/edit/', edit_collection, name='edit_collection'),
     path('collection/<int:collection_id>/delete/', delete_collection, name='delete_collection'),
+    path('collections/item-conflict/<str:item_title>/<str:collection_name>/', item_conflict_view, name='item_conflict'),
 
     # Item URLs
     path('item/<str:item_name>/', item_detail, name='item_detail'),

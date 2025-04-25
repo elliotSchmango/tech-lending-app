@@ -106,9 +106,7 @@ def create_collection(request):
                 for item in items:
                     other_collections = item.collection_set.filter(visibility="private")
                     if other_collections.exists():
-                        raise ValidationError(
-                            f"Item '{item.title}' is already in another collection: '{other_collections.first().name}'."
-                        )
+                        return redirect('item_conflict', item_title=item.title, collection_name=other_collections.first().name)
 
                 collection.save()
                 collection.items.set(items)
@@ -140,19 +138,12 @@ def edit_collection(request, collection_id):
                         raise ValidationError("Only librarians can make collections private.")
 
                     for item in items:
-                        other_collections = item.collection_set.exclude(id=collection.id)
-
-                        if visibility == "private":
-                            if other_collections.exists():
-                                raise ValidationError(
-                                    f"Item '{item.title}' is already in another collection: '{other_collections.first().name}'."
-                                )
-
-                        elif visibility == "public":
-                            if other_collections.filter(visibility="private").exists():
-                                raise ValidationError(
-                                    f"Item '{item.title}' is already in a private collection: '{other_collections.filter(visibility='private').first().name}'."
-                                )
+                        other_collections = item.collection_set.filter(visibility="private")
+                        if other_collections.exists():
+                            return redirect(f"/collections/item-conflict/{item.title}/{other_collections.first().name}/?collection_id={collection_id}")
+                            # raise ValidationError(
+                            #     f"Item '{item.title}' is already in another collection: '{other_collections.first().name}'."
+                            # )
                     collection = form.save()
                     collection.items.set(items)
                     return redirect('collection_detail', collection_id=collection.id)
@@ -519,3 +510,12 @@ def promote_user_to_librarian(request):
 
     users = User.objects.exclude(groups__name='Librarian')
     return render(request, "techCLA/promote_user.html", {"users": users})
+
+def item_conflict_view(request, item_title, collection_name):
+    print("HERE")
+    collection_id = request.GET.get("collection_id")
+    return render(request, 'techCLA/collections/item_conflict.html', {
+        'item_title': item_title,
+        'collection_name': collection_name,
+        'collection_id': collection_id
+    })
