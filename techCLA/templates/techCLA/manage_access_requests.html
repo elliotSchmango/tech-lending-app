@@ -1,38 +1,47 @@
 {% extends 'techCLA/base.html' %}
 
 {% block content %}
-  <h2 class="mb-4">Pending Access Requests</h2>
-
-  {% if requests %}
-    <ul class="list-group">
-      {% for r in requests %}
-        <li class="list-group-item d-flex justify-content-between align-items-center">
-          <div>
-            <strong>{{ r.requester.get_full_name|default:r.requester.username }}</strong>
-            requested access to <strong>{{ r.collection.name }}</strong>
-            <br><small>{{ r.timestamp|date:"Y-m-d H:i" }}</small>
-            {% if r.message %}
-              <br><em>Message: "{{ r.message }}"</em>
-            {% endif %}
-          </div>
-          <div class="d-flex">
-            <form method="post" class="me-2">
-              {% csrf_token %}
-              <input type="hidden" name="request_id" value="{{ r.id }}">
-              <input type="hidden" name="action" value="approve">
-              <button class="btn btn-success btn-sm">Approve</button>
-            </form>
-            <form method="post">
-              {% csrf_token %}
-              <input type="hidden" name="request_id" value="{{ r.id }}">
-              <input type="hidden" name="action" value="deny">
-              <button class="btn btn-danger btn-sm">Deny</button>
-            </form>
-          </div>
-        </li>
-      {% endfor %}
-    </ul>
-  {% else %}
-    <p>No pending access requests.</p>
-  {% endif %}
+<div class="container mt-5">
+  <div class="card shadow-sm">
+    <div class="card-header bg-primary text-white">
+      <h4 class="mb-0">Pending Access Requests</h4>
+    </div>
+    <div class="card-body">
+      {% if requests %}
+        <ul class="list-group list-group-flush">
+          {% for r in requests %}
+            <li class="list-group-item">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <strong>{{ r.requester.get_full_name|default:r.requester.username }}</strong>
+                  requested access to <strong>{{ r.collection.name }}</strong><br>
+                  <small class="text-muted">{{ r.timestamp|date:"Y-m-d H:i" }}</small>
+                  {% if r.message %}
+                    <br><span class="fst-italic text-muted">Message: "{{ r.message }}"</span>
+                  {% endif %}
+                </div>
+                <div class="d-flex gap-2">
+                  <form method="post" class="d-inline">
+                    {% csrf_token %}
+                    <input type="hidden" name="request_id" value="{{ r.id }}">
+                    <input type="hidden" name="action" value="approve">
+                    <button class="btn btn-sm btn-success">Approve</button>
+                  </form>
+                  <form method="post" class="d-inline">
+                    {% csrf_token %}
+                    <input type="hidden" name="request_id" value="{{ r.id }}">
+                    <input type="hidden" name="action" value="deny">
+                    <button class="btn btn-sm btn-danger">Deny</button>
+                  </form>
+                </div>
+              </div>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="text-muted">No pending access requests.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
 {% endblock %}

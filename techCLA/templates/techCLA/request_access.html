@@ -1,11 +1,18 @@
 {% extends 'techCLA/base.html' %}
 
 {% block content %}
-  <h2>Request Access to {{ collection.name }}</h2>
-
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button class="btn btn-primary" type="submit">Submit Request</button>
-  </form>
+<div class="container mt-5">
+  <div class="card shadow-sm">
+    <div class="card-header">
+      <h3 class="mb-0">Request Access</h3>
+    </div>
+    <div class="card-body">
+      <p>You are requesting access to the private collection: <strong>{{ collection.name }}</strong>.</p>
+      <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary">Submit Request</button>
+      </form>
+    </div>
+  </div>
+</div>
 {% endblock %}
