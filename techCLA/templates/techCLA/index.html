@@ -14,15 +14,21 @@
   <hr>
   <div class="row">
     <div class="col-md-12">
-      <h4>Public Collections</h4>
-      <p>This is where you can browse public collections and items.</p>
 
-      <div class="pb-3">
-        <a href="{% url 'catalog' %}" class="rounded-2 btn btn-primary">View All Collections</a>
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="mb-0">Collections Preview</h4>
+        <div class="d-flex gap-2">
+          <a href="{% url 'catalog' %}" class="btn btn-primary">
+            View All Collections
+          </a>
+          <a href="{% url 'search_results' %}?q=&search_by=collections" class="btn btn-primary">
+            Browse All Collections
+          </a>
+        </div>
       </div>
 
       <div class="row row-cols-1 row-cols-md-3 g-4">
-        {% for collection in collections|slice:":6" %}
+        {% for collection in public_collections|slice:":6" %}
           <div class="col">
             <div class="card">
               <div class="card-header mt-1">

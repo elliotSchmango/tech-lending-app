@@ -110,7 +110,7 @@
       
       <div class="collapse navbar-collapse justify-content-end col">
         <div class="d-flex align-items-center gap-2">
-          <p class="text-light m-0">All Collections</p>
+          <p class="text-light m-0">View All</p>
           <button class="border-0 bg-transparent" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidenav">
             <span class="navbar-toggler-icon"></span>
           </button>
@@ -123,29 +123,67 @@
   {% block sideNav %}
   <div class="offcanvas offcanvas-end" id="sidenav" aria-labelledby="sidenavLabel">
     <div class="offcanvas-header">
-      <h5 class="offcanvas-title" id="sidenavLabel">All Collections</h5>
       <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"></button>
     </div>
+  
     <div class="offcanvas-body">
-      
-      {% if user.is_authenticated %}
-        <div class="mb-2">
-          <a class="btn btn-secondary w-100 text-start" href="{% url 'private_collections' %}">
-            Your Private Collections
-          </a>
-        </div>
-      {% endif %}
 
-      {% for collection in other_collections %}
-        <div class="mb-2">
-          <a class="btn btn-outline-secondary w-100 text-start" href="{% url 'collection_detail' collection.id %}">
-            {{ collection.name }}
+      <div class="mb-4 text-center">
+        <div class="d-flex gap-2">
+          <a href="{% url 'catalog' %}" class="btn btn-primary">
+            View All Collections
+          </a>
+          <a href="{% url 'search_results' %}?q=&search_by=collections" class="btn btn-primary">
+            Browse All Collections
           </a>
         </div>
-      {% endfor %}
+      </div>
+  
+      <!-- Public Collections Section -->
+      <h5>Public Collections</h5>
+      <div class="mb-4">
+        {% if public_collections %}
+          {% for collection in public_collections %}
+            <div class="mb-2">
+              <a class="btn btn-outline-secondary w-100 text-start" href="{% url 'collection_detail' collection.id %}">
+                {{ collection.name }}
+              </a>
+            </div>
+          {% endfor %}
+        {% else %}
+          <p class="text-muted text-center">No public collections available.</p>
+        {% endif %}
+      </div>
+  
+      <!-- Horizontal Divider -->
+      <hr class="my-4">
+  
+      <!-- Private Collections Section -->
+      <h5>Private Collections</h5>
+      <div>
+        {% if user.is_authenticated %}
+          {% if private_collections %}
+            {% for collection in private_collections %}
+              <div class="mb-2">
+                <a class="btn btn-outline-secondary w-100 text-start" href="{% url 'collection_detail' collection.id %}">
+                  {{ collection.name }}
+                </a>
+              </div>
+            {% endfor %}
+          {% else %}
+            <p class="text-muted text-center">No private collections available.</p>
+          {% endif %}
+        {% else %}
+          <div class="alert alert-warning text-center">
+            Log in to see private collections.
+          </div>
+        {% endif %}
+      </div>
+  
     </div>
   </div>
   {% endblock %}
+  
 
 
   <!-- Page content -->
