@@ -72,7 +72,7 @@ class Item(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="available")
     location = models.CharField(max_length=100, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
-    image = models.ImageField(upload_to='item_images/', blank=True, null=True, default="default.jpg")
+    image = models.ImageField(upload_to='item_images/', blank=True, null=True, default="item_images/default.jpg")
 
     rating = models.IntegerField(choices=[(i, str(i)) for i in range(1, 11)], default=0, null=True, blank=True) 
     comments = models.TextField(blank=True, null=True)
