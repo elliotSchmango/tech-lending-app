@@ -43,21 +43,6 @@ class CollectionFormLibrarian(forms.ModelForm):
         # For checkboxes in future instead of command-clicking values:
         # 'items': forms.CheckboxSelectMultiple(),
 
-        def clean(self):
-            cleaned_data = super().clean()
-            items = cleaned_data.get("items")
-
-            if items:
-                for item in items:
-                    # Check if the item exists in *any* private collection other than this one
-                    private_collections = item.collections.exclude(id=self.instance.id).filter(visibility="private")
-                    if private_collections.exists():
-                        raise forms.ValidationError(
-                            f"Item '{item.title}' is already in a private collection: '{private_collections.first().name}'. "
-                            "Items in a private collection cannot be added to other collections."
-                        )
-
-            return cleaned_data
 
 class CollectionFormPatron(forms.ModelForm):
     class Meta:

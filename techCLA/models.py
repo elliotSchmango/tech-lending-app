@@ -59,10 +59,6 @@ class Collection(models.Model):
         verbose_name = "Collection"
         verbose_name_plural = "Collections"
 
-    def save(self, *args, **kwargs):
-        self.full_clean()  # ensures `clean()` is called before saving
-        super().save(*args, **kwargs)
-
 class Item(models.Model):
     STATUS_CHOICES = [
         ("available", "Available"),

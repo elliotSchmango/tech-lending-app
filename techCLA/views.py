@@ -129,27 +129,20 @@ def edit_collection(request, collection_id):
 
         if request.method == "POST":
             form = FormClass(request.POST, instance=collection)
+            items = form.fields['items'].clean(request.POST.getlist('items'))
+            visibility = request.POST.get('visibility', collection.visibility)
+
+            for item in items:
+                other_collections = item.collection_set.filter(visibility="private").exclude(id=collection.id)
+                if other_collections.exists():
+                    return redirect(
+                        f"/collections/item-conflict/{item.title}/{other_collections.first().name}/?collection_id={collection_id}"
+                    )
+
             if form.is_valid():
-                items = form.cleaned_data['items']
-                visibility = form.cleaned_data.get('visibility', collection.visibility)
-
-                try:
-                    if visibility == "private" and not request.user.is_librarian():
-                        raise ValidationError("Only librarians can make collections private.")
-
-                    for item in items:
-                        other_collections = item.collection_set.filter(visibility="private")
-                        if other_collections.exists():
-                            return redirect(f"/collections/item-conflict/{item.title}/{other_collections.first().name}/?collection_id={collection_id}")
-                            # raise ValidationError(
-                            #     f"Item '{item.title}' is already in another collection: '{other_collections.first().name}'."
-                            # )
-                    collection = form.save()
-                    collection.items.set(items)
-                    return redirect('collection_detail', collection_id=collection.id)
-
-                except ValidationError as e:
-                    form.add_error(None, e)
+                collection = form.save()
+                collection.items.set(items)
+                return redirect('collection_detail', collection_id=collection.id)
         else:
             form = FormClass(instance=collection)
 
