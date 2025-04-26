@@ -1,0 +1,19 @@
+{% extends "techCLA/base.html" %}
+
+{% block content %}
+  <div class="container mt-5">
+    <div class="alert alert-danger">
+      <h4 class="alert-heading">Item Conflict</h4>
+      <p>
+        The item <strong>{{ item_title }}</strong> is already in a private collection:
+        <strong>{{ collection_name }}</strong>.
+      </p>
+      <hr>
+      {% if collection_id and collection_id != "None" %}
+        <a href="{% url 'collection_detail' collection_id %}" class="btn btn-primary">Back to Collection</a>
+      {% else %}
+        <a href="{% url 'catalog' %}" class="btn btn-secondary">Back to Collections</a>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

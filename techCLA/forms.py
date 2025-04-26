@@ -43,6 +43,7 @@ class CollectionFormLibrarian(forms.ModelForm):
         # For checkboxes in future instead of command-clicking values:
         # 'items': forms.CheckboxSelectMultiple(),
 
+
 class CollectionFormPatron(forms.ModelForm):
     class Meta:
         model = Collection

@@ -8,7 +8,7 @@ from django.views.generic import ListView
 from django.contrib.auth.models import Group
 from django.contrib.auth import get_user_model
 from django.contrib import messages
-
+from django.core.exceptions import ValidationError
 from .models import Item, ItemImage, Collection, BorrowRequest, Review, RequestAccess
 from .forms import ProfilePictureForm, ItemForm, CollectionFormLibrarian, CollectionFormPatron, ReviewForm, RequestAccessForm
 
@@ -101,9 +101,18 @@ def create_collection(request):
                 messages.error(request, "Only librarians can create private collections.")
                 return render(request, 'techCLA/collections/create_collection.html', {'form': form})
 
-            collection.save()
-            form.save_m2m()
-            return redirect('collection_detail', collection_id=collection.id)
+            items = form.cleaned_data['items']
+            try:
+                for item in items:
+                    other_collections = item.collection_set.filter(visibility="private")
+                    if other_collections.exists():
+                        return redirect('item_conflict', item_title=item.title, collection_name=other_collections.first().name)
+
+                collection.save()
+                collection.items.set(items)
+                return redirect('collection_detail', collection_id=collection.id)
+            except ValidationError as e:
+                form.add_error(None, e)
     else:
         form = FormClass()
 
@@ -120,12 +129,23 @@ def edit_collection(request, collection_id):
 
         if request.method == "POST":
             form = FormClass(request.POST, instance=collection)
+            items = form.fields['items'].clean(request.POST.getlist('items'))
+            visibility = request.POST.get('visibility', collection.visibility)
+
+            for item in items:
+                other_collections = item.collection_set.filter(visibility="private").exclude(id=collection.id)
+                if other_collections.exists():
+                    return redirect(
+                        f"/collections/item-conflict/{item.title}/{other_collections.first().name}/?collection_id={collection_id}"
+                    )
+
             if form.is_valid():
-                form.save()
-                return redirect('collection_detail', collection_id=collection_id)
+                collection = form.save()
+                collection.items.set(items)
+                return redirect('collection_detail', collection_id=collection.id)
         else:
             form = FormClass(instance=collection)
-        
+
         return render(request, 'techCLA/collections/edit_collection.html', {'form': form, 'collection': collection})
     # else:
     #     return redirect('collection_list')
@@ -436,7 +456,7 @@ def request_access_view(request, collection_id):
             request_access.collection = collection
             request_access.save()
             messages.success(request, "Access request submitted.")
-            return redirect('collection_detail', collection.id)
+            return redirect('private_collections')
     else:
         form = RequestAccessForm()
 
@@ -483,3 +503,12 @@ def promote_user_to_librarian(request):
 
     users = User.objects.exclude(groups__name='Librarian')
     return render(request, "techCLA/promote_user.html", {"users": users})
+
+def item_conflict_view(request, item_title, collection_name):
+    print("HERE")
+    collection_id = request.GET.get("collection_id")
+    return render(request, 'techCLA/collections/item_conflict.html', {
+        'item_title': item_title,
+        'collection_name': collection_name,
+        'collection_id': collection_id
+    })
