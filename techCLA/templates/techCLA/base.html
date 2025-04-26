@@ -46,10 +46,10 @@
                   </a>
                   <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                     <li><span class="dropdown-header"><b>Role:</b> {{ user.role }}</span></li>
-                    {% if user.is_patron %}
-                      <li><a class="dropdown-item" href="{% url 'my_borrowed_items' %}">Borrowed Items</a></li>
-                    {% endif %}
-                    <li><a class="dropdown-item" href="{% url 'catalog' %}">Manage Collections</a></li>
+                    <li><a class="dropdown-item" href="{% url 'my_borrowed_items' %}">Borrowed Items</a></li>
+                    <li><a class="dropdown-item" href="{% url 'catalog' %}">View All Collections</a></li>
+                    <li><a class="dropdown-item text-white" style="background-color: #198754;" href="{% url 'create_collection' %}">Create Collection</a></li>
+                    <li><hr class="dropdown-divider"></li>
                     {% if user.is_librarian %} <!-- only librarians can access and edit items -->
                     <li>
                       <a class="dropdown-item text-white" style="background-color: orange;" href="{% url 'manage_items' %}">

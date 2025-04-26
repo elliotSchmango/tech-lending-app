@@ -3,9 +3,9 @@ from .models import Collection
 def navbar_collections(request):
     public_collections = Collection.objects.filter(visibility='public')
 
-    # first 5 public collections for the navbar
-    main_collections = public_collections[:5]
-    other_collections = public_collections[5:]
+    # first fewe public collections for the navbar
+    main_collections = public_collections[:6]
+    other_collections = public_collections[6:]
 
     # priv collections if logged in
     if request.user.is_authenticated:

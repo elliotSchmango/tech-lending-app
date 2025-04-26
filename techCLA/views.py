@@ -30,15 +30,10 @@ def index(request):
         welcome_message = "Welcome to our Catalog! Please log in to access all features."
         collections = Collection.objects.filter(visibility='public')
 
-    main_collections = collections[:5]          # first 5 in navbar
-    other_collections = collections[5:]         # rest in hamburger
-
     context = {
         'welcome': welcome_message,
         'username': username,
-        'role': role,
-        'collections': main_collections,
-        'other_collections': other_collections,
+        'role': role
     }
     
     return render(request, 'techCLA/index.html', context)

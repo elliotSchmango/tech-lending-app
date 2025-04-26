@@ -1,33 +1,69 @@
-{% extends 'techCLA/base.html' %}
+{% extends "techCLA/base.html" %}
 
 {% block content %}
+<div class="mt-4">
 
-<h2 class="mt-4">View all Collections</h2>
-<p class="text-muted mb-4">View all available collections in the library system.</p>
-
-{% if all_collections %}
+  <!-- Main Content -->
+  <hr>
   <div class="row">
-    {% for collection in all_collections %}
-      <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
-        <a href="{% url 'collection_detail' collection.id %}" class="text-decoration-none text-dark">
-          <div class="card h-100">
-            <div class="card-body">
-              <h5 class="card-title">{{ collection.name }}</h5>
-              <p class="card-text small">{{ collection.description|default:"No description."|truncatewords:15 }}</p>
-            </div>
-          </div>
-        </a>
+    <div class="col-md-12">
+
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="mb-0">All Collections</h4>
+        <div class="d-flex gap-2">
+          {% if user.is_authenticated %}
+            <a href="{% url 'create_collection' %}" class="btn btn-success">
+              Create Collection
+            </a>
+          {% endif %}
+          <a href="{% url 'search_results' %}?q=&search_by=collections" class="btn btn-primary">
+            Browse All Collections
+          </a>
+        </div>
       </div>
-    {% endfor %}
-  </div>
-{% else %}
-  <p class="text-muted">No collections found.</p>
-{% endif %}
+      
 
-{% if user.is_authenticated %}
-  <div class="mb-4 d-flex gap-2">
-    <a href="{% url 'create_collection' %}" class="btn btn-primary">Create a collection</a>
+      <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for collection in public_collections %}
+          <div class="col">
+            <div class="card h-100 d-flex flex-column">
+              <div class="card-header mt-1">
+                <h5 class="card-title">
+                  <a href="{% url 'collection_detail' collection.id %}" class="text-decoration-none text-dark">
+                    {{ collection.name }}
+                  </a>
+                </h5>
+              </div>
+          
+              <div class="card-body flex-grow-1 d-flex flex-column">
+                <div class="row row-cols-2 g-2 px-3 pb-3">
+                  {% for item in collection.items.all|slice:":4" %}
+                    <div class="col text-center">
+                      <a href="{% url 'item_detail' item.title %}" class="text-decoration-none text-dark">
+                        {% if item.image %}
+                          <img src="{{ item.image.url }}" 
+                               class="img-fluid" 
+                               style="height: 120px; width: 120px; object-fit: cover;" 
+                               alt="{{ item.title }}">
+                        {% endif %}
+                        <div class="fw-semibold">{{ item.title }}</div>
+                      </a>
+                    </div>
+                  {% endfor %}
+                </div>
+              </div>
+              
+          
+              <div class="card-footer mt-auto text-muted">
+                <a href="{% url 'collection_detail' collection.id %}" class="btn btn-sm btn-outline-primary">
+                  View Full Collection
+                </a>
+              </div>
+            </div>
+          </div>        
+        {% endfor %}
+      </div>
+    </div>
   </div>
-{% endif %}
-
+</div>
 {% endblock %}
