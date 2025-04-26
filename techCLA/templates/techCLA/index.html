@@ -30,7 +30,7 @@
       <div class="row row-cols-1 row-cols-md-3 g-4">
         {% for collection in public_collections|slice:":6" %}
           <div class="col">
-            <div class="card">
+            <div class="card h-100 d-flex flex-column">
               <div class="card-header mt-1">
                 <h5 class="card-title">
                   <a href="{% url 'collection_detail' collection.id %}" class="text-decoration-none text-dark">
@@ -38,43 +38,32 @@
                   </a>
                 </h5>
               </div>
-              <div class="card-body">
-                <p class="card-text">{{ collection.description }}</p>
+          
+              <div class="card-body flex-grow-1 d-flex flex-column">
                 <div class="d-flex justify-content-around px-3 pb-3 gap-3">
                   {% for item in collection.items.all|slice:":2" %}
                     <div class="text-center" style="width: 45%;">
-                      <a href="{% url 'item_detail' item.title %}" class="text-decoration-none">
+                      <a href="{% url 'item_detail' item.title %}" class="text-decoration-none text-dark">
                         {% if item.image %}
-                          <img src="{{ item.image.url }}" class="img-fluid rounded mb-2" style="max-height: 120px; object-fit: cover;" alt="{{ item.title }}">
+                          <img src="{{ item.image.url }}" 
+                              class="img-fluid rounded mb-2" 
+                              style="height: 120px; width: 120px; object-fit: cover;" 
+                              alt="{{ item.title }}">
                         {% endif %}
                         <div class="fw-semibold">{{ item.title }}</div>
                       </a>
                     </div>
-                  
                   {% endfor %}
                 </div>
-                <div>
-                  {% for item in collection.items.all|slice:"2:4" %}
-                  
-                    <a href="{% url 'item_detail' item.title %}" class="list-group-item list-group-item-action">
-                      {{ item.title }}
-                    </a>
-                  
-                  {% endfor %}
-                  {% if collection.items.count > 4 %}
-                    <div class="list-group-item list-group-item-action">
-                      ...
-                    </div>
-                  {% endif %}
-                </div>
-
               </div>
-              
-              <div class="card-footer text-muted">
-                <a href="{% url 'collection_detail' collection.id %}" class="btn btn-sm btn-outline-primary">View Full Collection</a>
+          
+              <div class="card-footer mt-auto text-muted">
+                <a href="{% url 'collection_detail' collection.id %}" class="btn btn-sm btn-outline-primary">
+                  View Full Collection
+                </a>
               </div>
             </div>
-          </div>
+          </div>        
         {% endfor %}
       </div>
     </div>
