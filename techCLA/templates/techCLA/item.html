@@ -1,4 +1,5 @@
 {% extends "techCLA/index.html" %}
+{% load static %}
 
 {% block content %}
 <div class="container mt-4">
@@ -14,11 +15,9 @@
         <!-- Image -->
         <div class="col-md-6 text-center mb-3 mb-md-0">
           {% if item.image and "default.jpg" not in item.image.url %}
-            <img src="{{ item.image.url }}" alt="{{ item.title }}" class="img-fluid rounded-3 shadow-sm" style="max-height: 100%; width: auto;">
+              <img src="{{ item.image.url }}" alt="{{ item.title }}" class="img-fluid rounded-3 shadow-sm" style="max-height: 100%; width: auto;">
           {% else %}
-            <div class="alert alert-warning" role="alert">
-              No image available.
-            </div>
+              <img src="{% static 'item_images/default.jpg' %}" alt="Default item image" class="img-fluid rounded-3 shadow-sm" style="max-height: 100%; width: auto;">
           {% endif %}
         </div>
 

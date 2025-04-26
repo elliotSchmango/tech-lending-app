@@ -30,15 +30,10 @@ def index(request):
         welcome_message = "Welcome to our Catalog! Please log in to access all features."
         collections = Collection.objects.filter(visibility='public')
 
-    main_collections = collections[:5]          # first 5 in navbar
-    other_collections = collections[5:]         # rest in hamburger
-
     context = {
         'welcome': welcome_message,
         'username': username,
-        'role': role,
-        'collections': main_collections,
-        'other_collections': other_collections,
+        'role': role
     }
     
     return render(request, 'techCLA/index.html', context)
@@ -213,8 +208,8 @@ def delete_item(request, item_id):
 
 def collection_detail(request, collection_id):
     collection = get_object_or_404(Collection, id=collection_id)
-
     user = request.user
+
     has_access = (
         collection.visibility == 'public' or
         (user.is_authenticated and (user == collection.creator or user.is_librarian())) or
@@ -222,7 +217,11 @@ def collection_detail(request, collection_id):
     )
 
     if not has_access:
-        return render(request, 'techCLA/collections/access_denied.html', {'collection': collection})
+        if not user.is_authenticated:
+            return redirect('account_login')
+        return render(request, 'techCLA/collections/access_denied.html', {
+            'collection': collection
+        })
 
     items = collection.items.all()
     query = ""

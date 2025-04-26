@@ -7,6 +7,11 @@
 {% endblock head_title %}
 {% block card_content %}
     <h3 class="text-center">{% trans "Sign In" %}</h3>
+    {% if form.errors %}
+    <p style="color: red; text-align: center; margin-top: 10px;">
+        Invalid username or password. Please try again.
+    </p>
+    {% endif %}
     {% if not SOCIALACCOUNT_ONLY %}
         {% setvar link %}
             <a href="{{ signup_url }}">

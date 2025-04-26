@@ -14,17 +14,28 @@
   <hr>
   <div class="row">
     <div class="col-md-12">
-      <h4>Public Collections</h4>
-      <p>This is where you can browse public collections and items.</p>
 
-      <div class="pb-3">
-        <a href="{% url 'catalog' %}" class="rounded-2 btn btn-info btn-outline-dark">View All Collections</a>
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="mb-0">Collections Preview</h4>
+        <div class="d-flex gap-2">
+          {% if user.is_authenticated %}
+            <a href="{% url 'create_collection' %}" class="btn btn-success">
+              Create Collection
+            </a>
+          {% endif %}
+          <a href="{% url 'catalog' %}" class="btn btn-primary">
+            View All Collections
+          </a>
+          <a href="{% url 'search_results' %}?q=&search_by=collections" class="btn btn-primary">
+            Browse All Collections
+          </a>
+        </div>
       </div>
 
       <div class="row row-cols-1 row-cols-md-3 g-4">
-        {% for collection in collections|slice:":6" %}
+        {% for collection in public_collections|slice:":6" %}
           <div class="col">
-            <div class="card">
+            <div class="card h-100 d-flex flex-column">
               <div class="card-header mt-1">
                 <h5 class="card-title">
                   <a href="{% url 'collection_detail' collection.id %}" class="text-decoration-none text-dark">
@@ -32,43 +43,33 @@
                   </a>
                 </h5>
               </div>
-              <div class="card-body">
-                <p class="card-text">{{ collection.description }}</p>
-                <div class="d-flex justify-content-around px-3 pb-3 gap-3">
-                  {% for item in collection.items.all|slice:":2" %}
-                    <div class="text-center" style="width: 45%;">
-                      <a href="{% url 'item_detail' item.title %}" class="text-decoration-none">
+          
+              <div class="card-body flex-grow-1 d-flex flex-column">
+                <div class="row row-cols-2 g-2 px-3 pb-3">
+                  {% for item in collection.items.all|slice:":4" %}
+                    <div class="col text-center">
+                      <a href="{% url 'item_detail' item.title %}" class="text-decoration-none text-dark">
                         {% if item.image %}
-                          <img src="{{ item.image.url }}" class="img-fluid rounded mb-2" style="max-height: 120px; object-fit: cover;" alt="{{ item.title }}">
+                          <img src="{{ item.image.url }}" 
+                               class="img-fluid" 
+                               style="height: 120px; width: 120px; object-fit: cover;" 
+                               alt="{{ item.title }}">
                         {% endif %}
                         <div class="fw-semibold">{{ item.title }}</div>
                       </a>
                     </div>
-                  
                   {% endfor %}
                 </div>
-                <div>
-                  {% for item in collection.items.all|slice:"2:4" %}
-                  
-                    <a href="{% url 'item_detail' item.title %}" class="list-group-item list-group-item-action">
-                      {{ item.title }}
-                    </a>
-                  
-                  {% endfor %}
-                  {% if collection.items.count > 4 %}
-                    <div class="list-group-item list-group-item-action">
-                      ...
-                    </div>
-                  {% endif %}
-                </div>
-
               </div>
               
-              <div class="card-footer text-muted">
-                <a href="{% url 'collection_detail' collection.id %}" class="btn btn-sm btn-outline-primary">View Full Collection</a>
+          
+              <div class="card-footer mt-auto text-muted">
+                <a href="{% url 'collection_detail' collection.id %}" class="btn btn-sm btn-outline-primary">
+                  View Full Collection
+                </a>
               </div>
             </div>
-          </div>
+          </div>        
         {% endfor %}
       </div>
     </div>
