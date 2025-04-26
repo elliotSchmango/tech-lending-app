@@ -1,9 +1,16 @@
-{% extends 'techCLA/base.html' %}
+{% extends "techCLA/base.html" %}
 {% block content %}
-  <div class="alert alert-danger mt-4" role="alert">
-    <h4 class="alert-heading">Access Denied</h4>
-    <p>You do not have permission to view this collection.</p>
-    <hr>
-    <a href="{% url 'catalog' %}" class="btn btn-primary">Back to Catalog</a>
-  </div>
+<div class="text-center my-5">
+    <h2>Access Denied</h2>
+    <p class="lead">You don't currently have permission to view the collection <strong>{{ collection.name }}</strong>.</p>
+
+    <div class="mt-4">
+        <a href="{% url 'private_collections' %}" class="btn btn-primary">
+            Browse Private Collections
+        </a>
+        <a href="{% url 'index' %}" class="btn btn-outline-secondary">
+            Return to Home
+        </a>
+    </div>
+</div>
 {% endblock %}
