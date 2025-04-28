@@ -1,7 +1,6 @@
 from django.contrib.auth.views import LogoutView
 from django.contrib.auth.decorators import user_passes_test, login_required
-from django.contrib import messages
-from django.db.models import Q, OuterRef, Subquery
+from django.db.models import Q, OuterRef, Subquery, Sum
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import generic
 from django.views.generic import ListView
@@ -142,6 +141,8 @@ def edit_collection(request, collection_id):
             form = FormClass(instance=collection)
 
         return render(request, 'techCLA/collections/edit_collection.html', {'form': form, 'collection': collection})
+
+    return None
     # else:
     #     return redirect('collection_list')
 
@@ -272,6 +273,13 @@ def item_detail(request, item_name):
                         review.item = item
                         review.user = request.user
                         review.save()
+
+                        num_reviews = Review.objects.filter(item=item).count()
+                        sum_reviews = Review.objects.filter(item=item).aggregate(Sum("rating"))["rating__sum"]
+
+                        item.rating = sum_reviews / num_reviews
+                        item.save()
+
                         return redirect("item_detail", item_name=item.title)
 
     return render(request, "techCLA/item.html", context)

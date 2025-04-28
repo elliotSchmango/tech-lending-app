@@ -144,7 +144,13 @@
                           <td style="overflow: hidden; text-overflow: ellipsis;">{{ result.identifier }}</td>
                           <td>{{ result.status }}</td>
                           <td style="overflow: hidden; text-overflow: ellipsis;">{{ result.location }}</td>
-                          <td class="text-right">{{ result.rating }}</td>
+                          <td class="text-right">
+                            {% if result.rating == 0 %}
+                              N/A
+                            {% else %}
+                              {{ result.rating }}
+                            {% endif %}
+                          </td>
                         </tr>
                       {% endif %}
                     {% endfor %}
