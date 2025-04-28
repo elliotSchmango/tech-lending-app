@@ -86,7 +86,7 @@ class CatalogView(generic.ListView):
             return Collection.objects.filter(visibility="public")
     
 def create_collection(request):
-    # Determine which form to use
+
     if request.user.role == "Patron":
         FormClass = CollectionFormPatron
     else:
@@ -94,6 +94,15 @@ def create_collection(request):
 
     if request.method == "POST":
         form = FormClass(request.POST)
+
+        items = form.fields['items'].clean(request.POST.getlist('items'))
+        visibility = request.POST.get('visibility')
+
+        for item in items:
+            other_collections = item.collection_set.filter(visibility="private")
+            if other_collections.exists():
+                return redirect('item_conflict', item_title=item.title, collection_name=other_collections.first().name)
+
         if form.is_valid():
             collection = form.save(commit=False)
             collection.creator = request.user
@@ -104,18 +113,17 @@ def create_collection(request):
                 messages.error(request, "Only librarians can create private collections.")
                 return render(request, 'techCLA/collections/create_collection.html', {'form': form})
 
-            items = form.cleaned_data['items']
-            try:
+            if collection.visibility == "private":
                 for item in items:
-                    other_collections = item.collection_set.filter(visibility="private")
-                    if other_collections.exists():
-                        return redirect('item_conflict', item_title=item.title, collection_name=other_collections.first().name)
+                    for other_collection in item.collection_set.all():
+                        other_collection.items.remove(item)
 
-                collection.save()
-                collection.items.set(items)
-                return redirect('collection_detail', collection_id=collection.id)
-            except ValidationError as e:
-                form.add_error(None, e)
+            collection.save()
+            collection.items.set(items)
+            return redirect('collection_detail', collection_id=collection.id)
+        else:
+            pass
+
     else:
         form = FormClass()
 
@@ -132,20 +140,32 @@ def edit_collection(request, collection_id):
 
         if request.method == "POST":
             form = FormClass(request.POST, instance=collection)
-            items = form.fields['items'].clean(request.POST.getlist('items'))
-            visibility = request.POST.get('visibility', collection.visibility)
-
-            for item in items:
-                other_collections = item.collection_set.filter(visibility="private").exclude(id=collection.id)
-                if other_collections.exists():
-                    return redirect(
-                        f"/collections/item-conflict/{item.title}/{other_collections.first().name}/?collection_id={collection_id}"
-                    )
-
             if form.is_valid():
+                print("HERE")
+                collection = form.save(commit=False)
+                items = form.fields['items'].clean(request.POST.getlist('items'))
+                visibility = request.POST.get('visibility', collection.visibility)
+        
+                for item in items:
+                    other_collections = item.collection_set.filter(visibility="private").exclude(id=collection.id)
+                    if other_collections.exists():
+                        return redirect(
+                            f"/collections/item-conflict/{item.title}/{other_collections.first().name}/?collection_id={collection_id}"
+                        )
+            
+                if collection.visibility == "private":
+                    for item in items:
+                        for other_collection in item.collection_set.exclude(id=collection.id):
+                            other_collection.items.remove(item)
+                
                 collection = form.save()
                 collection.items.set(items)
                 return redirect('collection_detail', collection_id=collection.id)
+            else:
+                return render(request, 'techCLA/collections/invalid_form.html', {
+                    'form': form,
+                    'collection': collection
+                })
         else:
             form = FormClass(instance=collection)
 
