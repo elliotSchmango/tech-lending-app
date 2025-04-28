@@ -143,6 +143,11 @@ def edit_collection(request, collection_id):
                     )
 
             if form.is_valid():
+                if collection.visibility == "private":
+                    for item in items:
+                        for other_collection in item.collection_set.exclude(id=collection.id):
+                            other_collection.items.remove(item)
+                
                 collection = form.save()
                 collection.items.set(items)
                 return redirect('collection_detail', collection_id=collection.id)
