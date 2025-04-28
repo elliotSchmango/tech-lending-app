@@ -23,8 +23,11 @@
               Create Collection
             </a>
           {% endif %}
-          <a href="{% url 'catalog' %}" class="btn btn-primary">
-            View All Collections
+          <a href="{% url 'catalog' %}" class="btn btn-secondary">
+            View All Public Collections
+          </a>
+          <a href="{% url 'private_collections' %}" class="btn btn-secondary btm-sm">
+            View All Private Collections
           </a>
           <a href="{% url 'search_results' %}?q=&search_by=collections" class="btn btn-primary">
             Browse All Collections

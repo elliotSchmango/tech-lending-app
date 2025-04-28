@@ -103,7 +103,7 @@
     <div class="container">
       <div class="btn-group">
         {% for collection in collections %}
-          <a href="{% url 'collection_detail' collection.id %}" class="rounded-0 border-0 btn btn-outline-light">{{ collection.name }}</a>
+          <a href="{% url 'collection_detail' collection.id %}" class="rounded-1 border-0 btn btn-outline-light">{{ collection.name }}</a>
         {% endfor %}
       </div>
 
@@ -128,61 +128,59 @@
   
     <div class="offcanvas-body">
 
-      <div class="mb-4 text-center">
-        <div class="d-flex gap-2">
-          <a href="{% url 'catalog' %}" class="btn btn-primary">
-            View All Collections
-          </a>
-          <a href="{% url 'search_results' %}?q=&search_by=collections" class="btn btn-primary">
-            Browse All Collections
-          </a>
-        </div>
+      <div class="mb-4">
+        <a href="{% url 'search_results' %}?q=&search_by=collections" class="btn btn-primary w-100">
+          Browse All Collections
+        </a>
       </div>
   
+    <hr>
+
       <!-- Public Collections Section -->
       <h5>Public Collections</h5>
-      <div class="mb-4">
+      <div class="mb-3">
+        <a href="{% url 'catalog' %}" class="btn btn-secondary w-100 mb-2">
+          View All Public Collections
+        </a>
         {% if public_collections %}
           {% for collection in public_collections %}
-            <div class="mb-2">
-              <a class="btn btn-outline-secondary w-100 text-start" href="{% url 'collection_detail' collection.id %}">
-                {{ collection.name }}
-              </a>
-            </div>
+            <a class="collection-link btn w-100 mb-2 text-start" href="{% url 'collection_detail' collection.id %}">
+              {{ collection.name }}
+            </a>
           {% endfor %}
         {% else %}
-          <p class="text-muted text-center">No public collections available.</p>
+          <p class="text-muted text-center small">No public collections available.</p>
         {% endif %}
       </div>
   
-      <!-- Horizontal Divider -->
-      <hr class="my-4">
+      <hr>
   
       <!-- Private Collections Section -->
       <h5>Private Collections</h5>
-      <div>
-        {% if user.is_authenticated %}
-          {% if private_collections %}
-            {% for collection in private_collections %}
-              <div class="mb-2">
-                <a class="btn btn-outline-secondary w-100 text-start" href="{% url 'collection_detail' collection.id %}">
-                  {{ collection.name }}
-                </a>
-              </div>
-            {% endfor %}
-          {% else %}
-            <p class="text-muted text-center">No private collections available.</p>
-          {% endif %}
+      {% if user.is_authenticated %}
+      <div class="mb-3">
+        <a href="{% url 'private_collections' %}" class="btn btn-secondary w-100 mb-2">
+          View All Private Collections
+        </a>
+        {% if private_collections %}
+          {% for collection in private_collections %}
+            <a class="collection-link btn w-100 mb-2 text-start" href="{% url 'collection_detail' collection.id %}">
+              {{ collection.name }}
+            </a>
+          {% endfor %}
         {% else %}
-          <div class="alert alert-warning text-center">
-            Log in to see private collections.
-          </div>
+          <p class="text-muted text-center small">No private collections available.</p>
         {% endif %}
       </div>
-  
-    </div>
+    {% else %}
+      <div class="alert alert-warning text-center small">
+        Log in to see private collections.
+      </div>
+    {% endif %}
+
   </div>
-  {% endblock %}
+</div>
+{% endblock %}
   
 
 
