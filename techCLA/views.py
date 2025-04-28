@@ -140,17 +140,19 @@ def edit_collection(request, collection_id):
 
         if request.method == "POST":
             form = FormClass(request.POST, instance=collection)
-            items = form.fields['items'].clean(request.POST.getlist('items'))
-            visibility = request.POST.get('visibility', collection.visibility)
-
-            for item in items:
-                other_collections = item.collection_set.filter(visibility="private").exclude(id=collection.id)
-                if other_collections.exists():
-                    return redirect(
-                        f"/collections/item-conflict/{item.title}/{other_collections.first().name}/?collection_id={collection_id}"
-                    )
-
             if form.is_valid():
+                print("HERE")
+                collection = form.save(commit=False)
+                items = form.fields['items'].clean(request.POST.getlist('items'))
+                visibility = request.POST.get('visibility', collection.visibility)
+        
+                for item in items:
+                    other_collections = item.collection_set.filter(visibility="private").exclude(id=collection.id)
+                    if other_collections.exists():
+                        return redirect(
+                            f"/collections/item-conflict/{item.title}/{other_collections.first().name}/?collection_id={collection_id}"
+                        )
+            
                 if collection.visibility == "private":
                     for item in items:
                         for other_collection in item.collection_set.exclude(id=collection.id):
@@ -159,6 +161,8 @@ def edit_collection(request, collection_id):
                 collection = form.save()
                 collection.items.set(items)
                 return redirect('collection_detail', collection_id=collection.id)
+            else:
+                print(form.errors)
         else:
             form = FormClass(instance=collection)
 
