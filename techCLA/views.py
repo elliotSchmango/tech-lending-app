@@ -40,7 +40,7 @@ def index(request):
         'welcome': welcome_message,
         'username': username,
         'role': role,
-        'collections': collections,
+        #'collections': collections,
         'new_notifications': new_notifications,
     }
     
