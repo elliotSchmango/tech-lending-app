@@ -162,7 +162,10 @@ def edit_collection(request, collection_id):
                 collection.items.set(items)
                 return redirect('collection_detail', collection_id=collection.id)
             else:
-                print(form.errors)
+                return render(request, 'techCLA/collections/invalid_form.html', {
+                    'form': form,
+                    'collection': collection
+                })
         else:
             form = FormClass(instance=collection)
 
