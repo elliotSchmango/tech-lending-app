@@ -1,5 +1,12 @@
 {% extends "techCLA/base.html" %}
 {% block content %}
+  {% if alerts %}
+  <div class="alert alert-info mt-3" role="alert">
+    {% for alert in alerts %}
+      <p>Request to borrow <strong>{{ alert.item.title }}</strong> was {{ alert.status|title }}.</p>
+    {% endfor %}
+  </div>
+  {% endif %}
   <h2 class="mt-4">My Borrowed Items</h2>
   <form action="{{ request.path }}" method="post">
     {% csrf_token %}

@@ -23,16 +23,25 @@ def index(request):
             role = 'Patron'
             welcome_message = f"Welcome, {username}! Enjoy browsing our collections."
             collections = Collection.objects.filter(creator=request.user) | Collection.objects.filter(visibility="public") | Collection.objects.filter(allowed_users=request.user)
+        
+        new_notifications = BorrowRequest.objects.filter(
+            user=request.user,
+            status__in=["approved", "denied"],
+            viewed=False
+        ).count()
     else:
         role = 'Anonymous'
         username = ''
         welcome_message = "Welcome to our Catalog! Please log in to access all features."
         collections = Collection.objects.filter(visibility='public')
+        new_notifications = 0
 
     context = {
         'welcome': welcome_message,
         'username': username,
-        'role': role
+        'role': role,
+        'collections': collections,
+        'new_notifications': new_notifications,
     }
     
     return render(request, 'techCLA/index.html', context)
@@ -329,9 +338,22 @@ def my_borrowed_items(request):
 
     pending_requests = BorrowRequest.objects.filter(user=request.user, status="pending")
 
+    # Fetch alerts for approved/denied requests
+    alerts_qs = BorrowRequest.objects.filter(
+        user=request.user,
+        status__in=["approved", "denied"],
+        viewed=False
+    )
+
+    alerts = list(alerts_qs) 
+
+    # Mark them as viewed once they visit
+    alerts_qs.update(viewed=True)
+
     context = {
         "borrowed_requests": borrowed_requests,
         "pending_requests": pending_requests,
+        "alerts": alerts,
     }
 
     return render(request, "techCLA/borrowed_items.html", context)

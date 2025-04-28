@@ -116,15 +116,18 @@ class BorrowRequest(models.Model):
     requested_on = models.DateTimeField(auto_now_add=True)
     approved_on = models.DateTimeField(blank=True, null=True)
     denied_on = models.DateTimeField(blank=True, null=True)
+    viewed = models.BooleanField(default=False)
 
     def approve(self):
         self.status = "approved"
         self.approved_on = timezone.now()
+        self.viewed = False
         self.save()
 
     def deny(self):
         self.status = "denied"
         self.denied_on = timezone.now()
+        self.viewed = False
         self.save()
 
 class RequestAccess(models.Model):

@@ -43,14 +43,28 @@
                   <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                     data-bs-toggle="dropdown" aria-expanded="false">
                       {{ user.get_full_name|default:user.username }}
+                      {% if new_notifications > 0 %}
+                        <span class="position-absolute top-3 start-0 translate-middle badge rounded-pill bg-danger">
+                          {{ new_notifications }}
+                          <span class="visually-hidden">unread notifications</span>
+                        </span>
+                      {% endif %}
                   </a>
                   <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                     <li><span class="dropdown-header"><b>Role:</b> {{ user.role }}</span></li>
-                    <li><a class="dropdown-item" href="{% url 'my_borrowed_items' %}">Borrowed Items</a></li>
+                    <li>
+                      <a class="dropdown-item" href="{% url 'my_borrowed_items' %}">
+                        Borrowed Items
+                        {% if new_notifications > 0 %}
+                          <span class="badge bg-danger ms-2">{{ new_notifications }}</span>
+                        {% endif %}
+                      </a>
+                    </li>
                     <li><a class="dropdown-item" href="{% url 'catalog' %}">View All Collections</a></li>
                     <li><a class="dropdown-item text-white" style="background-color: #198754;" href="{% url 'create_collection' %}">Create Collection</a></li>
                     <li><hr class="dropdown-divider"></li>
                     {% if user.is_librarian %} <!-- only librarians can access and edit items -->
+                    <li><p class="dropdown-header fw-bold">Librarian Management</p></li>
                     <li>
                       <a class="dropdown-item text-white" style="background-color: orange;" href="{% url 'manage_items' %}">
                         Manage Items
