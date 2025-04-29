@@ -141,6 +141,7 @@ class RequestAccess(models.Model):
     ]
     status = models.CharField(max_length=10, choices=status_choices, default='pending')
     timestamp = models.DateTimeField(auto_now_add=True)
+    viewed = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ('requester', 'collection')  # Prevent duplicate requests

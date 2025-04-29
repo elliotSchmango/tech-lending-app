@@ -29,12 +29,20 @@ def index(request):
             status__in=["approved", "denied"],
             viewed=False
         ).count()
+
+        access_notifications = RequestAccess.objects.filter(
+            requester=request.user,
+            status__in=["approved", "denied"],
+            viewed=False
+        ).count()
+
     else:
         role = 'Anonymous'
         username = ''
         welcome_message = "Welcome to our Catalog! Please log in to access all features."
         collections = Collection.objects.filter(visibility='public')
         new_notifications = 0
+        access_notifications = 0
 
     context = {
         'welcome': welcome_message,
@@ -42,6 +50,7 @@ def index(request):
         'role': role,
         #'collections': collections,
         'new_notifications': new_notifications,
+        'access_notifications': access_notifications,
     }
     
     return render(request, 'techCLA/index.html', context)
@@ -332,10 +341,22 @@ def private_collections_view(request):
             id__in=private_collections.values_list('id', flat=True)
         )
         #print(inaccessible)
+    
+    # Fetch alerts for approved/denied requests
+    alerts_qs = RequestAccess.objects.filter(
+        requester=user,
+        status__in=["approved", "denied"],
+        viewed=False
+    )
+
+    alerts = list(alerts_qs)
+
+    alerts_qs.update(viewed=True)
 
     return render(request, 'techCLA/private_collections.html', {
         'private_collections': private_collections,
-        'inaccessible': inaccessible
+        'inaccessible': inaccessible,
+        'alerts': alerts,
     })
 
 def my_borrowed_items(request):

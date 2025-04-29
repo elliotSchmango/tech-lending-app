@@ -26,8 +26,14 @@
           <a href="{% url 'catalog' %}" class="btn btn-secondary">
             View All Public Collections
           </a>
-          <a href="{% url 'private_collections' %}" class="btn btn-secondary btm-sm">
+          <a href="{% url 'private_collections' %}" class="btn btn-secondary position-relative">
             View All Private Collections
+            {% if access_notifications > 0 %}
+              <span class="position-absolute top-3 start-0 translate-middle badge rounded-pill bg-danger">
+                {{ access_notifications }}
+                <span class="visually-hidden">unread notifications</span>
+              </span>
+            {% endif %}
           </a>
           <a href="{% url 'search_results' %}?q=&search_by=collections" class="btn btn-primary">
             Browse All Collections

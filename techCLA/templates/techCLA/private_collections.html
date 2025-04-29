@@ -1,6 +1,13 @@
 {% extends 'techCLA/base.html' %}
 
 {% block content %}
+  {% if alerts %}
+    <div class="alert alert-info mt-3" role="alert">
+      {% for alert in alerts %}
+        <p>Request to access <strong>{{ alert.collection.name }}</strong> was {{ alert.status|title }}.</p>
+      {% endfor %}
+    </div>
+  {% endif %}
   <h2 class="mb-4">Private Collections You Can Access</h2>
 
   {% if private_collections %}
