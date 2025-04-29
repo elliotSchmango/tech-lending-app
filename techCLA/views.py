@@ -530,7 +530,7 @@ def request_access_view(request, collection_id):
     existing = RequestAccess.objects.filter(requester=request.user, collection=collection).first()
     if existing:
         request.session['req_message'] = "You have already requested access."
-        return redirect('collection_detail', collection.id)
+        return redirect('private_collections')#('collection_detail', collection.id)
 
     if request.method == "POST":
         form = RequestAccessForm(request.POST)
