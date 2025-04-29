@@ -6,7 +6,7 @@
     {% if not SOCIALACCOUNT_ONLY %}
         {% element hr %}
         {% endelement %}
-        <h5>{% translate "Or use a third-party" %}</h5>
+        <h5>{% translate "Login with Google" %}</h5>
         <br>
     {% endif %}
     {% include "socialaccount/snippets/provider_list.html" with process="login" %}

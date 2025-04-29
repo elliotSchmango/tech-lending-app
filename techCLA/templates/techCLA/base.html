@@ -24,7 +24,7 @@
 
       <!-- Search Bar -->
       <form class="d-flex flex-grow-1 mx-3" action="{% url 'search_results' %}" method="get">
-        <input class="form-control w-100 me-2" type="search" placeholder="Search by name..." name="q" aria-label="Search">
+        <input class="form-control w-50 me-2" type="search" placeholder="Search by name..." name="q" aria-label="Search">
         <select class="form-select me-2" name="search_by" style="width: 150px;">
           <option value="collections">Collections</option>
           <option value="items">Items</option>
@@ -33,82 +33,80 @@
       </form>
 
       <!-- Navbar : Sign in / Sign out -->
-      <div class="collapse navbar-collapse justify-content-end">
-        <ul class="navbar-nav">
-          <li class="nav-item d-flex align-items-center">
-            {% if user.is_authenticated %}
-            <div class="d-flex align-items-center">
+      <ul class="navbar-nav">
+        <li class="nav-item d-flex align-items-center">
+          {% if user.is_authenticated %}
+          <div class="d-flex align-items-center">
 
-              <!-- Dropdown for Account Options -->
-              <div class="nav-item dropdown">
-                  <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
-                    data-bs-toggle="dropdown" aria-expanded="false">
-                      {{ user.get_full_name|default:user.username }}
-                      {% if new_notifications > 0 %}
-                        <span class="position-absolute top-3 start-0 translate-middle badge rounded-pill bg-danger">
-                          {{ new_notifications }}
-                          <span class="visually-hidden">unread notifications</span>
-                        </span>
-                      {% endif %}
-                  </a>
-                  <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                    <li><span class="dropdown-header"><b>Role:</b> {{ user.role }}</span></li>
-                    <li>
-                      <a class="dropdown-item" href="{% url 'my_borrowed_items' %}">
-                        Borrowed Items
-                        {% if new_notifications > 0 %}
-                          <span class="badge bg-danger ms-2">{{ new_notifications }}</span>
-                        {% endif %}
-                      </a>
-                    </li>
-                    <li><a class="dropdown-item" href="{% url 'catalog' %}">View All Collections</a></li>
-                    <li><a class="dropdown-item text-white" style="background-color: #198754;" href="{% url 'create_collection' %}">Create Collection</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    {% if user.is_librarian %} <!-- only librarians can access and edit items -->
-                    <li><p class="dropdown-header fw-bold">Librarian Management</p></li>
-                    <li>
-                      <a class="dropdown-item text-white" style="background-color: orange;" href="{% url 'manage_items' %}">
-                        Manage Items
-                      </a>
-                      <a class="dropdown-item text-white" style="background-color: orange;" href="{% url 'manage_borrow_requests' %}">
-                        Borrow Requests
-                      </a>
-                      <a class="dropdown-item text-white" style="background-color: orange;" href="{% url 'manage_access_requests' %}">
-                        Collection Access Requests
-                      </a>
-                      <a class="dropdown-item text-white" style="background-color: orange;" href="{% url 'promote_user' %}">
-                        Promote User to Librarian
-                      </a>                      
-                    </li>
+            <!-- Dropdown for Account Options -->
+            <div class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                  data-bs-toggle="dropdown" aria-expanded="false">
+                    {{ user.get_full_name|default:user.username }}
+                    {% if new_notifications > 0 %}
+                      <span class="position-absolute top-3 start-0 translate-middle badge rounded-pill bg-danger">
+                        {{ new_notifications }}
+                        <span class="visually-hidden">unread notifications</span>
+                      </span>
                     {% endif %}
-                    
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="{% url 'profile_detail' %}">View Profile</a></li>
-                    <li><a class="dropdown-item" href="{% url 'account_logout' %}">Sign Out</a></li>
-                  </ul>
-              </div>
-              <div class="me-2">
-                {% if user.profile.profile_picture and "default_profile" not in user.profile.profile_picture.url %}
-                  <a href="{% url 'profile_detail' %}">
-                    <img src="{{ user.profile.profile_picture.url }}" alt="Profile Picture"
-                         class="rounded-circle border" width="40" height="40">
-                  </a>
-                {% else %}
-                  <a href="{% url 'profile_detail' %}">
-                    <img src="{% static '/techCLA/default_profile.jpg' %}" alt="Default Profile Picture"
-                        class="rounded-circle border" width="40" height="40">
-                  </a>
-                {% endif %}
-              </div>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                  <li><span class="dropdown-header"><b>Role:</b> {{ user.role }}</span></li>
+                  <li>
+                    <a class="dropdown-item" href="{% url 'my_borrowed_items' %}">
+                      Borrowed Items
+                      {% if new_notifications > 0 %}
+                        <span class="badge bg-danger ms-2">{{ new_notifications }}</span>
+                      {% endif %}
+                    </a>
+                  </li>
+                  <li><a class="dropdown-item" href="{% url 'catalog' %}">View All Collections</a></li>
+                  <li><a class="dropdown-item text-white" style="background-color: #198754;" href="{% url 'create_collection' %}">Create Collection</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  {% if user.is_librarian %} <!-- only librarians can access and edit items -->
+                  <li><p class="dropdown-header fw-bold">Librarian Management</p></li>
+                  <li>
+                    <a class="dropdown-item text-white" style="background-color: orange;" href="{% url 'manage_items' %}">
+                      Manage Items
+                    </a>
+                    <a class="dropdown-item text-white" style="background-color: orange;" href="{% url 'manage_borrow_requests' %}">
+                      Borrow Requests
+                    </a>
+                    <a class="dropdown-item text-white" style="background-color: orange;" href="{% url 'manage_access_requests' %}">
+                      Collection Access Requests
+                    </a>
+                    <a class="dropdown-item text-white" style="background-color: orange;" href="{% url 'promote_user' %}">
+                      Promote User to Librarian
+                    </a>                      
+                  </li>
+                  {% endif %}
+                  
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item" href="{% url 'profile_detail' %}">View Profile</a></li>
+                  <li><a class="dropdown-item" href="{% url 'account_logout' %}">Sign Out</a></li>
+                </ul>
             </div>
-            {% else %}
-              <a href="{% url 'account_login' %}" class="nav-link">
-                Hello, Sign in
-              </a>
-            {% endif %}
-          </li>
-        </ul>
-      </div>
+            <div class="me-2">
+              {% if user.profile.profile_picture and "default_profile" not in user.profile.profile_picture.url %}
+                <a href="{% url 'profile_detail' %}">
+                  <img src="{{ user.profile.profile_picture.url }}" alt="Profile Picture"
+                        class="rounded-circle border" width="40" height="40">
+                </a>
+              {% else %}
+                <a href="{% url 'profile_detail' %}">
+                  <img src="{% static '/techCLA/default_profile.jpg' %}" alt="Default Profile Picture"
+                      class="rounded-circle border" width="40" height="40">
+                </a>
+              {% endif %}
+            </div>
+          </div>
+          {% else %}
+            <a href="{% url 'account_login' %}" class="nav-link">
+              Hello, Sign in
+            </a>
+          {% endif %}
+        </li>
+      </ul>
     </div>
   </nav>
   {% endblock %}
@@ -116,20 +114,29 @@
   {% block secondNav %}
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
-      <div class="btn-group">
+      <div class="btn-group d-lg-none flex-wrap overflow-auto" style="max-width: 70vw;">
+        {% for collection in collections|slice:":3" %}
+          <a href="{% url 'collection_detail' collection.id %}" class="rounded-1 btn btn-sm text-white  text-truncate">
+            {{ collection.name }}
+          </a>
+        {% endfor %}
+      </div>
+      
+      <!-- Full version: only visible on large screens -->
+      <div class="btn-group d-none d-lg-flex flex-wrap overflow-auto" style="max-width: 70vw;">
         {% for collection in collections %}
-          <a href="{% url 'collection_detail' collection.id %}" class="rounded-1 border-0 btn btn-outline-light">{{ collection.name }}</a>
+          <a href="{% url 'collection_detail' collection.id %}" class="rounded-1 btn btn-sm text-white text-truncate">
+            {{ collection.name }}
+          </a>
         {% endfor %}
       </div>
 
       
-      <div class="collapse navbar-collapse justify-content-end col">
-        <div class="d-flex align-items-center gap-2">
-          <p class="text-light m-0">View All</p>
-          <button class="border-0 bg-transparent" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidenav">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-        </div>
+      <div class="d-flex align-items-center gap-2 ms-auto">
+        <p class="text-light m-0">View All</p>
+        <button class="border-0 bg-transparent" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidenav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
       </div>
     </div>
   </nav>
