@@ -43,9 +43,9 @@
                 <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                   data-bs-toggle="dropdown" aria-expanded="false">
                     {{ user.get_full_name|default:user.username }}
-                    {% if new_notifications > 0 %}
+                    {% if total_notifications and total_notifications > 0 %}
                       <span class="position-absolute top-3 start-0 translate-middle badge rounded-pill bg-danger">
-                        {{ new_notifications }}
+                        {{ total_notifications }}
                         <span class="visually-hidden">unread notifications</span>
                       </span>
                     {% endif %}
@@ -55,7 +55,7 @@
                   <li>
                     <a class="dropdown-item" href="{% url 'my_borrowed_items' %}">
                       Borrowed Items
-                      {% if new_notifications > 0 %}
+                      {% if new_notifications and new_notifications > 0 %}
                         <span class="badge bg-danger ms-2">{{ new_notifications }}</span>
                       {% endif %}
                     </a>
@@ -71,9 +71,15 @@
                     </a>
                     <a class="dropdown-item text-white" style="background-color: orange;" href="{% url 'manage_borrow_requests' %}">
                       Borrow Requests
+                      {% if borrow_pending and borrow_pending > 0 %}
+                        <span class="badge bg-danger ms-2">{{ borrow_pending }}</span>
+                      {% endif %}
                     </a>
                     <a class="dropdown-item text-white" style="background-color: orange;" href="{% url 'manage_access_requests' %}">
                       Collection Access Requests
+                      {% if access_pending and access_pending > 0 %}
+                        <span class="badge bg-danger ms-2">{{ access_pending }}</span>
+                      {% endif %}
                     </a>
                     <a class="dropdown-item text-white" style="background-color: orange;" href="{% url 'promote_user' %}">
                       Promote User to Librarian

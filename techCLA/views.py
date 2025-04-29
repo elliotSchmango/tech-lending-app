@@ -13,12 +13,22 @@ from .forms import ProfilePictureForm, ItemForm, CollectionFormLibrarian, Collec
 
 
 def index(request):
+    total_notifications = 0
+    new_notifications = 0
+    access_notifications = 0
+    access_pending = 0
+    borrow_pending = 0
+
     if request.user.is_authenticated:
         username = request.user.get_full_name() or request.user.username
+        librarian_alerts = 0
         if request.user.role == 'Librarian':
             role = 'Librarian'
             welcome_message = f"Welcome, {username}! You have librarian privileges."
             collections = Collection.objects.all()
+            access_pending = RequestAccess.objects.filter(status="pending").count()
+            borrow_pending = BorrowRequest.objects.filter(status="pending").count()
+            librarian_alerts = access_pending + borrow_pending
         else:
             role = 'Patron'
             welcome_message = f"Welcome, {username}! Enjoy browsing our collections."
@@ -36,21 +46,24 @@ def index(request):
             viewed=False
         ).count()
 
+        total_notifications = new_notifications + librarian_alerts
+
     else:
         role = 'Anonymous'
         username = ''
         welcome_message = "Welcome to our Catalog! Please log in to access all features."
         collections = Collection.objects.filter(visibility='public')
-        new_notifications = 0
-        access_notifications = 0
+        
 
     context = {
         'welcome': welcome_message,
         'username': username,
         'role': role,
-        #'collections': collections,
+        'total_notifications': total_notifications,
         'new_notifications': new_notifications,
         'access_notifications': access_notifications,
+        'access_pending': access_pending,
+        'borrow_pending': borrow_pending,
     }
     
     return render(request, 'techCLA/index.html', context)
@@ -329,6 +342,7 @@ def private_collections_view(request):
     if user.is_librarian():
         private_collections = Collection.objects.filter(visibility='private')
         inaccessible = Collection.objects.none()
+
     else:
         # Patrons see collections they created OR are allowed to access
         created = Collection.objects.filter(visibility='private', creator=user)
@@ -544,10 +558,12 @@ def manage_access_requests_view(request):
 
         if action == 'approve':
             access_request.status = 'approved'
+            access_request.viewed = False
             access_request.collection.allowed_users.add(access_request.requester)
             messages.success(request, f"Approved access for {access_request.requester.username}")
         elif action == 'deny':
             access_request.status = 'denied'
+            access_request.viewed = False
             messages.info(request, f"Denied access for {access_request.requester.username}")
 
         access_request.save()
