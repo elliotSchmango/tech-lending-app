@@ -124,7 +124,7 @@
       
       <!-- Full version: only visible on large screens -->
       <div class="btn-group d-none d-lg-flex flex-wrap overflow-auto" style="max-width: 70vw;">
-        {% for collection in collections %}
+        {% for collection in collections|slice:":5" %}
           <a href="{% url 'collection_detail' collection.id %}" class="rounded-1 btn btn-sm text-white text-truncate">
             {{ collection.name }}
           </a>
