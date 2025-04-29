@@ -18,40 +18,43 @@
     </div>
   {% endif %}
 
-  <h2 class="mb-4">Private Collections You Can Access</h2>
+  <h2 class="mb-4">Private Collections</h2>
 
-  {% if private_collections %}
+  {% if private_collections or inaccessible %}
     <div class="row">
       {% for collection in private_collections %}
         <div class="col-md-6 col-lg-4 mb-4">
           <div class="card h-100 shadow-sm">
             <div class="card-body">
-              <a href="{% url 'collection_detail' collection.id %}" class="text-decoration-none">
-                <h5 class="card-title">{{ collection.name }}</h5>
-              </a>
+              <h5 class="card-title">{{ collection.name }}</h5>
               <p class="card-text text-muted small">{{ collection.description|default:"No description." }}</p>
+
+              <div class="mb-2">
+                <span class="badge bg-success">Accessible</span>
+              </div>
+
+              <a href="{% url 'collection_detail' collection.id %}" class="btn btn-outline-primary btn-sm mt-2">
+                View Full Collection
+              </a>
             </div>
           </div>
         </div>
       {% endfor %}
-    </div>
-  {% else %}
-    <p class="text-muted">You don't have access to any private collections.</p>
-  {% endif %}
 
-  <h2 class="mb-4 mt-5">Private Collections You Cannot Access</h2>
-
-  {% if inaccessible %}
-    <div class="row">
       {% for collection in inaccessible %}
         <div class="col-md-6 col-lg-4 mb-4">
-          <div class="card h-100 border-danger shadow-sm">
+          <div class="card h-100 shadow-sm border-danger">
             <div class="card-body">
               <h5 class="card-title text-danger">{{ collection.name }}</h5>
               <p class="card-text text-muted small">{{ collection.description|default:"No description." }}</p>
+
+              <div class="mb-2">
+                <span class="badge bg-danger">Restricted</span>
+              </div>
+
               {% if user not in collection.allowed_users.all and collection.creator != user %}
                 <a class="btn btn-outline-primary btn-sm mt-2"
-                   href="{% url 'request_access' collection.id %}">
+                  href="{% url 'request_access' collection.id %}">
                   Request Access
                 </a>
               {% endif %}
@@ -61,7 +64,7 @@
       {% endfor %}
     </div>
   {% else %}
-    <p class="text-muted">You already have access to all available private collections.</p>
+    <p class="text-muted">There are no private collections to display.</p>
   {% endif %}
 </div>
 {% endblock %}
