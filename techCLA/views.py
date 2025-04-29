@@ -366,11 +366,13 @@ def private_collections_view(request):
     alerts = list(alerts_qs)
 
     alerts_qs.update(viewed=True)
+    req_message = request.session.pop('req_message', None)
 
     return render(request, 'techCLA/private_collections.html', {
         'private_collections': private_collections,
         'inaccessible': inaccessible,
         'alerts': alerts,
+        'req_message':req_message
     })
 
 def my_borrowed_items(request):
@@ -521,15 +523,13 @@ class SearchResultsView(ListView):
 def request_access_view(request, collection_id):
     collection = get_object_or_404(Collection, id=collection_id)
 
-    #already has access
     if request.user in collection.allowed_users.all() or request.user == collection.creator:
-        messages.info(request, "You already have access to this collection.")
+        request.session['req_message'] = "You already have access to this collection."
         return redirect('collection_detail', collection.id)
 
-    #if request already exists
     existing = RequestAccess.objects.filter(requester=request.user, collection=collection).first()
     if existing:
-        messages.warning(request, "You have already requested access.")
+        request.session['req_message'] = "You have already requested access."
         return redirect('collection_detail', collection.id)
 
     if request.method == "POST":
@@ -539,7 +539,7 @@ def request_access_view(request, collection_id):
             request_access.requester = request.user
             request_access.collection = collection
             request_access.save()
-            messages.success(request, "Access request submitted.")
+            request.session['req_message'] = "Access request submitted."
             return redirect('private_collections')
     else:
         form = RequestAccessForm()
